@@ -1,6 +1,7 @@
 package com.university.models;
 
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.SQLDelete;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -11,21 +12,20 @@ import java.util.List;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.DialectOverride.SQLDelete;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "usuario")
 @DynamicUpdate
-//@SQLDelete(dialect = "sql", override = @org.hibernate.annotations.SQLDelete)
+@SQLDelete(sql = "UPDATE usuario SET deleted_at = CURRENT_TIMESTAMP WHERE id = ?")
 public class Usuario extends Auditor {
     @Column(name = "nombres", length = 250, unique = false)
     @NotBlank(message = "El nombre del usuario no puede estar vacío.")
@@ -73,6 +73,11 @@ public class Usuario extends Auditor {
     @Cascade(CascadeType.ALL)
     @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     private List<UsuarioRol> roles;
+
+    @OneToMany(mappedBy = "usuario", orphanRemoval = true)
+    @Cascade(CascadeType.ALL)
+    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
+    private List<UsuarioPermiso> permisos;
 
     /*
     @OneToMany(mappedBy = "usuario", orphanRemoval = true)
@@ -194,6 +199,14 @@ public class Usuario extends Auditor {
         this.roles = roles;
     }
 
+    public List<UsuarioPermiso> getPermisos() {
+        return permisos;
+    }
+
+    public void setPermisos(List<UsuarioPermiso> permisos) {
+        this.permisos = permisos;
+    }
+
     /*
     public List<DatosFacturacion> getFacturas() {
         return facturas;
@@ -229,6 +242,7 @@ public class Usuario extends Auditor {
      */
     public void keepOrphanRemoval(Usuario usuario) {
         this.roles = usuario.getRoles();
+        this.permisos = usuario.getPermisos();
         //this.facturas = usuario.getFacturas();
     }
 }

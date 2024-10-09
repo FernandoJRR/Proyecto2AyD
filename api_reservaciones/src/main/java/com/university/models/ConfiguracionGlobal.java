@@ -2,13 +2,13 @@ package com.university.models;
 
 import org.hibernate.annotations.DynamicUpdate;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Lob;
-import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Lob;
+import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "configuracion_global")
@@ -32,28 +32,28 @@ public class ConfiguracionGlobal extends Auditor{
         super(id);
     }
 
-    public ConfiguracionGlobal(String nombreTienda, byte[] imagenTienda) {
-        this.nombre = nombreTienda;
-        this.imagen = imagenTienda;
+    public ConfiguracionGlobal(String nombre, byte[] imagen) {
+        this.nombre = nombre;
+        this.imagen = imagen;
     }
 
     public ConfiguracionGlobal() {
     }
 
-    public String getNombreTienda() {
+    public String getNombre() {
         return nombre;
     }
 
-    public void setNombreTienda(String nombreTienda) {
-        this.nombre = nombreTienda;
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 
-    public byte[] getImagenTienda() {
+    public byte[] getImagen() {
         return imagen;
     }
 
-    public void setImagenTienda(byte[] imagenTienda) {
-        this.imagen = imagenTienda;
+    public void setImagen(byte[] imagen) {
+        this.imagen = imagen;
     }
 
     public String getMimeTypeImg() {

@@ -23,7 +23,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @DynamicUpdate
 public class Permiso extends Auditor {
 
-    @Column(name = "permiso", length = 250, unique = true)
+    @Column(name = "nombre", length = 250, unique = true)
     @NotBlank(message = "El nombre del permiso no puede estar vacío.")
     @NotNull(message = "El nombre del permiso no puede ser nulo")
     @Size(min = 1, max = 250, message = "El nombre del permiso debe tener entre 1 y 250 caracteres.")

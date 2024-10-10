@@ -23,7 +23,7 @@ public class UsuarioPermiso extends Auditor {
     @Schema(hidden = true)
     private Usuario usuario;
 
-    @ManyToOne//indicador de relacion muchos a uno
+    @ManyToOne
     @JoinColumn(name = "permiso", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Permiso permiso;

@@ -44,10 +44,10 @@ public class Usuario extends Auditor {
     @Size(min = 1, max = 250, message = "El email del cliente debe tener entre 1 y 250 caracteres.")
     private String email;
 
-    @Column(name = "nit", length = 250, unique = false)
+    @Column(name = "nit", length = 250, unique = true)
     private String nit;
 
-    @Column(name = "cui", length = 250, unique = false)
+    @Column(name = "cui", length = 250, unique = true)
     private String cui;
 
     @Column(name = "password", length = 250, unique = false)
@@ -73,11 +73,6 @@ public class Usuario extends Auditor {
     @Cascade(CascadeType.ALL)
     @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     private List<UsuarioRol> roles;
-
-    @OneToMany(mappedBy = "usuario", orphanRemoval = true)
-    @Cascade(CascadeType.ALL)
-    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
-    private List<UsuarioPermiso> permisos;
 
     /*
     @OneToMany(mappedBy = "usuario", orphanRemoval = true)
@@ -199,15 +194,8 @@ public class Usuario extends Auditor {
         this.roles = roles;
     }
 
-    public List<UsuarioPermiso> getPermisos() {
-        return permisos;
-    }
-
-    public void setPermisos(List<UsuarioPermiso> permisos) {
-        this.permisos = permisos;
-    }
-
     /*
+
     public List<DatosFacturacion> getFacturas() {
         return facturas;
     }
@@ -242,7 +230,7 @@ public class Usuario extends Auditor {
      */
     public void keepOrphanRemoval(Usuario usuario) {
         this.roles = usuario.getRoles();
-        this.permisos = usuario.getPermisos();
+        //this.permisos = usuario.getPermisos();
         //this.facturas = usuario.getFacturas();
     }
 }

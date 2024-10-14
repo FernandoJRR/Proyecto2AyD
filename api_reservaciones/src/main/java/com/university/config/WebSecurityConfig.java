@@ -3,6 +3,7 @@ package com.university.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -36,10 +37,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
         http.csrf().disable().authorizeRequests()
                 .antMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                 .antMatchers("/api/**/public/**").permitAll()
-                .antMatchers("/api/**/cliente/**").hasRole("USUARIO")
-                .antMatchers("/api/**/private/all/**").hasAnyRole("ADMIN", "AYUDANTE", "USUARIO")
-                .antMatchers("/api/**/private/**").hasAnyRole("ADMIN")
-                .antMatchers("/api/**/protected/**").hasAnyRole("ADMIN", "AYUDANTE")
+                .antMatchers(HttpMethod.POST, "/api/**/usuario/**").hasAnyRole("ADMIN", "USUARIO_CREAR")
+                .antMatchers(HttpMethod.PATCH, "/api/**/usuario/**").hasAnyRole("ADMIN", "USUARIO_MODIFICAR")
+                //.antMatchers("/api/**/cliente/**").hasRole("USUARIO")
+                //.antMatchers("/api/**/private/all/**").hasAnyRole("ADMIN", "USUARIO")
+                //.antMatchers("/api/**/private/**").hasAnyRole("ADMIN")
+                //.antMatchers("/api/**/protected/**").hasAnyRole("ADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .cors()

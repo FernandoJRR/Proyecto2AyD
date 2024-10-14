@@ -7,25 +7,25 @@ import org.springframework.stereotype.Component;
 import com.university.models.Permiso;
 
 @Component
-public class UsuarioPermisoRequest {
+public class PermisoRolRequest {
 
-    private Long idUsuario;
+    private Long idRol;
     private List<Permiso> permisos;
 
-    public UsuarioPermisoRequest(Long idUsuario, List<Permiso> permisos) {
-        this.idUsuario = idUsuario;
+    public PermisoRolRequest(Long idRol, List<Permiso> permisos) {
+        this.idRol = idRol;
         this.permisos = permisos;
     }
 
-    public UsuarioPermisoRequest() {
+    public PermisoRolRequest() {
     }
 
-    public Long getIdUsuario() {
-        return idUsuario;
+    public Long getIdRol() {
+        return idRol;
     }
 
-    public void setIdUsuario(Long idUsuario) {
-        this.idUsuario = idUsuario;
+    public void setIdRol(Long idUsuario) {
+        this.idRol = idUsuario;
     }
 
     public List<Permiso> getPermisos() {

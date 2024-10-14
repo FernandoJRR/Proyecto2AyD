@@ -39,7 +39,7 @@ public class Permiso extends Auditor {
     @Cascade(CascadeType.ALL)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Schema(hidden = true)
-    private List<UsuarioPermiso> asignaciones;
+    private List<PermisoRol> asignaciones;
 
     public Permiso(String nombre, String ruta) {
         this.nombre = nombre;
@@ -61,11 +61,11 @@ public class Permiso extends Auditor {
         this.nombre = nombre;
     }
 
-    public List<UsuarioPermiso> getAsignaciones() {
+    public List<PermisoRol> getAsignaciones() {
         return asignaciones;
     }
 
-    public void setAsignaciones(List<UsuarioPermiso> asignaciones) {
+    public void setAsignaciones(List<PermisoRol> asignaciones) {
         this.asignaciones = asignaciones;
     }
 

@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.university.models.Usuario;
 import com.university.models.dto.LoginDto;
 import com.university.models.request.PasswordChange;
-import com.university.models.request.UsuarioPermisoRequest;
+import com.university.models.request.PermisoRolRequest;
 import com.university.services.UsuarioService;
 import com.university.transformers.ApiBaseTransformer;
 
@@ -29,12 +29,14 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 import java.util.List;
 import java.util.Map;
 
 @RestController
 @RequestMapping(value = "api", produces =  MediaType.APPLICATION_JSON_VALUE + ";charset=UTF-8")
+@Tag(name = "Usuarios", description = "Operaciones para administrar a los usuarios")
 public class UsuarioController {
 
     @Autowired
@@ -46,7 +48,7 @@ public class UsuarioController {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = Usuario.class)) }),
             @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
-    @GetMapping("/usuario/protected/{id}")
+    @GetMapping("/usuario/public/{id}")
     public ResponseEntity<?> getUsuario(@PathVariable Long id) {
         try {
             Usuario data = usuarioService.getUsuario(id);
@@ -111,9 +113,9 @@ public class UsuarioController {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)) }),
             @ApiResponse(responseCode = "400", description = "Solicitud incorrecta")
     })
-    @PatchMapping("/usuario/private/all/cambioPassword")
+    @PatchMapping("/usuario/public/cambioPassword")
     public ResponseEntity<?> cambiarPassword(
-            @Parameter(description = "ID del producto a buscar", required = true, example = "{id:1,password:\"xd\"}") @RequestBody Usuario requestBody) {
+            @Parameter(description = "ID del usuario a buscar", required = true, example = "{id:1,password:\"xd\"}") @RequestBody Usuario requestBody) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String emailUsuarioAutenticado = authentication.getName();
@@ -234,27 +236,6 @@ public class UsuarioController {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String emailUsuarioAutenticado = authentication.getName();
             Usuario confirmacion = usuarioService.updateUsuario(updates, emailUsuarioAutenticado);
-            return new ApiBaseTransformer(HttpStatus.OK, "OK", confirmacion, null, null).sendResponse();
-        } catch (NumberFormatException ex) {
-            return new ApiBaseTransformer(HttpStatus.BAD_REQUEST,
-                    "Id con formato invalido",
-                    null, null, ex.getMessage()).sendResponse();
-        } catch (Exception ex) {
-            return new ApiBaseTransformer(HttpStatus.BAD_REQUEST, "Error", null, null, ex.getMessage()).sendResponse();
-        }
-    }
-
-    @Operation(summary = "Actualiza los permisos de un usuario ayudante.", description = "Actualiza los permisos d eun usuario ayudante en base a su id y los id "
-            + "de los permisos enviados (todo aquel permiso que no se mande se eliminara de la "
-            + "lista de permisos del usuario).")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Usuario encontrado", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Usuario.class))),
-            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
-    })
-    @PatchMapping("/usuario/private/actualizarPermisos")
-    public ResponseEntity<?> actualizarPermisos(@RequestBody UsuarioPermisoRequest updates) {
-        try {
-            Usuario confirmacion = usuarioService.actualizarPermisosUsuario(updates);
             return new ApiBaseTransformer(HttpStatus.OK, "OK", confirmacion, null, null).sendResponse();
         } catch (NumberFormatException ex) {
             return new ApiBaseTransformer(HttpStatus.BAD_REQUEST,

@@ -15,11 +15,11 @@ import org.springframework.stereotype.Service;
 import com.university.models.Permiso;
 import com.university.models.Rol;
 import com.university.models.Usuario;
-import com.university.models.UsuarioPermiso;
+import com.university.models.PermisoRol;
 import com.university.models.UsuarioRol;
 import com.university.models.dto.LoginDto;
 import com.university.models.request.PasswordChange;
-import com.university.models.request.UsuarioPermisoRequest;
+import com.university.models.request.PermisoRolRequest;
 import com.university.repositories.UsuarioRepository;
 import com.university.repositories.UsuarioRolRepository;
 import com.university.services.authentication.AuthenticationService;
@@ -69,11 +69,10 @@ public class UsuarioService extends com.university.services.Service {
     }
 
     public Usuario getUsuario(Long id) throws Exception {
-        if (id == null || id <= 0) {// si el correo esta en blanco entonces lanzmaos error
+        if (id == null || id <= 0) {
             throw new Exception("Id invalido.");
         }
 
-        // mandamos a traer el estado de la cuenta
         Optional<Usuario> busquedaUsuario = usuarioRepository.findById(id);
 
         if (busquedaUsuario.isEmpty()) {
@@ -82,7 +81,6 @@ public class UsuarioService extends com.university.services.Service {
 
         Usuario usuarioEncontrado = busquedaUsuario.get();
 
-        // vemos si el usuario no ha sido eliminado
         if (usuarioEncontrado.getDeletedAt() != null) {
             throw new Exception("Usuario ya ha sido eliminado.");
         }
@@ -149,7 +147,7 @@ public class UsuarioService extends com.university.services.Service {
         usuario.setPassword(usuarioEncontrado.getPassword());
         //usuario.setFacturas(usuarioEncontrado.getFacturas());
         usuario.setRoles(usuarioEncontrado.getRoles());
-        usuario.setPermisos(usuarioEncontrado.getPermisos());
+        //usuario.setPermisos(usuarioEncontrado.getPermisos());
         this.validar(usuario);
         Usuario usuarioUpdate = this.usuarioRepository.save(usuario);
         // Verificar si la actualización falló
@@ -408,7 +406,6 @@ public class UsuarioService extends com.university.services.Service {
     public LoginDto crearUsuarioNormal(Usuario crear) throws Exception {
         // validamos
         this.validar(crear);
-        // traer rol AYUDANTE
         Rol rol = this.rolService.getRol("USUARIO");
         // guardamos el usuario
         Usuario userCreado = this.guardarUsuario(crear, rol);
@@ -440,73 +437,6 @@ public class UsuarioService extends com.university.services.Service {
         return this.usuarioRepository.save(crear);
     }
 
-    /**
-     * Agregar un permiso a un usuario
-     *
-     * @param usuarioPermiso
-     * @return
-     */
-    @Transactional
-    public Usuario actualizarPermisosUsuario(UsuarioPermisoRequest usuarioPermiso) throws Exception {
-        // Buscamos el usuario en la base de datos
-        Usuario usuario = this.getUsuario(usuarioPermiso.getIdUsuario());
-
-        List<UsuarioPermiso> permisosNuevos = new ArrayList<>();
-        // por cada permiso que se haya especificado creamos un nuevo permiso
-        for (Permiso item : usuarioPermiso.getPermisos()) // Creamos el permiso
-        {
-            permisosNuevos.add(new UsuarioPermiso(
-                    usuario, item));
-        }
-
-        if (usuario.getPermisos() == null) {
-            usuario.setPermisos(permisosNuevos);
-        } else {
-            // asignamos los nuevos permisos al usuario
-            usuario.getPermisos().clear();
-            usuario.getPermisos().addAll(permisosNuevos);
-        }
-        // Guardamos el usuario
-        return this.usuarioRepository.save(usuario);
-    }
-
-    /**
-     * Agregar un permiso a un usuario
-     *
-     * @param usuario
-     * @param permiso
-     * @return
-     */
-    @Transactional
-    public Usuario agregarPermisoUsuario(Usuario usuario, Permiso permiso) throws Exception {
-        if (!this.usuarioRepository.existsByEmail(usuario.getEmail())) {
-            throw new IllegalArgumentException("El usuario no existe.");
-        }
-        // Buscamos el usuario en la base de datos
-        Optional<Usuario> busquedaUsuario = usuarioRepository.findById(usuario.getId());
-        if (busquedaUsuario.isEmpty()) {
-            throw new Exception("No hemos encontrado el usuario.");
-        }
-        // Verificamos que el usuario no haya sido eliminado
-        if (busquedaUsuario.get().getDeletedAt() != null) {
-            throw new Exception("Usuario ya ha sido eliminado.");
-        }
-        Usuario usuarioEncontrado = busquedaUsuario.get();
-        // Creamos el permiso
-        UsuarioPermiso usuarioPermiso = new UsuarioPermiso(usuarioEncontrado, permiso);
-        usuario.keepOrphanRemoval(usuarioEncontrado);
-        if (usuario.getPermisos() == null) {
-            usuario.setPermisos(new ArrayList<>());
-        }
-        // Verificamos si el permiso ya existe
-        if (usuario.getPermisos().stream().anyMatch(p -> p.getPermiso().getId().equals(permiso.getId()))) {
-            throw new IllegalArgumentException("El permiso ya ha sido asignado al usuario.");
-        }
-        // Agregamos el permiso a la lista de permisos del usuario
-        usuario.getPermisos().add(usuarioPermiso);
-        // Guardamos el usuario
-        return this.usuarioRepository.save(usuario);
-    }
 
     private boolean verificarUsuarioJwt(Usuario usuarioTratar, String emailUsuarioAutenticado) throws Exception {
         // validar si el usuario tiene permiso de eliminar

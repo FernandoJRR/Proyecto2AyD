@@ -13,39 +13,38 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Entity
-@Table(name = "permiso_usuario")
-public class UsuarioPermiso extends Auditor {
+@Table(name = "permiso_rol")
+public class PermisoRol extends Auditor {
 
     @ManyToOne
-    @JoinColumn(name = "usuario", nullable = false)
+    @JoinColumn(name = "rol", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @Schema(hidden = true)
-    private Usuario usuario;
+    private Rol rol;
 
     @ManyToOne
     @JoinColumn(name = "permiso", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Permiso permiso;
 
-    public UsuarioPermiso(Long id) {
+    public PermisoRol(Long id) {
         super(id);
     }
 
-    public UsuarioPermiso(Usuario usuario, Permiso permiso) {
-        this.usuario = usuario;
+    public PermisoRol(Rol rol, Permiso permiso) {
+        this.rol = rol;
         this.permiso = permiso;
     }
 
-    public UsuarioPermiso() {
+    public PermisoRol() {
     }
 
-    public Usuario getUsuario() {
-        return usuario;
+    public Rol getRol() {
+        return rol;
     }
 
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
+    public void setRol(Rol rol) {
+        this.rol = rol;
     }
 
     public Permiso getPermiso() {

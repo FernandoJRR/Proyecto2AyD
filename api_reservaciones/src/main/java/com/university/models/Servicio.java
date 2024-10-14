@@ -4,14 +4,20 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+
+import java.util.List;
 
 @Entity
 @Table(name = "servicio")
@@ -38,6 +44,11 @@ public class Servicio extends Auditor {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Negocio negocio;
 
+    @OneToMany(mappedBy = "servicio", orphanRemoval = true)
+    @Cascade(CascadeType.ALL)
+    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
+    private List<ServicioRol> roles;
+
     public Servicio(Long id) {
         super(id);
     }
@@ -50,5 +61,45 @@ public class Servicio extends Auditor {
     }
 
     public Servicio() {
+    }
+
+    public Negocio getNegocio() {
+        return negocio;
+    }
+
+    public void setNegocio(Negocio negocio) {
+        this.negocio = negocio;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public Recurso getRecurso() {
+        return recurso;
+    }
+
+    public void setRecurso(Recurso recurso) {
+        this.recurso = recurso;
+    }
+
+    public TipoServicio getTipoServicio() {
+        return tipoServicio;
+    }
+
+    public void setTipoServicio(TipoServicio tipoServicio) {
+        this.tipoServicio = tipoServicio;
+    }
+
+    public List<ServicioRol> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<ServicioRol> roles) {
+        this.roles = roles;
     }
 }

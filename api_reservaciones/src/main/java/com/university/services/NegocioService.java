@@ -16,7 +16,7 @@ public class NegocioService {
     private NegocioRepository negocioRepository;
 
     public Negocio createNegocio(Negocio negocio) {
-        return negocioRepository.save(negocio);
+        return this.negocioRepository.save(negocio);
     }
 
     public Negocio getNegocio(Long id) throws Exception {

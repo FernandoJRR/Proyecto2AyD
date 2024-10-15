@@ -31,9 +31,6 @@ public class AuthenticationService implements UserDetailsService {
             User.UserBuilder userBuilder = User.withUsername(username);
             ArrayList<String> rolesString = new ArrayList<>();
             for (UsuarioRol item : usuario.getRoles()) {
-                System.out.println("ITEM");
-                System.out.println(item);
-                System.out.println(item.getRol().getPermisos());
                 //Se obtienen todos los permisos del rol
                 List<PermisoRol> permisosRol = item.getRol().getPermisos();
                 for (PermisoRol permisoRol : permisosRol) {

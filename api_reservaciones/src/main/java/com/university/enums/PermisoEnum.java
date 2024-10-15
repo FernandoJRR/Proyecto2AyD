@@ -1,12 +1,14 @@
 package com.university.enums;
 
 public enum PermisoEnum {
-    ADMIN("Administrador", "admin"),
-    USUARIO_CREAR("Crear usuarios con diferentes roles", "usuario_crear"),
-    USUARIO_MODIFICAR("Modificar usuarios con roles", "usuario_modificar"),
-    ROL_CREAR("Crear roles para usuarios", "rol_crear"),
-    ROL_MODIFICAR("Modificar roles para usuarios", "rol_modificar"),
-    USUARIO("Usuario","usuario");
+    ADMIN("ADMINISTRADOR", "admin"),
+    USUARIO_CREAR("USUARIO_CREAR", "usuario_crear"),
+    USUARIO_MODIFICAR("USUARIO_MODIFICAR", "usuario_modificar"),
+    ROL_CREAR("ROL_CREAR", "rol_crear"),
+    ROL_MODIFICAR("ROL_MODIFICAR", "rol_modificar"),
+    NEGOCIO_CREAR("NEGOCIO_CREAR", "negocio_crear"),
+    NEGOCIO_MODIFICAR("NEGOCIO_MODIFICAR", "negocio_modificar"),
+    USUARIO("USUARIO","usuario");
 
     private final String nombrePermiso;
     private final String ruta;

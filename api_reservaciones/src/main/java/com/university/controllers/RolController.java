@@ -42,7 +42,7 @@ public class RolController {
             @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
     @GetMapping("/rol/public/{id}")
-    public ResponseEntity<?> getUsuario(@PathVariable Long id) {
+    public ResponseEntity<?> getRol(@PathVariable Long id) {
         try {
             Rol data = rolService.getRolById(id);
             return new ApiBaseTransformer(HttpStatus.OK, "OK", data, null, null).sendResponse();
@@ -57,7 +57,7 @@ public class RolController {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = Rol.class)) }),
             @ApiResponse(responseCode = "400", description = "Solicitud incorrecta")
     })
-    @PostMapping("/rol/public/crearUsuario")
+    @PostMapping("/rol/private/crearRol")
     public ResponseEntity<?> crearRol(@RequestBody CreateRolDto crear) {
         try {
             Rol respuesta = rolService.createRol(crear);

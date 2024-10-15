@@ -14,11 +14,14 @@ import com.university.enums.PermisoEnum;
 import com.university.models.ConfiguracionGlobal;
 import com.university.models.Permiso;
 import com.university.models.Rol;
+import com.university.models.TipoServicio;
 import com.university.models.Usuario;
 import com.university.repositories.ConfiguracionGlobalRepository;
 import com.university.repositories.PermisoRepository;
 import com.university.repositories.RolRepository;
+import com.university.repositories.TipoServicioRepository;
 import com.university.services.RolService;
+import com.university.services.TipoServicioService;
 import com.university.services.UsuarioService;
 
 @Component
@@ -29,11 +32,15 @@ public class Inserts implements ApplicationListener<ContextRefreshedEvent> {
     @Autowired
     private PermisoRepository permisoRepository;
     @Autowired
+    private TipoServicioRepository tipoServicioRepository;
+    @Autowired
     private ConfiguracionGlobalRepository configuracionGlobalRepository;
     @Autowired
     private UsuarioService usuarioService;
     @Autowired
     private RolService rolService;
+    @Autowired
+    private TipoServicioService tipoServicioService;
 
     public Rol insertarRol(Rol rol) throws Exception {
         try {
@@ -42,6 +49,19 @@ public class Inserts implements ApplicationListener<ContextRefreshedEvent> {
                 return opRol.get();
             }
             return this.rolRepository.save(rol);
+        } catch (Exception e) {
+            System.out.println(e);
+            throw new Exception("Error");
+        }
+    }
+
+    public TipoServicio insertarTipoServicio(TipoServicio tipoServicio) throws Exception {
+        try {
+            Optional<TipoServicio> opTipoServicio = this.tipoServicioRepository.findOneByNombre(tipoServicio.getNombre());
+            if (opTipoServicio.isPresent()) {
+                return opTipoServicio.get();
+            }
+            return this.tipoServicioRepository.save(tipoServicio);
         } catch (Exception e) {
             System.out.println(e);
             throw new Exception("Error");
@@ -89,6 +109,10 @@ public class Inserts implements ApplicationListener<ContextRefreshedEvent> {
             // Roles
             this.insertarRol(new Rol("USUARIO"));
             this.insertarRol(new Rol("ADMIN"));
+
+            //Tipos de Servicio
+            this.insertarTipoServicio(new TipoServicio("Simple"));
+            this.insertarTipoServicio(new TipoServicio("Recurso"));
 
             // IMAGEN DEFAULT DE LA TIENDA
             byte[] img = getClass().getResourceAsStream("/img/logo.png").readAllBytes();
@@ -144,13 +168,15 @@ public class Inserts implements ApplicationListener<ContextRefreshedEvent> {
                     )
                 );
 
-                System.out.println("permiso");
-                System.out.println(permisoInsercion.getNombre());
                 //Si el permiso es ADMIN se asigna al mismo rol
                 if (permisoInsercion.getNombre().equals("Administrador")) {
-                    System.out.println("insertando permiso");
                     Rol rolAdmin = this.rolService.getRol("ADMIN");
-                    this.rolService.agregarPermisoRol(rolAdmin, permisoInsercion);
+                    try {
+                        this.rolService.agregarPermisoRol(rolAdmin, permisoInsercion);
+                    } catch (IllegalArgumentException e) {
+                    } catch (Exception e) {
+                        System.out.println(e);
+                    }
                 }
             }
 

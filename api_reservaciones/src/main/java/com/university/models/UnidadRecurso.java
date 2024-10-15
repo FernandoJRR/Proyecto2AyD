@@ -27,4 +27,31 @@ public class UnidadRecurso extends Auditor {
     @JoinColumn(name = "recurso", nullable = true)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Recurso recurso;
+
+    public UnidadRecurso(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public UnidadRecurso(Long id) {
+        super(id);
+    }
+
+    public UnidadRecurso() {
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public Recurso getRecurso() {
+        return recurso;
+    }
+
+    public void setRecurso(Recurso recurso) {
+        this.recurso = recurso;
+    }
 }

@@ -8,6 +8,8 @@ import javax.persistence.Table;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 @Table(name = "servicio_rol")
 public class ServicioRol extends Auditor {
@@ -15,6 +17,7 @@ public class ServicioRol extends Auditor {
     @ManyToOne
     @JoinColumn(name = "rol", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonBackReference
     private Rol rol;
 
     @ManyToOne
@@ -22,13 +25,16 @@ public class ServicioRol extends Auditor {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Servicio servicio;
 
+    public ServicioRol(Rol rol, Servicio servicio) {
+        this.rol = rol;
+        this.servicio = servicio;
+    }
+
     public ServicioRol(Long id) {
         super(id);
     }
 
-    public ServicioRol(Rol rol, Servicio servicio) {
-        this.rol = rol;
-        this.servicio = servicio;
+    public ServicioRol() {
     }
 
     public Rol getRol() {

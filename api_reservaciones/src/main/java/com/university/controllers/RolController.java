@@ -1,5 +1,7 @@
 package com.university.controllers;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.university.models.Rol;
 import com.university.models.request.CreateRolDto;
 import com.university.models.request.PermisoRolRequest;
+import com.university.models.request.ServicioRolRequest;
 import com.university.services.RolService;
 import com.university.transformers.ApiBaseTransformer;
 
@@ -51,6 +54,22 @@ public class RolController {
         }
     }
 
+    @Operation(summary = "Obtener todos los roles", description = "Obtiene la información de todos los roles del sistema.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Roles encontrados", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Rol.class)) }),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+    })
+    @GetMapping("/rol/public/getRoles")
+    public ResponseEntity<?> getRoles() {
+        try {
+            List<Rol> data = rolService.getRoles();
+            return new ApiBaseTransformer(HttpStatus.OK, "OK", data, null, null).sendResponse();
+        } catch (Exception ex) {
+            return new ApiBaseTransformer(HttpStatus.BAD_REQUEST, "Error", null, null, ex.getMessage()).sendResponse();
+        }
+    }
+
     @Operation(summary = "Crear rol", description = "Crea un nuevo rol en el sistema.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Rol creado exitosamente", content = {
@@ -67,11 +86,11 @@ public class RolController {
         }
     }
 
-    @Operation(summary = "Actualiza los permisos de un usuario ayudante.", description = "Actualiza los permisos d eun usuario ayudante en base a su id y los id "
+    @Operation(summary = "Actualiza los permisos de un rol.", description = "Actualiza los permisos de un rol en base a su id y los id "
             + "de los permisos enviados (todo aquel permiso que no se mande se eliminara de la "
-            + "lista de permisos del usuario).")
+            + "lista de permisos del rol).")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Usuario encontrado", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Rol.class))),
+            @ApiResponse(responseCode = "200", description = "Rol encontrado", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Rol.class))),
             @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
     @PatchMapping("/rol/private/actualizarPermisos")
@@ -88,4 +107,24 @@ public class RolController {
         }
     }
 
+    @Operation(summary = "Actualiza los permisos de un rol.", description = "Actualiza los permisos de un rol en base a su id y los id "
+            + "de los permisos enviados (todo aquel permiso que no se mande se eliminara de la "
+            + "lista de permisos del rol).")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Rol encontrado", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Rol.class))),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+    })
+    @PatchMapping("/rol/private/actualizarServicios")
+    public ResponseEntity<?> actualizarServicios(@RequestBody ServicioRolRequest updates) {
+        try {
+            Rol confirmacion = rolService.actualizarServiciosRol(updates);
+            return new ApiBaseTransformer(HttpStatus.OK, "OK", confirmacion, null, null).sendResponse();
+        } catch (NumberFormatException ex) {
+            return new ApiBaseTransformer(HttpStatus.BAD_REQUEST,
+                    "Id con formato invalido",
+                    null, null, ex.getMessage()).sendResponse();
+        } catch (Exception ex) {
+            return new ApiBaseTransformer(HttpStatus.BAD_REQUEST, "Error", null, null, ex.getMessage()).sendResponse();
+        }
+    }
 }

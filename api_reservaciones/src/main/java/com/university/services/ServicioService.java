@@ -4,9 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.university.models.DuracionServicio;
+import com.university.models.HorarioAtencionServicio;
 import com.university.models.Servicio;
 import com.university.models.request.CreateServicioDto;
 import com.university.repositories.DuracionServicioRepository;
+import com.university.repositories.HorarioAtencionServicioRepository;
 import com.university.repositories.ServicioRepository;
 
 import java.util.List;
@@ -21,6 +23,9 @@ public class ServicioService {
 
     @Autowired
     private DuracionServicioRepository duracionServicioRepository;
+
+    @Autowired
+    private HorarioAtencionServicioRepository horarioAtencionServicioRepository;
 
     public List<Servicio> getServicios() {
         return (List<Servicio>) servicioRepository.findAll();
@@ -39,6 +44,7 @@ public class ServicioService {
     public Servicio createServicio(CreateServicioDto servicioDto) throws Exception {
         Servicio servicio = servicioDto.getServicio();
         DuracionServicio duracionServicio = servicioDto.getDuracionServicio();
+        List<HorarioAtencionServicio> horariosAtencionServicio = servicioDto.getHorariosAtencionServicio();
 
         if (duracionServicio.equals(null)) {
             throw new Exception("Debes asignar una duracion al servicio");
@@ -46,12 +52,22 @@ public class ServicioService {
 
         Servicio servicioCreado = servicioRepository.save(servicio);
 
-        //Se le asigna una duracion al Servicio
+        // Se le asigna una duracion al Servicio
         DuracionServicio duracionServicioCreado = new DuracionServicio(
-            servicioCreado, duracionServicio.getMinutos(), duracionServicio.getHoras()
-        );
+                servicioCreado, duracionServicio.getMinutos(), duracionServicio.getHoras());
 
         duracionServicioRepository.save(duracionServicioCreado);
+
+        // Se crean los horarios de atencion que tendra el usuario
+        for (HorarioAtencionServicio horarioAtencionServicio : horariosAtencionServicio) {
+            HorarioAtencionServicio horarioAtencionServicioCreado = new HorarioAtencionServicio(
+                    horarioAtencionServicio.getHoraInicio(), horarioAtencionServicio.getHoraFinal(),
+                    horarioAtencionServicio.getDiaAtencion());
+
+            horarioAtencionServicioCreado.setServicio(servicioCreado);
+
+            horarioAtencionServicioRepository.save(horarioAtencionServicioCreado);
+        }
 
         return servicioCreado;
     }

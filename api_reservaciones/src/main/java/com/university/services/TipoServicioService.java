@@ -16,7 +16,7 @@ import com.university.models.Servicio;
 import com.university.models.ServicioRol;
 import com.university.models.TipoServicio;
 import com.university.models.request.CreateRolDto;
-import com.university.models.request.PermisoRolRequest;
+import com.university.models.request.HorariosUsuarioRequest;
 import com.university.repositories.RolRepository;
 import com.university.repositories.TipoServicioRepository;
 

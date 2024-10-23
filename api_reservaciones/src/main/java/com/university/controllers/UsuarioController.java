@@ -18,7 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.university.models.Usuario;
 import com.university.models.dto.LoginDto;
 import com.university.models.request.PasswordChange;
-import com.university.models.request.PermisoRolRequest;
+import com.university.models.request.CreateUsuarioDto;
+import com.university.models.request.HorariosUsuarioRequest;
 import com.university.services.UsuarioService;
 import com.university.transformers.ApiBaseTransformer;
 
@@ -187,6 +188,23 @@ public class UsuarioController {
         }
     }
 
+    @Operation(summary = "Crear ayudante", description = "Crea un nuevo ayudante en el sistema.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Administrador creado exitosamente", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Usuario.class)) }),
+            @ApiResponse(responseCode = "400", description = "Solicitud incorrecta")
+    })
+    @PostMapping("/usuario/private/crearAyudante")
+    public ResponseEntity<?> crearAyudante(@RequestBody CreateUsuarioDto crear) {
+        try {
+            Usuario respuesta = usuarioService.crearAyudante(crear);
+            return new ApiBaseTransformer(HttpStatus.OK, "OK", respuesta, null, null).sendResponse();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return new ApiBaseTransformer(HttpStatus.BAD_REQUEST, "Error", null, null, ex.getMessage()).sendResponse();
+        }
+    }
+
     @Operation(summary = "Obtener perfil de usuario", description = "Obtiene el perfil del usuario basado en el ID proporcionado.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Perfil encontrado", content = {
@@ -236,6 +254,27 @@ public class UsuarioController {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String emailUsuarioAutenticado = authentication.getName();
             Usuario confirmacion = usuarioService.updateUsuario(updates, emailUsuarioAutenticado);
+            return new ApiBaseTransformer(HttpStatus.OK, "OK", confirmacion, null, null).sendResponse();
+        } catch (NumberFormatException ex) {
+            return new ApiBaseTransformer(HttpStatus.BAD_REQUEST,
+                    "Id con formato invalido",
+                    null, null, ex.getMessage()).sendResponse();
+        } catch (Exception ex) {
+            return new ApiBaseTransformer(HttpStatus.BAD_REQUEST, "Error", null, null, ex.getMessage()).sendResponse();
+        }
+    }
+
+    @Operation(summary = "Actualiza los horarios de un usuario.", description = "Actualiza los horarios de un usuario en base a su id y los id "
+            + "de los horarios enviados (todo aquel horario que no se mande se eliminara de la "
+            + "lista de horarios del rol).")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Usuario encontrado", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Usuario.class))),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+    })
+    @PatchMapping("/usuario/private/actualizarHorariosUsuario")
+    public ResponseEntity<?> actualizarHorarios(@RequestBody HorariosUsuarioRequest updates) {
+        try {
+            Usuario confirmacion = usuarioService.actualizarHorariosUsuario(updates);
             return new ApiBaseTransformer(HttpStatus.OK, "OK", confirmacion, null, null).sendResponse();
         } catch (NumberFormatException ex) {
             return new ApiBaseTransformer(HttpStatus.BAD_REQUEST,

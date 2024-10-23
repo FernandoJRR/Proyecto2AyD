@@ -27,7 +27,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.university.models.Usuario;
 import com.university.models.dto.LoginDto;
 import com.university.models.request.PasswordChange;
-import com.university.models.request.PermisoRolRequest;
+import com.university.models.request.HorariosUsuarioRequest;
 import com.university.services.UsuarioService;
 import com.university.transformers.ApiBaseTransformer;
 

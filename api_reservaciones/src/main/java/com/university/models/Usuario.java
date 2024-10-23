@@ -91,6 +91,11 @@ public class Usuario extends Auditor {
     @ColumnDefault("false")
     private boolean twoFactorEnabled;
 
+    @OneToMany(mappedBy = "usuario", orphanRemoval = true)
+    @Cascade(CascadeType.ALL)
+    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
+    private List<HorarioAtencionUsuario> horariosAtencionUsuario;
+
     /**
      * Creacion y modificacion
      *
@@ -152,6 +157,14 @@ public class Usuario extends Auditor {
 
     public void setNit(String nit) {
         this.nit = nit;
+    }
+
+    public String getCui() {
+        return cui;
+    }
+
+    public void setCui(String cui) {
+        this.cui = cui;
     }
 
     public String getPassword() {
@@ -219,6 +232,14 @@ public class Usuario extends Auditor {
 
     public void setTwoFactorEnabled(boolean twoFactorEnabled) {
         this.twoFactorEnabled = twoFactorEnabled;
+    }
+
+    public List<HorarioAtencionUsuario> getHorariosAtencionUsuario() {
+        return horariosAtencionUsuario;
+    }
+
+    public void setHorariosAtencionUsuario(List<HorarioAtencionUsuario> horariosAtencionUsuario) {
+        this.horariosAtencionUsuario = horariosAtencionUsuario;
     }
 
     /**

@@ -45,7 +45,7 @@ import com.university.models.PermisoRol;
 import com.university.models.UsuarioRol;
 import com.university.models.dto.LoginDto;
 import com.university.models.request.PasswordChange;
-import com.university.models.request.PermisoRolRequest;
+import com.university.models.request.HorariosUsuarioRequest;
 import com.university.repositories.UsuarioRepository;
 import com.university.services.authentication.AuthenticationService;
 import com.university.services.authentication.JwtGeneratorService;

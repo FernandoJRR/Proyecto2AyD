@@ -14,7 +14,7 @@ import org.hibernate.annotations.DynamicUpdate;
 @Table(name = "horario_atencion")
 @DynamicUpdate
 public class HorarioAtencion extends Auditor {
-  @Column(name = "hora_inicio", nullable = false)
+    @Column(name = "hora_inicio", nullable = false)
     private LocalTime horaInicio;
 
     @Column(name = "hora_final", nullable = false)

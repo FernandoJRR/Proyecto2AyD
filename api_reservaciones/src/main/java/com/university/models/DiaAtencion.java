@@ -12,21 +12,20 @@ import com.university.enums.DiaSemanaEnum;
 @Table(name = "dia_atencion")
 public class DiaAtencion extends Auditor{
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "nombre", nullable = false, unique = true)
-    private DiaSemanaEnum nombre;
+    private String nombre;
 
     public DiaAtencion() {}
 
-    public DiaAtencion(DiaSemanaEnum nombre) {
+    public DiaAtencion(String nombre) {
         this.nombre = nombre;
     }
 
-    public DiaSemanaEnum getNombre() {
+    public String getNombre() {
         return nombre;
     }
 
-    public void setNombre(DiaSemanaEnum nombre) {
+    public void setNombre(String nombre) {
         this.nombre = nombre;
     }
 }

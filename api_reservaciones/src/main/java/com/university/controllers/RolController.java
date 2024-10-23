@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.university.models.Rol;
 import com.university.models.request.CreateRolDto;
+import com.university.models.request.HorariosUsuarioRequest;
 import com.university.models.request.PermisoRolRequest;
 import com.university.models.request.ServicioRolRequest;
 import com.university.services.RolService;

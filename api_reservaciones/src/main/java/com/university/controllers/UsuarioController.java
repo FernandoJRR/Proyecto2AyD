@@ -19,6 +19,7 @@ import com.university.models.Usuario;
 import com.university.models.dto.LoginDto;
 import com.university.models.request.PasswordChange;
 import com.university.models.request.SendRecoveryMailRequest;
+import com.university.models.request.VerifyUserRequest;
 import com.university.models.request.CreateUsuarioDto;
 import com.university.models.request.HorariosUsuarioRequest;
 import com.university.services.UsuarioService;
@@ -110,16 +111,16 @@ public class UsuarioController {
         }
     }
 
-    @Operation(summary = "Verificar Usuario", description = "Recupera la contraseña del usuario utilizando el código de recuperación y nueva contraseña.")
+    @Operation(summary = "Verificar Usuario", description = "Verifica al usuario utilizando el código de verificacion.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Contraseña recuperada exitosamente", content = {
+            @ApiResponse(responseCode = "200", description = "Usuario verificado exitosamente", content = {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)) }),
             @ApiResponse(responseCode = "400", description = "Solicitud incorrecta")
     })
     @PatchMapping("/usuario/public/verificarUsuario")
-    public ResponseEntity<?> verificarUsuario(@RequestBody String codigoVerificacion) {
+    public ResponseEntity<?> verificarUsuario(@RequestBody VerifyUserRequest verify) {
         try {
-            String respuesta = usuarioService.verificarUsuario(codigoVerificacion);
+            String respuesta = usuarioService.verificarUsuario(verify.getCodigoVerificacion());
             return new ApiBaseTransformer(HttpStatus.OK, "OK", respuesta, null, null).sendResponse();
         } catch (Exception ex) {
             return new ApiBaseTransformer(HttpStatus.BAD_REQUEST, "Error", null, null, ex.getMessage()).sendResponse();

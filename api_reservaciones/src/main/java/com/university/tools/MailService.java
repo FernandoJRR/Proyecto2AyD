@@ -42,7 +42,7 @@ public class MailService {
                         enviarCorreoDeRecuperacion(correo, parametro);
                         break;
                     case 3:
-                        enviarCorreoDeRecuperacion(correo, parametro);
+                        enviarCorreoDeVerificacion(correo, parametro);
                         break;
                 }
             }
@@ -55,6 +55,27 @@ public class MailService {
             Context context = new Context();//crear nuevo contexto
             String url = String.format("http://localhost:%s/password_reset/form?c=%s",
                     appProperties.getHostFront1(), codigoActivacion);
+
+            context.setVariable("url", url);//adjuntar las variables
+            String html = templateEngine.process("CorreoDeRecuperacion", context);
+            //mandamos el correo electronico
+            MimeMessage mimeMessage = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
+            helper.setText(html, true);//adjuntamos el mansaje indicando que sera un html
+            helper.setTo(correo);
+            helper.setSubject("Recuperación de cuenta P1.");
+            helper.setFrom("P1 <namenotfound4004@gmail.com>");
+            mailSender.send(mimeMessage);
+        } catch (MessagingException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private void enviarCorreoDeVerificacion(String correo, String codigoVerificacion) {
+        try {
+            Context context = new Context();//crear nuevo contexto
+            String url = String.format("http://localhost:%s/user_verify/form?c=%s",
+                    appProperties.getHostFront1(), codigoVerificacion);
 
             context.setVariable("url", url);//adjuntar las variables
             String html = templateEngine.process("CorreoDeRecuperacion", context);

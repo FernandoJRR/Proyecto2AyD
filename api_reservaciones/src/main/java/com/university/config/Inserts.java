@@ -148,7 +148,8 @@ public class Inserts implements ApplicationListener<ContextRefreshedEvent> {
                 "12345",
                 null,
                 null,
-                false
+                false,
+                null
             );
             Usuario usuario = new Usuario(
                 "Carlos",
@@ -159,7 +160,8 @@ public class Inserts implements ApplicationListener<ContextRefreshedEvent> {
                 "12345",
                 null,
                 null,
-                false
+                false,
+                null
             );
 
             /*

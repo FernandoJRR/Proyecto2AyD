@@ -1,17 +1,22 @@
-import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+
+import { AppRoutingModule } from './app-routing.module';
+import { AuthModule } from './auth/auth.module';
+//Demas imports de modules principales
 
 import { AppComponent } from './app.component';
-import { AppRoutingModule } from './app.routing.module';  // Asegúrate de importar el módulo de enrutamiento
+
 
 @NgModule({
   declarations: [
-    AppComponent,
-    // Declara aquí cualquier otro componente que utilices
+    AppComponent    
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule  // Importa el módulo de enrutamiento
+    AppRoutingModule,
+    AuthModule,
+    //Demas Modulos principales
   ],
   providers: [],
   bootstrap: [AppComponent]

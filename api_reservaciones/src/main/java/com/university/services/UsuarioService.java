@@ -12,6 +12,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import com.university.models.HorarioAtencionUsuario;
 import com.university.models.Permiso;
 import com.university.models.Rol;
 import com.university.models.Usuario;
@@ -19,7 +20,8 @@ import com.university.models.PermisoRol;
 import com.university.models.UsuarioRol;
 import com.university.models.dto.LoginDto;
 import com.university.models.request.PasswordChange;
-import com.university.models.request.PermisoRolRequest;
+import com.university.models.request.CreateUsuarioDto;
+import com.university.models.request.HorariosUsuarioRequest;
 import com.university.repositories.UsuarioRepository;
 import com.university.repositories.UsuarioRolRepository;
 import com.university.services.authentication.AuthenticationService;
@@ -145,9 +147,9 @@ public class UsuarioService extends com.university.services.Service {
         }
         // Evitar el cambio de contraseña
         usuario.setPassword(usuarioEncontrado.getPassword());
-        //usuario.setFacturas(usuarioEncontrado.getFacturas());
+        // usuario.setFacturas(usuarioEncontrado.getFacturas());
         usuario.setRoles(usuarioEncontrado.getRoles());
-        //usuario.setPermisos(usuarioEncontrado.getPermisos());
+        // usuario.setPermisos(usuarioEncontrado.getPermisos());
         this.validar(usuario);
         Usuario usuarioUpdate = this.usuarioRepository.save(usuario);
         // Verificar si la actualización falló
@@ -180,7 +182,8 @@ public class UsuarioService extends com.university.services.Service {
         // actualizamos en la bd
         Usuario actualizacion = usuarioRepository.save(usuario);
 
-        if (actualizacion.getCodigoRecuperacion() == null || !actualizacion.getCodigoRecuperacion().equals(codigoRecuperacion)) {
+        if (actualizacion.getCodigoRecuperacion() == null
+                || !actualizacion.getCodigoRecuperacion().equals(codigoRecuperacion)) {
             throw new Exception("No hemos podido enviar el correo electrónico. Intentalo más tarde.");
         }
 
@@ -372,27 +375,33 @@ public class UsuarioService extends com.university.services.Service {
     }
 
     /*
-    @Transactional
-    public Usuario crearAyudante(UsuarioAyudanteRequest crear) throws Exception {
-        // validamos
-        this.validar(crear.getUsuario());
-        // traer rol AYUDANTE
-        Rol rol = this.rolService.getRol("AYUDANTE");
-        Usuario usuario = this.guardarUsuario(crear.getUsuario(), rol);
-        // mandamos a guardar todos los permisos para el usuario
-        Usuario actualizarPermisosUsuario = this.actualizarPermisosUsuario(
-                new UsuarioPermisoRequest(usuario.getId(), crear.getPermisos()));
-        return actualizarPermisosUsuario;
-    }
-    */
+     * @Transactional
+     * public Usuario crearAyudante(UsuarioAyudanteRequest crear) throws Exception {
+     * // validamos
+     * this.validar(crear.getUsuario());
+     * // traer rol AYUDANTE
+     * Rol rol = this.rolService.getRol("AYUDANTE");
+     * Usuario usuario = this.guardarUsuario(crear.getUsuario(), rol);
+     * // mandamos a guardar todos los permisos para el usuario
+     * Usuario actualizarPermisosUsuario = this.actualizarPermisosUsuario(
+     * new UsuarioPermisoRequest(usuario.getId(), crear.getPermisos()));
+     * return actualizarPermisosUsuario;
+     * }
+     */
 
     @Transactional
     public Usuario crearAdministrador(Usuario crear) throws Exception {
-        // validamos
-        this.validar(crear);
-        // traer rol AYUDANTE
         Rol rol = this.rolService.getRol("ADMIN");
-        return this.guardarUsuario(crear, rol);
+        List<Rol> rolAdmin = new ArrayList<>();
+        rolAdmin.add(rol);
+        return this.guardarUsuario(crear, rolAdmin);
+    }
+
+    @Transactional
+    public Usuario crearAyudante(CreateUsuarioDto crear) throws Exception {
+        Usuario usuario = crear.getUsuario();
+        List<Rol> roles = crear.getRoles();
+        return this.guardarUsuario(usuario, roles);
     }
 
     /**
@@ -408,7 +417,9 @@ public class UsuarioService extends com.university.services.Service {
         this.validar(crear);
         Rol rol = this.rolService.getRol("USUARIO");
         // guardamos el usuario
-        Usuario userCreado = this.guardarUsuario(crear, rol);
+        List<Rol> rolAdmin = new ArrayList<>();
+        rolAdmin.add(rol);
+        Usuario userCreado = this.guardarUsuario(crear, rolAdmin);
         // Generar el JWT para el usuario creado
         UserDetails userDetails = authenticationService.loadUserByUsername(crear.getEmail());
         String jwt = jwtGenerator.generateToken(userDetails);
@@ -420,14 +431,17 @@ public class UsuarioService extends com.university.services.Service {
     }
 
     @Transactional
-    private Usuario guardarUsuario(Usuario crear, Rol rol) throws Exception {
+    private Usuario guardarUsuario(Usuario crear, List<Rol> roles) throws Exception {
         if (this.usuarioRepository.existsByEmail(crear.getEmail())) {
             throw new Exception("El Email ya existe.");
         }
-        // Asignamos un rol al usuario
-        UsuarioRol usuarioRol = new UsuarioRol(crear, rol);
+
         ArrayList<UsuarioRol> rols = new ArrayList<>();
-        rols.add(usuarioRol);
+        for (Rol rolCreado : roles) {
+            // Asignamos un rol al usuario
+            UsuarioRol usuarioRol = new UsuarioRol(crear, rolCreado);
+            rols.add(usuarioRol);
+        }
         crear.setRoles(rols);
 
         // Encriptar la contraseña
@@ -436,7 +450,6 @@ public class UsuarioService extends com.university.services.Service {
         // Guardar el usuario
         return this.usuarioRepository.save(crear);
     }
-
 
     private boolean verificarUsuarioJwt(Usuario usuarioTratar, String emailUsuarioAutenticado) throws Exception {
         // validar si el usuario tiene permiso de eliminar
@@ -462,5 +475,34 @@ public class UsuarioService extends com.university.services.Service {
         // buscar todos los usuarios por rol
         return this.ignorarEliminados(this.usuarioRolRepository.findUsuariosByRolNombre(
                 rolSearch.getNombre()));
+    }
+
+    /**
+     * Sobreescribir los horarios de un usuario
+     *
+     * @param HorariosUsuarioRequest
+     * @return
+     */
+    @Transactional
+    public Usuario actualizarHorariosUsuario(HorariosUsuarioRequest horariosAtencionUsuario) throws Exception {
+        // Buscamos el usuario en la base de datos
+        Usuario usuario = this.getByEmail(horariosAtencionUsuario.getEmailUsuario());
+
+        List<HorarioAtencionUsuario> horariosNuevos = new ArrayList<>();
+        // por cada permiso que se haya especificado creamos un nuevo permiso
+        for (HorarioAtencionUsuario horarioAtencionUsuario : horariosAtencionUsuario.getHorariosAtencionUsuario()) {
+            horariosNuevos.add(new HorarioAtencionUsuario(horarioAtencionUsuario.getHoraInicio(),
+                    horarioAtencionUsuario.getHoraFinal(), horarioAtencionUsuario.getDiaAtencion(), usuario));
+        }
+
+        if (usuario.getHorariosAtencionUsuario() == null) {
+            usuario.setHorariosAtencionUsuario(horariosNuevos);
+        } else {
+            // asignamos los nuevos permisos al usuario
+            usuario.getHorariosAtencionUsuario().clear();
+            usuario.getHorariosAtencionUsuario().addAll(horariosNuevos);
+        }
+        // Guardamos el usuario
+        return this.usuarioRepository.save(usuario);
     }
 }

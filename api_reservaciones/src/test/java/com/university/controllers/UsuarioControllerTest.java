@@ -27,7 +27,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.university.models.Usuario;
 import com.university.models.dto.LoginDto;
 import com.university.models.request.PasswordChange;
-import com.university.models.request.PermisoRolRequest;
+import com.university.models.request.HorariosUsuarioRequest;
 import com.university.services.UsuarioService;
 import com.university.transformers.ApiBaseTransformer;
 
@@ -67,8 +67,6 @@ public class UsuarioControllerTest {
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())  // Verifica el estado de la respuesta HTTP
             .andReturn();
-        System.out.println("TOTAL");
-        System.out.println(result.getResponse().getContentAsString());
 
         // Convertir la respuesta de String a un objeto JSON
         String jsonResponse = result.getResponse().getContentAsString();

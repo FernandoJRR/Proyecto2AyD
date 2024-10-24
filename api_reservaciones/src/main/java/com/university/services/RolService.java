@@ -15,7 +15,9 @@ import com.university.models.Rol;
 import com.university.models.Servicio;
 import com.university.models.ServicioRol;
 import com.university.models.request.CreateRolDto;
+import com.university.models.request.HorariosUsuarioRequest;
 import com.university.models.request.PermisoRolRequest;
+import com.university.models.request.ServicioRolRequest;
 import com.university.repositories.RolRepository;
 
 @Service
@@ -121,6 +123,37 @@ public class RolService {
     }
 
     /**
+     * Sobreescribir los servicios de un rol
+     *
+     * @param permisoRol
+     * @return
+     */
+    @Transactional
+    public Rol actualizarServiciosRol(ServicioRolRequest rolServicio) throws Exception {
+        // Buscamos el usuario en la base de datos
+        Rol rol = this.getRolById(rolServicio.getIdRol());
+
+        List<ServicioRol> serviciosNuevos = new ArrayList<>();
+        // por cada permiso que se haya especificado creamos un nuevo permiso
+        for (Servicio servicioActual : rolServicio.getServicios()) // Creamos el permiso
+        {
+            serviciosNuevos.add(new ServicioRol(
+                    rol, servicioActual));
+        }
+
+        if (rol.getServicios() == null) {
+            //Si los servicios estan vacios solo se agregan
+            rol.setServicios(serviciosNuevos);
+        } else {
+            //Sino se sobreescriben
+            rol.getServicios().clear();
+            rol.getServicios().addAll(serviciosNuevos);
+        }
+        // Guardamos el usuario
+        return this.rolRepository.save(rol);
+    }
+
+    /**
      * Agregar un permiso a un usuario
      *
      * @param rol
@@ -154,6 +187,44 @@ public class RolService {
         }
         // Agregamos el permiso a la lista de permisos del usuario
         rol.getPermisos().add(usuarioPermiso);
+        // Guardamos el usuario
+        return this.rolRepository.save(rol);
+    }
+
+    /**
+     * Agregar un servicio a un rol
+     *
+     * @param rol
+     * @param servicio
+     * @return
+     */
+    @Transactional
+    public Rol agregarServicioRol(Rol rol, Servicio servicio) throws Exception {
+        if (!this.rolRepository.existsById(rol.getId())) {
+            throw new IllegalArgumentException("El rol no existe.");
+        }
+        // Buscamos el usuario en la base de datos
+        Optional<Rol> busquedaRol = rolRepository.findById(rol.getId());
+        if (busquedaRol.isEmpty()) {
+            throw new Exception("No hemos encontrado el rol.");
+        }
+        // Verificamos que el usuario no haya sido eliminado
+        if (busquedaRol.get().getDeletedAt() != null) {
+            throw new Exception("Rol ya ha sido eliminado.");
+        }
+        Rol rolEncontrado = busquedaRol.get();
+        // Creamos el permiso
+        ServicioRol usuarioServicio = new ServicioRol(rolEncontrado, servicio);
+        rol.keepOrphanRemoval(rolEncontrado);
+        if (rol.getServicios() == null) {
+            rol.setServicios(new ArrayList<>());
+        }
+        // Verificamos si el permiso ya existe
+        if (rol.getServicios().stream().anyMatch(p -> p.getServicio().getId().equals(servicio.getId()))) {
+            throw new IllegalArgumentException("El servicio ya ha sido asignado al usuario.");
+        }
+        // Agregamos el permiso a la lista de permisos del usuario
+        rol.getServicios().add(usuarioServicio);
         // Guardamos el usuario
         return this.rolRepository.save(rol);
     }

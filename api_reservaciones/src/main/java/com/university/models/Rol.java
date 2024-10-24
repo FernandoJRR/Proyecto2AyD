@@ -5,6 +5,7 @@ import java.util.List;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -40,7 +41,7 @@ public class Rol extends Auditor {
 
     @OneToMany(mappedBy = "rol", orphanRemoval = true)
     @Cascade(CascadeType.ALL)
-    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
+    @JsonManagedReference
     private List<ServicioRol> servicios;
 
     public Rol(String nombre) {

@@ -10,13 +10,16 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
+import com.university.enums.DiaSemanaEnum;
 import com.university.enums.PermisoEnum;
 import com.university.models.ConfiguracionGlobal;
+import com.university.models.DiaAtencion;
 import com.university.models.Permiso;
 import com.university.models.Rol;
 import com.university.models.TipoServicio;
 import com.university.models.Usuario;
 import com.university.repositories.ConfiguracionGlobalRepository;
+import com.university.repositories.DiaAtencionRepository;
 import com.university.repositories.PermisoRepository;
 import com.university.repositories.RolRepository;
 import com.university.repositories.TipoServicioRepository;
@@ -31,6 +34,8 @@ public class Inserts implements ApplicationListener<ContextRefreshedEvent> {
     private RolRepository rolRepository;
     @Autowired
     private PermisoRepository permisoRepository;
+    @Autowired
+    private DiaAtencionRepository diaAtencionRepository;
     @Autowired
     private TipoServicioRepository tipoServicioRepository;
     @Autowired
@@ -75,6 +80,19 @@ public class Inserts implements ApplicationListener<ContextRefreshedEvent> {
                 return opPermiso.get();
             }
             return this.permisoRepository.save(permiso);
+        } catch (Exception e) {
+            System.out.println(e);
+            throw new Exception("Error");
+        }
+    }
+
+    public DiaAtencion insertarDiaAtencion(DiaAtencion diaAtencion) throws Exception {
+        try {
+            Optional<DiaAtencion> opDiaAtencion = this.diaAtencionRepository.findOneByNombre(diaAtencion.getNombre().toString());
+            if (opDiaAtencion.isPresent()) {
+                return opDiaAtencion.get();
+            }
+            return this.diaAtencionRepository.save(diaAtencion);
         } catch (Exception e) {
             System.out.println(e);
             throw new Exception("Error");
@@ -178,6 +196,15 @@ public class Inserts implements ApplicationListener<ContextRefreshedEvent> {
                         System.out.println(e);
                     }
                 }
+            }
+
+            for (DiaSemanaEnum diaSemana : DiaSemanaEnum.values()) {
+                //Se crea el dia si no existe
+                this.insertarDiaAtencion(
+                    new DiaAtencion(
+                        diaSemana.getNombre()
+                    )
+                );
             }
 
         } catch (Exception ex) {

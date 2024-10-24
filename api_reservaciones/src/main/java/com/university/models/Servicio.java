@@ -5,7 +5,10 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -16,6 +19,8 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 
@@ -44,10 +49,46 @@ public class Servicio extends Auditor {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Negocio negocio;
 
+    @OneToOne(mappedBy = "servicio", orphanRemoval = true)
+    @Cascade(CascadeType.ALL)
+    private DuracionServicio duracionServicio;
+
     @OneToMany(mappedBy = "servicio", orphanRemoval = true)
     @Cascade(CascadeType.ALL)
     @Schema(accessMode = Schema.AccessMode.READ_ONLY)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private List<ServicioRol> roles;
+
+    @Column(name = "costo", length = 250)
+    @NotBlank(message = "El costo del servicio no puede ser vacio.")
+    @NotNull(message = "El costo del servicio no puede ser nulo.")
+    @Min(value = 0, message = "El costo del servicio no puede ser negativo.")
+    private Float costo;
+
+    @Column(name = "dias_cancelacion")
+    @NotBlank(message = "Los dias maximos de cancelacion del servicio no puede ser vacio.")
+    @NotNull(message = "Los dias maximos de cancelacion del servicio no puede ser nulo.")
+    @Min(value = 0, message = "Los dias maximos de cancelacion del servicio no puede ser negativo.")
+    private Integer dias_cancelacion;
+
+    @Column(name = "porcentaje_reembolso")
+    @NotBlank(message = "El porcentaje de reembolso del servicio no puede ser vacio.")
+    @NotNull(message = "El porcentaje de reembolso del servicio no puede ser nulo.")
+    @Min(value = 0, message = "El porcentaje de reembolso del servicio no puede ser negativo.")
+    @Max(value = 100, message = "El porcentaje de reembolso del servicio no puede ser mayor al 100%.")
+    private Float porcentaje_reembolso;
+
+    @OneToMany(mappedBy = "servicio", orphanRemoval = true)
+    @Cascade(CascadeType.ALL)
+    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
+    private List<HorarioAtencionServicio> horariosAtencionServicios;
+
+    @Column(name = "trabajadores_simultaneos")
+    @NotBlank(message = "El numero de trabajadores simultaneos del servicio no puede ser vacio.")
+    @NotNull(message = "El numero de trabajadores simultaneos del servicio no puede ser nulo.")
+    @Min(value = 0, message = "El numero de trabajadores simultaneos del servicio no puede ser negativo.")
+    @Max(value = 100, message = "El numero de trabajadores simultaneos del servicio no puede ser mayor al 100%.")
+    private Integer trabajadores_simultaneos;
 
     public Servicio(Long id) {
         super(id);
@@ -57,6 +98,12 @@ public class Servicio extends Auditor {
         this.nombre = nombre;
         this.tipoServicio = tipoServicio;
         this.recurso = recurso;
+        this.negocio = negocio;
+    }
+
+    public Servicio(String nombre, TipoServicio tipoServicio, Negocio negocio) {
+        this.nombre = nombre;
+        this.tipoServicio = tipoServicio;
         this.negocio = negocio;
     }
 
@@ -95,11 +142,35 @@ public class Servicio extends Auditor {
         this.tipoServicio = tipoServicio;
     }
 
+    public DuracionServicio getDuracionServicio() {
+        return duracionServicio;
+    }
+
+    public void setDuracionServicio(DuracionServicio duracionServicio) {
+        this.duracionServicio = duracionServicio;
+    }
+
     public List<ServicioRol> getRoles() {
         return roles;
     }
 
     public void setRoles(List<ServicioRol> roles) {
         this.roles = roles;
+    }
+
+    public List<HorarioAtencionServicio> getHorariosAtencionServicios() {
+        return horariosAtencionServicios;
+    }
+
+    public void setHorariosAtencionServicios(List<HorarioAtencionServicio> horariosAtencionServicios) {
+        this.horariosAtencionServicios = horariosAtencionServicios;
+    }
+
+    public Integer getTrabajadores_simultaneos() {
+        return trabajadores_simultaneos;
+    }
+
+    public void setTrabajadores_simultaneos(Integer trabajadores_simultaneos) {
+        this.trabajadores_simultaneos = trabajadores_simultaneos;
     }
 }

@@ -1,11 +1,11 @@
 <div class="content-container">
-  <h2 class="text-center mb-4">Gestión de Permisos</h2>
+  <h3 class="text-center mb-4">Gestión de Permisos</h3>
 
   <mat-form-field appearance="outline" class="w-full mb-4">
     <mat-label>Buscar</mat-label>
     <mat-icon matPrefix>search</mat-icon>
     <input matInput (keyup)="applyFilter($event)" placeholder="Buscar permisos">
-  </mat-form-field>
+  </mat-form-field>  
 
   <!-- Contenedor de la tabla para aplicar los estilos -->
   <div class="table-container">
@@ -47,4 +47,3 @@
     </table>
     <mat-paginator [pageSizeOptions]="[5, 10, 25]" showFirstLastButtons></mat-paginator>
   </div>
-  

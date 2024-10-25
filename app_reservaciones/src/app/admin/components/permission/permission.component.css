@@ -1,134 +1,89 @@
-.sidenav-container {
-    height: 100%;
+.content-container {
+  padding: 5%;
+}
+
+/* Ajuste del campo de búsqueda */
+.mat-mdc-form-field {
+  display: inline-flex;
+  width: 30%; /* Ajuste dinámico del tamaño */
+}
+
+.mat-mdc-form-field.mat-form-field-appearance-outline .mat-mdc-form-field-wrapper {
+  padding: 0 12px; /* Ajuste del padding para mantener el diseño limpio */
+}
+
+/* Responsividad del input y tamaño de texto */
+@media screen and (max-width: 1200px) {
+  .mat-mdc-form-field {
+    width: 30%;
   }
-  
-  .sidenav {
-    width: 250px;
-    background-color: #1a202c;
+}
+
+@media screen and (max-width: 768px) {
+  .mat-mdc-form-field {
+    width: 40%;
   }
-  
-  .menu-text {
-    font-size: 20px;
-    font-weight: bold;
-    color: white;
+}
+
+@media screen and (max-width: 425px) {
+  .mat-mdc-form-field {
+    width: 60%;
   }
-  
-  .mat-icon {
-    margin-right: 8px;
+}
+
+/* Estilo del título para que sea más negrita en pantallas pequeñas */
+h3 {
+  font-weight: 700; /* Refuerza el peso del texto */
+}
+
+@media screen and (max-width: 768px) {
+  h3 {
+    font-size: 1.4rem; /* Ajusta el tamaño del título en pantallas pequeñas */
+    font-weight: 800;
   }
-  
-  /* Cambiar el color de los iconos a blanco */
-  .mat-nav-list mat-icon {
-    color: white;
-    margin-right: 10px;
+}
+
+/* Contenedor de la tabla CON EL BORDE ORIGINAL */
+.table-container {
+  border: 2px solid #3498db;
+  border-radius: 4px;
+  padding: -1px; /* Mantén el padding mínimo para ajustarlo a la tabla */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: white;
+  /* width: 100%; */
+  width: max-content;
+}
+
+/* Estilo del encabezado */
+.mat-mdc-header-row {
+  background-color: #3498db;
+  color: white;
+  font-weight: bold;
+}
+
+/* Estilos para filas y hover */
+.mat-mdc-row:hover {
+  background-color: #d1ecf1;
+}
+
+.mat-mdc-row:nth-child(2n) {
+  background-color: #f9f9f9;
+}
+
+.mat-mdc-row:nth-child(2n):hover {
+  background-color: #b0d4e1;
+}
+
+/* Paginador sin bordes redondeados */
+.mat-paginator {
+  border-radius: 0;
+  margin-top: 16px;
+}
+
+@media screen and (max-width: 425px) {
+  .table-container {
+    width: min-content;
+    /* width: 100%; */
+    /* Asegura que el contenedor abarque todo el ancho (ANTES TENIA ESTO PERO EL TABLE-CONTAINER NO ABARCABA TODA LA TABLA EN MOVILES) */
   }
-  
-  /* Ajustar el fondo del sidebar a blanco */
-  .sidenav {
-    width: 250px;
-    background-color: white;
-    color: black;
-  }
-  
-  /* Cambiar el color de los enlaces en el sidebar a negro */
-  .mat-nav-list a {
-    color: black;
-    display: flex;
-    align-items: center;
-  }
-  
-  .spacer {
-    flex: 1 1 auto;
-  }
-  
-  .close-btn {
-    position: absolute;
-    right: 10px;
-    color: white;
-  }
-  
-  .mat-drawer-content {
-    display: grid;
-    height: auto;
-  }
-  
-  .mat-toolbar {
-    justify-content: space-between;
-    background-color: #1e88e5;
-  }
-  
-  .toolbar {
-    height: 64px;
-  }
-  
-  .toolbar-title {
-    font-size: 24px;
-    font-weight: bold;
-  }
-  
-  .content-container {
-    padding: 20px;
-    padding-left: 30px;
-    padding-right: 30px;
-  }
-  
-  /* Cambia el color de fondo del botón activo */
-  .active {
-    background-color: #3f51b5;
-    color: white;
-  }
-  
-  /* Alinear iconos con el texto */
-  .nav-icon {
-    vertical-align: middle;
-    margin-right: 12px;
-  }
-  
-  /* Asegurarse de que los enlaces en el sidebar estén alineados correctamente */
-  .mat-nav-list a {
-    display: flex;
-    align-items: center;
-    padding: 12px;
-    color: black;
-    font-size: 16px;
-    text-decoration: none;
-  }
-  
-  .mat-toolbar button {
-    color: white;
-  }
-  
-  @media screen and (max-width: 768px) {
-    .mat-drawer-content {
-      display: grid;
-    }
-  }
-  
-  @media (max-width: 600px) {
-    .mat-toolbar {
-      padding: 0 8px;
-    }
-  
-    .sidenav {
-      width: 200px;
-    }
-  
-    .nav-text {
-      font-size: 14px;
-    }
-  }
-  
-  @media (max-width: 320px) {
-    .mat-toolbar {
-      padding: 0 5px;
-    }
-  
-    .sidenav {
-      width: 180px;
-    }
-  
-    .menu-text {
-      font-size: 16px;
-    }
-  }
-  
+}

@@ -13,7 +13,8 @@
   color: white;
   margin-left: 60px; /* Ajusta este valor según sea necesario */
   display: flex;
-  align-items: center;}
+  align-items: center;
+}
 
 .mat-icon {
   margin-right: 8px;
@@ -51,8 +52,8 @@
 
 /* Asegúrate de que el contenido sea desplazable verticalmente */
 .mat-drawer-content {
-  display: flex;
-  flex-direction: column;
+  /* display: inline-block; */
+  /* flex-direction: column; */
   height: 100%; /* Ajusta la altura para ocupar toda la pantalla */
   overflow-y: auto; /* Permite el desplazamiento vertical */
 }
@@ -75,7 +76,7 @@
 
 .content-container {
   flex-grow: 1; /* Asegura que el contenido ocupe el espacio disponible */
-  padding: 20px;
+  padding: 2%;
 }
 
 /* Cambia el color de fondo del botón activo */
@@ -105,14 +106,20 @@
 }
 
 @media screen and (max-width: 768px) {
-  .mat-drawer-content {
-    display: grid;
+  .mat-toolbar {
+    padding: 0 8px;
+    width: 120%;
   }
 }
 
 @media (max-width: 600px) {
   .mat-toolbar {
     padding: 0 8px;
+    width: 120%;
+  }
+
+  .toolbar-title {
+    font-size: 35px;
   }
 
   .sidenav {
@@ -127,6 +134,11 @@
 @media (max-width: 320px) {
   .mat-toolbar {
     padding: 0 5px;
+    width: 140%
+  }
+
+  .toolbar-title {
+    font-size: 30px;
   }
 
   .sidenav {
@@ -136,4 +148,6 @@
   .menu-text {
     font-size: 16px;
   }
+
+  
 }

@@ -28,8 +28,9 @@ public class UnidadRecurso extends Auditor {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Recurso recurso;
 
-    public UnidadRecurso(String nombre) {
+    public UnidadRecurso(String nombre, Recurso recurso) {
         this.nombre = nombre;
+        this.recurso = recurso;
     }
 
     public UnidadRecurso(Long id) {

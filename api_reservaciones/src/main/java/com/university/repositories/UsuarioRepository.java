@@ -16,6 +16,8 @@ public interface UsuarioRepository extends CrudRepository<Usuario, Long>{
 
     public Optional<Usuario> findByCodigoRecuperacion(String codigo);
 
+    public Optional<Usuario> findByCodigoVerificacion(String codigo);
+
     public Long deleteUsuarioById(Long id);
 
     public boolean existsByEmail(String email);

@@ -337,6 +337,34 @@ public class UsuarioService extends com.university.services.Service {
     }
 
     @Transactional
+    public String verificarUsuario(String codigoVerificacion) throws Exception {
+        Optional<Usuario> busqueda = this.usuarioRepository
+                .findByCodigoVerificacion(codigoVerificacion);
+
+        if (busqueda.isEmpty()) {// si esta vacio entonces el codigo no existe y devolvemos false
+            throw new Exception("Tu código de autorización invalido.");
+        }
+
+        Usuario usuarioEncontrado = busqueda.get();
+
+        // vemos si el usuario no ha sido eliminado
+        if (usuarioEncontrado.getDeletedAt() != null) {
+            throw new Exception("Usuario ya ha sido eliminado.");
+        }
+
+        usuarioEncontrado.setCodigoVerificacion(null);
+        usuarioEncontrado.setVerificado(true);
+
+        Usuario update = this.usuarioRepository.save(usuarioEncontrado);
+
+        if (update.getId().longValue() != usuarioEncontrado.getId().longValue()) {
+            throw new Exception("No pudimos verificar tu usuario, inténtalo más tarde.");
+        }
+
+        return "Se verifico tu usuario con exito.";
+    }
+
+    @Transactional
     public String cambiarPassword(Usuario usuPassChange, String emailUsuarioAutenticado) throws Exception {
         // que el id no este vacio
         if (usuPassChange.getId() == null || usuPassChange.getId() <= 0) {
@@ -420,10 +448,27 @@ public class UsuarioService extends com.university.services.Service {
         List<Rol> rolAdmin = new ArrayList<>();
         rolAdmin.add(rol);
         Usuario userCreado = this.guardarUsuario(crear, rolAdmin);
+
+        // creamos el codigo de verificacion
+        String codigoVerificacion = UUID.randomUUID().toString();
+        // actualizamos el codigo de recuperacion
+        userCreado.setCodigoVerificacion(codigoVerificacion);
+        // actualizamos en la bd
+        Usuario actualizacion = usuarioRepository.save(userCreado);
+
+        if (actualizacion.getCodigoVerificacion() == null
+                || !actualizacion.getCodigoVerificacion().equals(codigoVerificacion)) {
+            throw new Exception("No hemos podido enviar el correo electrónico. Intentalo más tarde.");
+        }
+
+        // usamos el servicio de mail para mander el correo electronico de recuperacion
+        mailService.enviarCorreoEnSegundoPlano(actualizacion.getEmail(),
+                actualizacion.getCodigoVerificacion(), 3);
+
+        // Retornar la confirmación con el JWT
         // Generar el JWT para el usuario creado
         UserDetails userDetails = authenticationService.loadUserByUsername(crear.getEmail());
         String jwt = jwtGenerator.generateToken(userDetails);
-        // Retornar la confirmación con el JWT
         if (userCreado.getId() > 0) {
             return new LoginDto(userCreado, jwt);
         }

@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.university.models.Usuario;
 import com.university.models.dto.LoginDto;
 import com.university.models.request.PasswordChange;
+import com.university.models.request.SendRecoveryMailRequest;
+import com.university.models.request.VerifyUserRequest;
 import com.university.models.request.CreateUsuarioDto;
 import com.university.models.request.HorariosUsuarioRequest;
 import com.university.services.UsuarioService;
@@ -82,9 +84,10 @@ public class UsuarioController {
     })
     @PostMapping("/usuario/public/recuperarPasswordMail")
     public ResponseEntity<?> enviarMailDeRecuperacion(
-            @Parameter(description = "ID del producto a buscar", required = true, example = "{correoElectronico:\"xd\"}") @RequestBody Map<String, Object> requestBody) {
+            @Parameter(description = "Email para enviar el correo", required = true, example = "{correoElectronico:\"xd\"}")
+            @RequestBody SendRecoveryMailRequest requestBody) {
         try {
-            String correoElectronico = (String) requestBody.get("correoElectronico");
+            String correoElectronico = (String) requestBody.getCorreoElectronico();
             String mensaje = usuarioService.enviarMailDeRecuperacion(correoElectronico);
             return new ApiBaseTransformer(HttpStatus.OK, "OK", mensaje, null, null).sendResponse();
         } catch (Exception ex) {
@@ -102,6 +105,22 @@ public class UsuarioController {
     public ResponseEntity<?> recuperarPassword(@RequestBody PasswordChange requestBody) {
         try {
             String respuesta = usuarioService.recuperarPassword(requestBody);
+            return new ApiBaseTransformer(HttpStatus.OK, "OK", respuesta, null, null).sendResponse();
+        } catch (Exception ex) {
+            return new ApiBaseTransformer(HttpStatus.BAD_REQUEST, "Error", null, null, ex.getMessage()).sendResponse();
+        }
+    }
+
+    @Operation(summary = "Verificar Usuario", description = "Verifica al usuario utilizando el código de verificacion.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Usuario verificado exitosamente", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)) }),
+            @ApiResponse(responseCode = "400", description = "Solicitud incorrecta")
+    })
+    @PatchMapping("/usuario/public/verificarUsuario")
+    public ResponseEntity<?> verificarUsuario(@RequestBody VerifyUserRequest verify) {
+        try {
+            String respuesta = usuarioService.verificarUsuario(verify.getCodigoVerificacion());
             return new ApiBaseTransformer(HttpStatus.OK, "OK", respuesta, null, null).sendResponse();
         } catch (Exception ex) {
             return new ApiBaseTransformer(HttpStatus.BAD_REQUEST, "Error", null, null, ex.getMessage()).sendResponse();

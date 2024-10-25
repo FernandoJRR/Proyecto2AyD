@@ -60,10 +60,29 @@ public class Usuario extends Auditor {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Schema(hidden = true)
     private String codigoActivacion;
+
     @Column(name = "codigo_recuperacion", columnDefinition = "LONGTEXT")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Schema(hidden = true)
     private String codigoRecuperacion;
+
+    @Column(name = "codigo_verificacion", columnDefinition = "LONGTEXT")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @Schema(hidden = true)
+    private String codigoVerificacion;
+
+    @Column(name = "verificado")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @Schema(hidden = true)
+    @ColumnDefault("false")
+    private boolean verificado;
+
+    @Column(name = "telefono", length = 50, unique = true)
+    @NotBlank(message = "El telefono del cliente no puede estar vacía.")
+    @NotNull(message = "El telefono del cliente no puede ser nula.")
+    @Size(min = 1, max = 50, message = "El telefono del cliente debe tener entre 1 y 50 caracteres.")
+    private String telefono;
+
     @Column(name = "estado_activacion", nullable = false)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Schema(hidden = true)
@@ -108,7 +127,7 @@ public class Usuario extends Auditor {
      * @param password
      */
     public Usuario(String nombres, String apellidos, String email, String nit, String cui, String password, String codigoActivacion,
-            String codigoRecuperacion, boolean estadoActivacion) {
+            String codigoRecuperacion, boolean estadoActivacion, String codigoVerificacion) {
         this.nombres = nombres;
         this.apellidos = apellidos;
         this.email = email;
@@ -117,6 +136,7 @@ public class Usuario extends Auditor {
         this.password = password;
         this.codigoActivacion = codigoActivacion;
         this.codigoRecuperacion = codigoRecuperacion;
+        this.codigoVerificacion = codigoVerificacion;
         this.estadoActivacion = estadoActivacion;
     }
 
@@ -189,6 +209,22 @@ public class Usuario extends Auditor {
 
     public void setCodigoRecuperacion(String codigoRecuperacion) {
         this.codigoRecuperacion = codigoRecuperacion;
+    }
+
+    public String getCodigoVerificacion() {
+        return codigoVerificacion;
+    }
+
+    public void setCodigoVerificacion(String codigoVerificacion) {
+        this.codigoVerificacion = codigoVerificacion;
+    }
+
+    public boolean getVerificado() {
+        return verificado;
+    }
+
+    public void setVerificado(boolean verificado) {
+        this.verificado = verificado;
     }
 
     public boolean isEstadoActivacion() {

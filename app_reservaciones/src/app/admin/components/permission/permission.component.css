@@ -1,0 +1,134 @@
+.sidenav-container {
+    height: 100%;
+  }
+  
+  .sidenav {
+    width: 250px;
+    background-color: #1a202c;
+  }
+  
+  .menu-text {
+    font-size: 20px;
+    font-weight: bold;
+    color: white;
+  }
+  
+  .mat-icon {
+    margin-right: 8px;
+  }
+  
+  /* Cambiar el color de los iconos a blanco */
+  .mat-nav-list mat-icon {
+    color: white;
+    margin-right: 10px;
+  }
+  
+  /* Ajustar el fondo del sidebar a blanco */
+  .sidenav {
+    width: 250px;
+    background-color: white;
+    color: black;
+  }
+  
+  /* Cambiar el color de los enlaces en el sidebar a negro */
+  .mat-nav-list a {
+    color: black;
+    display: flex;
+    align-items: center;
+  }
+  
+  .spacer {
+    flex: 1 1 auto;
+  }
+  
+  .close-btn {
+    position: absolute;
+    right: 10px;
+    color: white;
+  }
+  
+  .mat-drawer-content {
+    display: grid;
+    height: auto;
+  }
+  
+  .mat-toolbar {
+    justify-content: space-between;
+    background-color: #1e88e5;
+  }
+  
+  .toolbar {
+    height: 64px;
+  }
+  
+  .toolbar-title {
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+  .content-container {
+    padding: 20px;
+    padding-left: 30px;
+    padding-right: 30px;
+  }
+  
+  /* Cambia el color de fondo del botón activo */
+  .active {
+    background-color: #3f51b5;
+    color: white;
+  }
+  
+  /* Alinear iconos con el texto */
+  .nav-icon {
+    vertical-align: middle;
+    margin-right: 12px;
+  }
+  
+  /* Asegurarse de que los enlaces en el sidebar estén alineados correctamente */
+  .mat-nav-list a {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    color: black;
+    font-size: 16px;
+    text-decoration: none;
+  }
+  
+  .mat-toolbar button {
+    color: white;
+  }
+  
+  @media screen and (max-width: 768px) {
+    .mat-drawer-content {
+      display: grid;
+    }
+  }
+  
+  @media (max-width: 600px) {
+    .mat-toolbar {
+      padding: 0 8px;
+    }
+  
+    .sidenav {
+      width: 200px;
+    }
+  
+    .nav-text {
+      font-size: 14px;
+    }
+  }
+  
+  @media (max-width: 320px) {
+    .mat-toolbar {
+      padding: 0 5px;
+    }
+  
+    .sidenav {
+      width: 180px;
+    }
+  
+    .menu-text {
+      font-size: 16px;
+    }
+  }
+  

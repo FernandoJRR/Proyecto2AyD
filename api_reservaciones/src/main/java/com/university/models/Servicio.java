@@ -90,15 +90,27 @@ public class Servicio extends Auditor {
     @Max(value = 100, message = "El numero de trabajadores simultaneos del servicio no puede ser mayor al 100%.")
     private Integer trabajadores_simultaneos;
 
+    @Column(name = "asignacion_automatica")
+    @NotBlank(message = "La asignacion de trabajadores del servicio no puede ser vacio.")
+    @NotNull(message = "La asignacion de trabajadores del servicio no puede ser nulo.")
+    private boolean asignacion_automatica;
+
     public Servicio(Long id) {
         super(id);
     }
 
-    public Servicio(String nombre, TipoServicio tipoServicio, Recurso recurso, Negocio negocio) {
+    public Servicio(String nombre, TipoServicio tipoServicio, Recurso recurso, Negocio negocio, float costo,
+            Integer dias_cancelacion, float porcentaje_reembolso, Integer trabajadores_simultaneos,
+            boolean asignacion_automatica) {
         this.nombre = nombre;
         this.tipoServicio = tipoServicio;
         this.recurso = recurso;
         this.negocio = negocio;
+        this.costo = costo;
+        this.dias_cancelacion = dias_cancelacion;
+        this.porcentaje_reembolso = porcentaje_reembolso;
+        this.trabajadores_simultaneos = trabajadores_simultaneos;
+        this.asignacion_automatica = asignacion_automatica;
     }
 
     public Servicio(String nombre, TipoServicio tipoServicio, Negocio negocio) {

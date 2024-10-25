@@ -77,6 +77,12 @@ public class Usuario extends Auditor {
     @ColumnDefault("false")
     private boolean verificado;
 
+    @Column(name = "telefono", length = 50, unique = true)
+    @NotBlank(message = "El telefono del cliente no puede estar vacía.")
+    @NotNull(message = "El telefono del cliente no puede ser nula.")
+    @Size(min = 1, max = 50, message = "El telefono del cliente debe tener entre 1 y 50 caracteres.")
+    private String telefono;
+
     @Column(name = "estado_activacion", nullable = false)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Schema(hidden = true)

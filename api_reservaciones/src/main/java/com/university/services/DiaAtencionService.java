@@ -15,11 +15,12 @@ public class DiaAtencionService {
     private DiaAtencionRepository diaAtencionRepository;
 
     /**
-     * Devuelve todas los permisos
+     * Devuelve todas los dias atencion
      *
      * @return
      */
     public List<DiaAtencion> getDiasAntecion() {
         return this.diaAtencionRepository.findAll();
     }
+
 }

@@ -1,7 +1,5 @@
 package com.university.models;
 
-import java.math.BigDecimal;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -25,12 +23,12 @@ public class Pago extends Auditor {
     private String numero;
 
     @Column(name = "monto", nullable = false, precision = 10, scale = 2)
-    private BigDecimal monto;
+    private Float monto;
 
     public Pago() {
     }
 
-    public Pago(MetodoPago metodoPago, String numero, BigDecimal monto) {
+    public Pago(MetodoPago metodoPago, String numero, Float monto) {
         this.metodoPago = metodoPago;
         this.numero = numero;
         this.monto = monto;
@@ -52,11 +50,11 @@ public class Pago extends Auditor {
         this.numero = numero;
     }
 
-    public BigDecimal getMonto() {
+    public Float getMonto() {
         return monto;
     }
 
-    public void setMonto(BigDecimal monto) {
+    public void setMonto(Float monto) {
         this.monto = monto;
     }
 }

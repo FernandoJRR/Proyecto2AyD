@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.university.models.EstadoReservacion;
+import com.university.models.MetodoPago;
 import com.university.services.EstadoReservacionService;
+import com.university.services.MetodoPagoService;
 import com.university.transformers.ApiBaseTransformer;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -30,6 +32,8 @@ public class ReservacionController {
 
     @Autowired
     private EstadoReservacionService estadoReservacionService;
+    @Autowired
+    private MetodoPagoService metodoPagoService;
 
     @Operation(summary = "Obtener todos los estados de reservacion", description = "Obtiene la información de todos los estados de reservacion.")
     @ApiResponses(value = {
@@ -37,10 +41,26 @@ public class ReservacionController {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = EstadoReservacion.class)) }),
             @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
-    @GetMapping("/reservaciones/public/getEstadosReservacion")
+    @GetMapping("/reservacion/public/getEstadosReservacion")
     public ResponseEntity<?> getEstadosReservacion() {
         try {
             List<EstadoReservacion> data = estadoReservacionService.getEstadosReservacion();
+            return new ApiBaseTransformer(HttpStatus.OK, "OK", data, null, null).sendResponse();
+        } catch (Exception ex) {
+            return new ApiBaseTransformer(HttpStatus.BAD_REQUEST, "Error", null, null, ex.getMessage()).sendResponse();
+        }
+    }
+
+    @Operation(summary = "Obtener todos los metodos de pago", description = "Obtiene la información de todos los metodos de pago.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Metodos encontrados", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = EstadoReservacion.class)) }),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+    })
+    @GetMapping("/reservacion/public/getMetodosPago")
+    public ResponseEntity<?> getMetodosPago() {
+        try {
+            List<MetodoPago> data = metodoPagoService.getMetodosPago();
             return new ApiBaseTransformer(HttpStatus.OK, "OK", data, null, null).sendResponse();
         } catch (Exception ex) {
             return new ApiBaseTransformer(HttpStatus.BAD_REQUEST, "Error", null, null, ex.getMessage()).sendResponse();

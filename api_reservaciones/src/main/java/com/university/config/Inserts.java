@@ -12,11 +12,15 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
 import com.university.enums.DiaSemanaEnum;
+import com.university.enums.EstadoReservacionEnum;
+import com.university.enums.MetodoPagoEnum;
 import com.university.enums.PermisoEnum;
 import com.university.models.ConfiguracionGlobal;
 import com.university.models.DiaAtencion;
 import com.university.models.DuracionServicio;
+import com.university.models.EstadoReservacion;
 import com.university.models.HorarioAtencionServicio;
+import com.university.models.MetodoPago;
 import com.university.models.Negocio;
 import com.university.models.Permiso;
 import com.university.models.Recurso;
@@ -28,6 +32,8 @@ import com.university.models.Usuario;
 import com.university.models.request.CreateServicioDto;
 import com.university.repositories.ConfiguracionGlobalRepository;
 import com.university.repositories.DiaAtencionRepository;
+import com.university.repositories.EstadoReservacionRepository;
+import com.university.repositories.MetodoPagoRepository;
 import com.university.repositories.NegocioRepository;
 import com.university.repositories.PermisoRepository;
 import com.university.repositories.RecursoRepository;
@@ -72,6 +78,10 @@ public class Inserts implements ApplicationListener<ContextRefreshedEvent> {
     private RecursoRepository recursoRepository;
     @Autowired
     private UnidadRecursoRepository unidadRecursoRepository;
+    @Autowired
+    private EstadoReservacionRepository estadoReservacionRepository;
+    @Autowired
+    private MetodoPagoRepository metodoPagoRepository;
 
     public Negocio insertarNegocio(Negocio negocio) throws Exception {
         try {
@@ -179,6 +189,34 @@ public class Inserts implements ApplicationListener<ContextRefreshedEvent> {
         }
     }
 
+    public EstadoReservacion insertarEstadoReservacion(EstadoReservacion estadoReservacion) throws Exception {
+        try {
+            Optional<EstadoReservacion> opEstadoReservacion = this.estadoReservacionRepository
+                    .findOneByNombre(estadoReservacion.getNombre().toString());
+            if (opEstadoReservacion.isPresent()) {
+                return opEstadoReservacion.get();
+            }
+            return this.estadoReservacionRepository.save(estadoReservacion);
+        } catch (Exception e) {
+            System.out.println(e);
+            throw new Exception("Error");
+        }
+    }
+
+    public MetodoPago insertarMetodoPago(MetodoPago metodoPago) throws Exception {
+        try {
+            Optional<MetodoPago> opMetodoPago = this.metodoPagoRepository
+                    .findOneByNombre(metodoPago.getNombre().toString());
+            if (opMetodoPago.isPresent()) {
+                return opMetodoPago.get();
+            }
+            return this.metodoPagoRepository.save(metodoPago);
+        } catch (Exception e) {
+            System.out.println(e);
+            throw new Exception("Error");
+        }
+    }
+
     public ConfiguracionGlobal insertarConfiguracionGlobal(ConfiguracionGlobal config) throws Exception {
         try {
             ConfiguracionGlobal conf = this.configuracionGlobalRepository.findFirstByOrderByIdAsc().orElse(null);
@@ -210,6 +248,22 @@ public class Inserts implements ApplicationListener<ContextRefreshedEvent> {
                 this.insertarDiaAtencion(
                         new DiaAtencion(
                                 diaSemana.getNombre()));
+            }
+
+            //Estados Reservacion
+            for (EstadoReservacionEnum estadoReservacion : EstadoReservacionEnum.values()) {
+                // Se crea el dia si no existe
+                this.insertarEstadoReservacion(
+                        new EstadoReservacion(
+                                estadoReservacion.getNombre()));
+            }
+
+            //Metodos Pago
+            for (MetodoPagoEnum metodoPago : MetodoPagoEnum.values()) {
+                // Se crea el dia si no existe
+                this.insertarMetodoPago(
+                        new MetodoPago(
+                                metodoPago.getNombre()));
             }
 
             // Negocios

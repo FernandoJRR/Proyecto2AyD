@@ -2,10 +2,10 @@
 .gray {
   background-color: #f0f0f0;
 }
-.light-red {
+.red {
   background-color: #ffcccc;
 }
-.light-green {
+.green {
   background-color: #ccffcc;
 }
 mat-dialog-content {
@@ -14,4 +14,6 @@ mat-dialog-content {
 }
 mat-dialog-actions button {
   font-weight: bold;
+  background: #3498db;
+  color: white;
 }

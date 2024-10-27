@@ -14,37 +14,65 @@ export class RegisterComponent {
     email: '',
     nit: '',
     cui: '',
+    telefono: '',
     password: '',
     confirmPassword: '',
   };
   hidePassword = true;
   hideConfirmPassword = true;
-  errorMessage = '';
 
   constructor(private authService: AuthService, private router: Router) {}
 
+  // Verifica que los campos obligatorios no estén vacíos
+  allFieldsCompleted(): boolean {
+    return (
+      this.registerData.nombres !== '' &&
+      this.registerData.apellidos !== '' &&
+      this.registerData.email !== '' &&
+      this.registerData.nit !== '' &&
+      this.registerData.cui !== '' &&
+      this.registerData.telefono !== '' &&
+      this.registerData.password !== '' &&
+      this.registerData.confirmPassword !== ''
+    );
+  }
+
   onSubmit() {
-    // Validación de contraseñas coincidentes
-    if (this.registerData.password !== this.registerData.confirmPassword) {
-      this.errorMessage = 'Las contraseñas no coinciden';
+    if (!this.allFieldsCompleted()) {
+      this.authService.openConfirmationDialog(
+        'Campos Incompletos',
+        'Por favor, completa todos los campos obligatorios.',
+        'red'
+      );
       return;
     }
 
-    // Llama al servicio de registro (authService) con los datos
-    this.authService.register(this.registerData).subscribe({
+    if (this.registerData.password !== this.registerData.confirmPassword) {
+      this.authService.openConfirmationDialog(
+        'Contraseñas No Coinciden',
+        'La confirmación de la contraseña debe coincidir con la contraseña.',
+        'red'
+      );
+      return;
+    }
+
+    const { confirmPassword, ...dataToSubmit } = this.registerData;
+
+    this.authService.register(dataToSubmit).subscribe({
       next: () => {
-        // Abre el diálogo de confirmación si el registro es exitoso
         this.authService.openConfirmationDialog(
           'Registro Exitoso',
           'Se ha enviado un correo de confirmación. Por favor, verifica tu cuenta.',
-          'light-green'
+          'green'
         );
-        // Redirige al login tras el cierre del diálogo
         this.router.navigate(['/auth/login']);
       },
       error: () => {
-        // Muestra un mensaje de error si algo sale mal
-        this.errorMessage = 'Error en el registro. Inténtalo de nuevo.';
+        this.authService.openConfirmationDialog(
+          'Error en el Registro',
+          'Hubo un problema con el registro. Por favor, intenta de nuevo.',
+          'red'
+        );
       },
     });
   }

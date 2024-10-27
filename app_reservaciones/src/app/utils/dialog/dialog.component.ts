@@ -5,7 +5,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 interface DialogData {
   title: string;
   description: string;
-  backgroundColor: 'gray' | 'light-red' | 'light-green';
+  backgroundColor: 'gray' | 'red' | 'green';
 }
 
 @Component({

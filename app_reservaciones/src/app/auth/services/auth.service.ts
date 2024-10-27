@@ -27,7 +27,7 @@ export class AuthService {
     return this.http.post(`${this.apiUrl}/recuperarPasswordMail`, { email });  // Endpoint correcto para recuperar contraseña
   }
 
-  openConfirmationDialog(title: string, description: string, backgroundColor: 'gray' | 'light-red' | 'light-green'): void {
+  openConfirmationDialog(title: string, description: string, backgroundColor: 'gray' | 'red' | 'green'): void {
     this.dialog.open(DialogComponent, {
       data: { title, description, backgroundColor }
     });

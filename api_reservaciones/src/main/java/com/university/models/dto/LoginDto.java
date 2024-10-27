@@ -43,6 +43,14 @@ public class LoginDto {
         this.jwt = jwt;
     }
 
+    public boolean isValidated() {
+        return isValidated;
+    }
+
+    public void setValidated(boolean isValidated) {
+        this.isValidated = isValidated;
+    }
+
     public boolean isHasTwoFactorCode() {
         return hasTwoFactorCode;
     }

@@ -78,7 +78,7 @@ public class MailService {
                     appProperties.getHostFront1(), codigoVerificacion);
 
             context.setVariable("url", url);//adjuntar las variables
-            String html = templateEngine.process("CorreoDeRecuperacion", context);
+            String html = templateEngine.process("CorreoDeVerificacion", context);
             //mandamos el correo electronico
             MimeMessage mimeMessage = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");

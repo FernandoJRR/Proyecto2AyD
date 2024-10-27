@@ -20,6 +20,7 @@ import com.university.models.PermisoRol;
 import com.university.models.UsuarioRol;
 import com.university.models.dto.LoginDto;
 import com.university.models.request.PasswordChange;
+import com.university.models.request.TwoFactorActivate;
 import com.university.models.request.CreateUsuarioDto;
 import com.university.models.request.HorariosUsuarioRequest;
 import com.university.repositories.UsuarioRepository;
@@ -237,7 +238,7 @@ public class UsuarioService extends com.university.services.Service {
                 Usuario actualizacion = usuarioRepository.save(usuario);
                 mailService.enviarCorreoEnSegundoPlano(actualizacion.getEmail(), codigoRecuperacion, 1);
             }
-            return new LoginDto(usuario, (usuario.isTwoFactorEnabled() ? null : jwt), usuario.isTwoFactorEnabled());
+            return new LoginDto(usuario, (usuario.isTwoFactorEnabled() ? null : jwt), usuario.isTwoFactorEnabled(), usuario.getVerificado());
         } catch (AuthenticationException ex) {
             throw new Exception(ex.getMessage());
         }
@@ -416,6 +417,31 @@ public class UsuarioService extends com.university.services.Service {
      * return actualizarPermisosUsuario;
      * }
      */
+
+     @Transactional(rollbackOn = Exception.class)
+    public String cambiarTwoFactor(TwoFactorActivate cambio, String usuarioString) throws Exception {
+        this.validar(cambio);// validar objeto
+        Usuario usuario = this.getUsuario(cambio.getId());
+        this.verificarUsuarioJwt(usuario, usuarioString);
+        if (usuario.isTwoFactorEnabled() && cambio.getActivacion()) {
+            throw new Exception("Esto ya esta activado.");
+        }
+
+        if (!usuario.isTwoFactorEnabled() && !cambio.getActivacion()) {
+            throw new Exception("Esto ya esta desactivado.");
+        }
+
+        usuario.setTwoFactorEnabled(cambio.getActivacion());
+        Usuario save = this.usuarioRepository.save(usuario);
+        if (save.getId() > 0) {
+            if (save.isTwoFactorEnabled()) {
+                return "Se activo el two factor con exito";
+            } else {
+                return "Se desactivo el two factor con exito";
+            }
+        }
+        throw new Exception("Error al tratar de actualizar el two factor.");
+    }
 
     @Transactional
     public Usuario crearAdministrador(Usuario crear) throws Exception {

@@ -74,7 +74,7 @@ public class MailService {
     private void enviarCorreoDeVerificacion(String correo, String codigoVerificacion) {
         try {
             Context context = new Context();//crear nuevo contexto
-            String url = String.format("http://localhost:%s/user_verify/form?c=%s",
+            String url = String.format("http://localhost:%s/auth/user-verify?c=%s",
                     appProperties.getHostFront1(), codigoVerificacion);
 
             context.setVariable("url", url);//adjuntar las variables

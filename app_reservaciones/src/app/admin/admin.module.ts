@@ -9,6 +9,7 @@ import { AdminViewComponent } from './components/admin-view/admin-view.component
 import { PermissionComponent } from './components/permission/permission.component';
 import { RoleComponent } from './components/role/role.component';
 import { UserComponent } from './components/user/user.component';
+import { BusinessComponent } from './components/business/business.component';
 
 @NgModule({
   declarations: [
@@ -21,6 +22,7 @@ import { UserComponent } from './components/user/user.component';
     //Service,
     RoleComponent,
     UserComponent,
+    BusinessComponent,
 
   ],
   imports: [

@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthService } from '../../services/auth.service'; // Servicio de autenticación (posiblemente usado también para registro)
-import { MaterialModule } from '../../../material/material.module';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-register',
@@ -33,11 +32,17 @@ export class RegisterComponent {
 
     // Llama al servicio de registro (authService) con los datos
     this.authService.register(this.registerData).subscribe({
-      next: (response) => {
-        // Redirige al login tras un registro exitoso
+      next: () => {
+        // Abre el diálogo de confirmación si el registro es exitoso
+        this.authService.openConfirmationDialog(
+          'Registro Exitoso',
+          'Se ha enviado un correo de confirmación. Por favor, verifica tu cuenta.',
+          'light-green'
+        );
+        // Redirige al login tras el cierre del diálogo
         this.router.navigate(['/auth/login']);
       },
-      error: (error) => {
+      error: () => {
         // Muestra un mensaje de error si algo sale mal
         this.errorMessage = 'Error en el registro. Inténtalo de nuevo.';
       },

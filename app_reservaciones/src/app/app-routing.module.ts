@@ -7,8 +7,7 @@ const routes: Routes = [
   //{ path: '', redirectTo: 'admin', pathMatch: 'full' }, // Correcta redirección
   { path: '', redirectTo: 'permissions', pathMatch: 'full' }, // Correcta redirección
   { path: 'auth', loadChildren: () => import('./auth/auth.module').then(m => m.AuthModule) },
-  { path: 'admin', loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule) },
-
+  { path: 'admin', loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule) },  
 ];
 
 @NgModule({

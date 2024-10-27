@@ -5,10 +5,13 @@ import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AuthModule } from './auth/auth.module';
 import { AdminModule } from './admin/admin.module';
+
 //Demas imports de modules principales
 
 import { AppComponent } from './app.component';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { MaterialModule } from './material/material.module';
+import { DialogComponent } from './utils/dialog/dialog.component';
 
 
 
@@ -20,10 +23,11 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-     //Modulos principales
+    //Modulos principales
+    MaterialModule,
     AuthModule,
     AdminModule,
-   
+    
   ],
   providers: [
     provideAnimationsAsync()

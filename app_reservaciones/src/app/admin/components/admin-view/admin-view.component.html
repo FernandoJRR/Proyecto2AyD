@@ -12,17 +12,21 @@
         <mat-icon class="nav-icon">dashboard</mat-icon>
         <span class="nav-text">Overview</span>
       </a>
+      <a mat-list-item routerLink="/admin/business" routerLinkActive="active">
+        <mat-icon class="nav-icon">shop</mat-icon>
+        <span class="nav-text">Negocios</span>
+      </a>
       <a mat-list-item routerLink="/admin/users" routerLinkActive="active">
         <mat-icon class="nav-icon">supervised_user_circle</mat-icon>
-        <span class="nav-text">Users</span>
+        <span class="nav-text">Usuarios</span>
+      </a>
+      <a mat-list-item routerLink="/admin/permissions" routerLinkActive="active">
+        <mat-icon class="nav-icon">lock</mat-icon>
+        <span class="nav-text">Permisos</span>
       </a>
       <a mat-list-item routerLink="/admin/roles" routerLinkActive="active">
         <mat-icon class="nav-icon">admin_panel_settings</mat-icon>
         <span class="nav-text">Roles</span>
-      </a>
-      <a mat-list-item routerLink="/admin/permissions" routerLinkActive="active">
-        <mat-icon class="nav-icon">lock</mat-icon>
-        <span class="nav-text">Permissions</span>
       </a>
     </mat-nav-list>
   </mat-sidenav>

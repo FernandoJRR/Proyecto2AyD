@@ -10,16 +10,18 @@ public class LoginDto {
     private Usuario usuario;
     private String jwt;
     private boolean hasTwoFactorCode;
+    private boolean isValidated;
 
     public LoginDto(Usuario usuario, String jwt) {
         this.usuario = usuario;
         this.jwt = jwt;
     }
 
-    public LoginDto(Usuario usuario, String jwt, boolean hasTwoFactorCode) {
+    public LoginDto(Usuario usuario, String jwt, boolean hasTwoFactorCode, boolean isValidated) {
         this.usuario = usuario;
         this.jwt = jwt;
         this.hasTwoFactorCode = hasTwoFactorCode;
+        this.isValidated = isValidated;
     }
 
     public LoginDto() {

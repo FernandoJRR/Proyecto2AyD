@@ -19,6 +19,7 @@ import com.university.models.Usuario;
 import com.university.models.dto.LoginDto;
 import com.university.models.request.PasswordChange;
 import com.university.models.request.SendRecoveryMailRequest;
+import com.university.models.request.TwoFactorActivate;
 import com.university.models.request.VerifyUserRequest;
 import com.university.models.request.CreateUsuarioDto;
 import com.university.models.request.HorariosUsuarioRequest;
@@ -304,13 +305,12 @@ public class UsuarioController {
         }
     }
 
-    /*
     @Operation(summary = "Actualiza el two factor de un usuario.", description = "Actualiza el two factor del usuario segun se envie en la request.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Actualziacion completa", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiBaseTransformer.class))),
             @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
-    @PatchMapping("/usuario/private/all/cambiarTwoFactor")
+    @PatchMapping("/usuario/public/cambiarTwoFactor")
     public ResponseEntity<?> cambiarTwoFactor(@RequestBody TwoFactorActivate updates) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -325,5 +325,4 @@ public class UsuarioController {
             return new ApiBaseTransformer(HttpStatus.BAD_REQUEST, "Error", null, null, ex.getMessage()).sendResponse();
         }
     }
-    */
 }

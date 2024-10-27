@@ -278,6 +278,14 @@ public class Usuario extends Auditor {
         this.horariosAtencionUsuario = horariosAtencionUsuario;
     }
 
+    public String getTelefono() {
+        return telefono;
+    }
+
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
+    }
+
     /**
      * Metodo para mantener las relaciones de roles, permisos y facturas Para
      * evitar que se eliminen al actualizar Se debe llamar antes de actualizar

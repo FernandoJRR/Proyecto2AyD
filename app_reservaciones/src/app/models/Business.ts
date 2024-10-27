@@ -1,6 +1,4 @@
 export interface Business {
-    id: number;
-    createdAt: string;
-    nombre: string;
-  }
-  
+  id: number;
+  nombre: string; // Nombre del negocio (ej., Barbería XYZ)
+}

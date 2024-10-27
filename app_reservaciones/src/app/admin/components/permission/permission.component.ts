@@ -16,9 +16,9 @@ export class PermissionComponent implements OnInit {
   dataSource: MatTableDataSource<Permission>;
 
   permissions: Permission[] = [
-    { id: 1, nombre: 'Crear usuario', descripcion: 'Permite crear nuevos usuarios.' },
-    { id: 2, nombre: 'Editar usuario', descripcion: 'Permite editar usuarios existentes.' },
-    { id: 3, nombre: 'Ver reportes', descripcion: 'Permite ver los reportes del sistema.' },
+    { id: 1, nombre: 'Crear usuario', ruta: 'Permite crear nuevos usuarios.' },
+    { id: 2, nombre: 'Editar usuario', ruta: 'Permite editar usuarios existentes.' },
+    { id: 3, nombre: 'Ver reportes', ruta: 'Permite ver los reportes del sistema.' },
   ];
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;

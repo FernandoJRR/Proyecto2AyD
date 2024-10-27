@@ -23,7 +23,49 @@ export class RegisterComponent {
 
   constructor(private authService: AuthService, private router: Router) {}
 
-  // Verifica que los campos obligatorios no estén vacíos
+  onSubmit() {
+    if (!this.allFieldsCompleted()) {
+      this.authService.openConfirmationDialog(
+        'Error en el Registro',
+        'Por favor, complete todos los campos.',
+        'red'
+      );
+      return;
+    }
+
+    if (this.registerData.password !== this.registerData.confirmPassword) {
+      this.authService.openConfirmationDialog(
+        'Error en el Registro',
+        'Las contraseñas no coinciden.',
+        'red'
+      );
+      return;
+    }
+
+    this.authService.register(this.registerData).subscribe({
+      next: (response) => {
+        if (response.code === 200) {
+          this.authService.openConfirmationDialog(
+            response.message,
+            'Se ha enviado un correo de confirmación. Por favor, verifica tu cuenta.',
+            'green'
+          );
+          this.router.navigate(['/auth/login']);
+        }
+      },
+      error: (error) => {
+        const errorMsg = error.error?.message || 'Error en el registro';
+        const errorDescription = error.error?.error || 'Hubo un problema al procesar la solicitud.';
+
+        this.authService.openConfirmationDialog(
+          errorMsg,
+          errorDescription,
+          'red'
+        );
+      },
+    });
+  }
+
   allFieldsCompleted(): boolean {
     return (
       this.registerData.nombres !== '' &&
@@ -35,45 +77,5 @@ export class RegisterComponent {
       this.registerData.password !== '' &&
       this.registerData.confirmPassword !== ''
     );
-  }
-
-  onSubmit() {
-    if (!this.allFieldsCompleted()) {
-      this.authService.openConfirmationDialog(
-        'Campos Incompletos',
-        'Por favor, completa todos los campos obligatorios.',
-        'red'
-      );
-      return;
-    }
-
-    if (this.registerData.password !== this.registerData.confirmPassword) {
-      this.authService.openConfirmationDialog(
-        'Contraseñas No Coinciden',
-        'La confirmación de la contraseña debe coincidir con la contraseña.',
-        'red'
-      );
-      return;
-    }
-
-    const { confirmPassword, ...dataToSubmit } = this.registerData;
-
-    this.authService.register(dataToSubmit).subscribe({
-      next: () => {
-        this.authService.openConfirmationDialog(
-          'Registro Exitoso',
-          'Se ha enviado un correo de confirmación. Por favor, verifica tu cuenta.',
-          'green'
-        );
-        this.router.navigate(['/auth/login']);
-      },
-      error: () => {
-        this.authService.openConfirmationDialog(
-          'Error en el Registro',
-          'Hubo un problema con el registro. Por favor, intenta de nuevo.',
-          'red'
-        );
-      },
-    });
   }
 }

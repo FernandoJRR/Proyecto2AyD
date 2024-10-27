@@ -27,6 +27,7 @@ import { DialogComponent } from './utils/dialog/dialog.component';
     MaterialModule,
     AuthModule,
     AdminModule,
+    //UserModule,
     
   ],
   providers: [

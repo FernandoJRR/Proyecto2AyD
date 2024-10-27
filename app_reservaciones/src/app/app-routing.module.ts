@@ -5,9 +5,11 @@ const routes: Routes = [
 
   //{ path: '', redirectTo: 'auth/login', pathMatch: 'full' }, // Correcta redirección
   //{ path: '', redirectTo: 'admin', pathMatch: 'full' }, // Correcta redirección
-  { path: '', redirectTo: 'permissions', pathMatch: 'full' }, // Correcta redirección
+  { path: '', redirectTo: 'auth/login', pathMatch: 'full' }, // Correcta redirección
   { path: 'auth', loadChildren: () => import('./auth/auth.module').then(m => m.AuthModule) },
-  { path: 'admin', loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule) },  
+  { path: 'admin', loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule) }, 
+  //eliminar
+  //{ path: 'user_verify/form', redirectTo: 'permissions', pathMatch: 'full' },
 ];
 
 @NgModule({

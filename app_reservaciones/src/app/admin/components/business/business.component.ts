@@ -14,9 +14,9 @@ export class BusinessComponent implements OnInit {
   dataSource: MatTableDataSource<Business>;
 
   businesses: Business[] = [
-    { id: 1, createdAt: '2024-10-25T07:02:06.096Z', nombre: 'Negocio 1' },
-    { id: 2, createdAt: '2024-10-25T07:02:06.096Z', nombre: 'Negocio 2' },
-    { id: 3, createdAt: '2024-10-25T07:02:06.096Z', nombre: 'Negocio 3' },
+    { id: 1, nombre: 'Negocio 1' },
+    { id: 2, nombre: 'Negocio 2' },
+    { id: 3, nombre: 'Negocio 3' },
   ];
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;

@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AdminViewComponent } from './admin-view.component';
+import { TwoFactorComponent } from './two-factor.component';
 
-describe('AdminViewComponent', () => {
-  let component: AdminViewComponent;
-  let fixture: ComponentFixture<AdminViewComponent>;
+describe('TwoFactorComponent', () => {
+  let component: TwoFactorComponent;
+  let fixture: ComponentFixture<TwoFactorComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [AdminViewComponent]
+      declarations: [TwoFactorComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(AdminViewComponent);
+    fixture = TestBed.createComponent(TwoFactorComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

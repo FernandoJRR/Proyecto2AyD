@@ -11,7 +11,6 @@ const routes: Routes = [
   { path: '', component: AdminViewComponent, children: [
     //{ path: 'overview', component: OverviewComponent },
     { path: 'business', component: BusinessComponent },
-    
     { path: 'users', component: UserComponent },
     { path: 'permissions', component: PermissionComponent },
     { path: 'roles', component: RoleComponent },

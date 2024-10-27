@@ -10,6 +10,8 @@ import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
 import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
 import { DialogComponent } from '../utils/dialog/dialog.component';
+import { UserVerifyComponent } from './components/user-verify/user-verify.component';
+import { TwoFactorComponent } from './components/two-factor/two-factor.component';
 
 @NgModule({
   declarations: [
@@ -21,6 +23,8 @@ import { DialogComponent } from '../utils/dialog/dialog.component';
     RegisterComponent,
     //ValidateAccountComponent,
     ResetPasswordComponent,
+    UserVerifyComponent,
+    TwoFactorComponent,
   ],
   imports: [
     CommonModule,

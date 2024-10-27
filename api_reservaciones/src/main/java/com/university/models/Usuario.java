@@ -231,6 +231,10 @@ public class Usuario extends Auditor {
         return estadoActivacion;
     }
 
+    public boolean isVerificado() {
+        return verificado;
+    }
+
     public void setEstadoActivacion(boolean estadoActivacion) {
         this.estadoActivacion = estadoActivacion;
     }
@@ -285,6 +289,7 @@ public class Usuario extends Auditor {
     public void setTelefono(String telefono) {
         this.telefono = telefono;
     }
+
 
     /**
      * Metodo para mantener las relaciones de roles, permisos y facturas Para

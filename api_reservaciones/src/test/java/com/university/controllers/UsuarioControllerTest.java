@@ -63,7 +63,7 @@ public class UsuarioControllerTest {
         when(usuarioService.getUsuario(1L)).thenReturn(usuario);
 
         // Realizar la solicitud y verificar la respuesta esperada
-        MvcResult result = mockMvc.perform(get("/api/usuario/protected/1")
+        MvcResult result = mockMvc.perform(get("/api/usuario/public/1")
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())  // Verifica el estado de la respuesta HTTP
             .andReturn();
@@ -91,7 +91,7 @@ public class UsuarioControllerTest {
         when(usuarioService.getUsuario(1L)).thenThrow(new Exception("Usuario no encontrado."));
 
         // Realizar la solicitud y verificar el estado de la respuesta
-        MvcResult result = mockMvc.perform(get("/api/usuario/protected/1")
+        MvcResult result = mockMvc.perform(get("/api/usuario/public/1")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())  // Verifica el estado de la respuesta HTTP
                 .andReturn();
@@ -272,7 +272,7 @@ public class UsuarioControllerTest {
         when(usuarioService.cambiarPassword(any(Usuario.class), anyString())).thenReturn(mensaje);
 
         // Realizar la solicitud y verificar la respuesta esperada
-        MvcResult result = mockMvc.perform(patch("/api/usuario/private/all/cambioPassword")
+        MvcResult result = mockMvc.perform(patch("/api/usuario/public/cambioPassword")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"id\":1, \"password\":\"newPassword123\"}")
                 .characterEncoding("UTF-8"))

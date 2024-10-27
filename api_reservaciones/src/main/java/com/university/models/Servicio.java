@@ -170,6 +170,22 @@ public class Servicio extends Auditor {
         this.roles = roles;
     }
 
+    public Float getPorcentaje_reembolso() {
+        return porcentaje_reembolso;
+    }
+
+    public void setPorcentaje_reembolso(Float porcentaje_reembolso) {
+        this.porcentaje_reembolso = porcentaje_reembolso;
+    }
+
+    public Integer getDias_cancelacion() {
+        return dias_cancelacion;
+    }
+
+    public void setDias_cancelacion(Integer dias_cancelacion) {
+        this.dias_cancelacion = dias_cancelacion;
+    }
+
     public List<HorarioAtencionServicio> getHorariosAtencionServicios() {
         return horariosAtencionServicios;
     }

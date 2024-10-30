@@ -399,7 +399,7 @@ public class Inserts implements ApplicationListener<ContextRefreshedEvent> {
                                 permiso.getRuta()));
 
                 // Si el permiso es ADMIN se asigna al mismo rol
-                if (permisoInsercion.getNombre().equals("Administrador")) {
+                if (permisoInsercion.getNombre().equals("ADMINISTRADOR")) {
                     Rol rolAdmin = this.rolService.getRol("ADMIN");
                     try {
                         this.rolService.agregarPermisoRol(rolAdmin, permisoInsercion);

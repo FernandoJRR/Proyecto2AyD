@@ -24,15 +24,25 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.university.models.HorarioAtencionUsuario;
+import com.university.models.Rol;
 import com.university.models.Usuario;
 import com.university.models.dto.LoginDto;
 import com.university.models.request.PasswordChange;
+import com.university.models.request.TwoFactorActivate;
+import com.university.models.request.VerifyUserRequest;
+import com.university.models.request.CreateUsuarioDto;
 import com.university.models.request.HorariosUsuarioRequest;
 import com.university.services.UsuarioService;
 import com.university.transformers.ApiBaseTransformer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Arrays;
+import java.util.Collections;
+import java.time.LocalTime;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -50,7 +60,11 @@ public class UsuarioControllerTest {
     @BeforeEach
     void setUp() {
         mockMvc = MockMvcBuilders.standaloneSetup(usuarioController).build();
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
     }
+
     // Test para obtener usuario por ID (GET /api/usuario/protected/{id})
     @Test
     void testGetUsuarioById_Success() throws Exception {
@@ -64,36 +78,8 @@ public class UsuarioControllerTest {
 
         // Realizar la solicitud y verificar la respuesta esperada
         MvcResult result = mockMvc.perform(get("/api/usuario/public/1")
-            .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())  // Verifica el estado de la respuesta HTTP
-            .andReturn();
-
-        // Convertir la respuesta de String a un objeto JSON
-        String jsonResponse = result.getResponse().getContentAsString();
-        ObjectMapper objectMapper = new ObjectMapper();
-        ApiBaseTransformer response = objectMapper.readValue(jsonResponse, ApiBaseTransformer.class);
-
-        // Verificar los valores en el objeto JSON deserializado
-        assertEquals(200, response.getCode());  // Verificar el campo 'status'
-        assertEquals("OK", response.getMessage());  // Verificar el mensaje
-        Usuario data = objectMapper.convertValue(response.getData(), Usuario.class);  // Extraer el usuario de 'data'
-        assertEquals(1L, data.getId());  // Verificar que el ID del usuario sea 1
-        assertEquals("test@example.com", data.getEmail());
-
-        // Verificar que el servicio fue llamado una vez
-        verify(usuarioService, times(1)).getUsuario(1L);
-    }
-
-    // Test para obtener usuario por ID - Usuario no encontrado (GET /api/usuario/protected/{id})
-    @Test
-    void testGetUsuarioById_NotFound() throws Exception {
-        // Simular que el servicio lanza una excepción al no encontrar el usuario
-        when(usuarioService.getUsuario(1L)).thenThrow(new Exception("Usuario no encontrado."));
-
-        // Realizar la solicitud y verificar el estado de la respuesta
-        MvcResult result = mockMvc.perform(get("/api/usuario/public/1")
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest())  // Verifica el estado de la respuesta HTTP
+                .andExpect(status().isOk()) // Verifica el estado de la respuesta HTTP
                 .andReturn();
 
         // Convertir la respuesta de String a un objeto JSON
@@ -102,8 +88,37 @@ public class UsuarioControllerTest {
         ApiBaseTransformer response = objectMapper.readValue(jsonResponse, ApiBaseTransformer.class);
 
         // Verificar los valores en el objeto JSON deserializado
-        assertEquals(400, response.getCode());  // Verificar el campo 'code'
-        assertEquals("Usuario no encontrado.", response.getError());  // Verificar el mensaje de error
+        assertEquals(200, response.getCode()); // Verificar el campo 'status'
+        assertEquals("OK", response.getMessage()); // Verificar el mensaje
+        Usuario data = objectMapper.convertValue(response.getData(), Usuario.class); // Extraer el usuario de 'data'
+        assertEquals(1L, data.getId()); // Verificar que el ID del usuario sea 1
+        assertEquals("test@example.com", data.getEmail());
+
+        // Verificar que el servicio fue llamado una vez
+        verify(usuarioService, times(1)).getUsuario(1L);
+    }
+
+    // Test para obtener usuario por ID - Usuario no encontrado (GET
+    // /api/usuario/protected/{id})
+    @Test
+    void testGetUsuarioById_NotFound() throws Exception {
+        // Simular que el servicio lanza una excepción al no encontrar el usuario
+        when(usuarioService.getUsuario(1L)).thenThrow(new Exception("Usuario no encontrado."));
+
+        // Realizar la solicitud y verificar el estado de la respuesta
+        MvcResult result = mockMvc.perform(get("/api/usuario/public/1")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest()) // Verifica el estado de la respuesta HTTP
+                .andReturn();
+
+        // Convertir la respuesta de String a un objeto JSON
+        String jsonResponse = result.getResponse().getContentAsString();
+        ObjectMapper objectMapper = new ObjectMapper();
+        ApiBaseTransformer response = objectMapper.readValue(jsonResponse, ApiBaseTransformer.class);
+
+        // Verificar los valores en el objeto JSON deserializado
+        assertEquals(400, response.getCode()); // Verificar el campo 'code'
+        assertEquals("Usuario no encontrado.", response.getError()); // Verificar el mensaje de error
 
         // Verificar que el servicio fue llamado una vez
         verify(usuarioService, times(1)).getUsuario(1L);
@@ -126,7 +141,7 @@ public class UsuarioControllerTest {
         MvcResult result = mockMvc.perform(post("/api/usuario/public/crearUsuario")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"email\":\"test@example.com\", \"password\":\"password123\"}"))
-                .andExpect(status().isOk())  // Verifica el estado de la respuesta HTTP
+                .andExpect(status().isOk()) // Verifica el estado de la respuesta HTTP
                 .andReturn();
 
         // Convertir la respuesta de String a un objeto JSON
@@ -135,9 +150,9 @@ public class UsuarioControllerTest {
         ApiBaseTransformer response = objectMapper.readValue(jsonResponse, ApiBaseTransformer.class);
 
         // Verificar los valores en el objeto JSON deserializado
-        assertEquals(200, response.getCode());  // Verificar el campo 'status'
-        assertEquals("OK", response.getMessage());  // Verificar el mensaje
-        LoginDto data = objectMapper.convertValue(response.getData(), LoginDto.class);  // Extraer el LoginDto de 'data'
+        assertEquals(200, response.getCode()); // Verificar el campo 'status'
+        assertEquals("OK", response.getMessage()); // Verificar el mensaje
+        LoginDto data = objectMapper.convertValue(response.getData(), LoginDto.class); // Extraer el LoginDto de 'data'
 
         // Verificar el contenido del usuario dentro de LoginDto
         assertEquals("test@example.com", data.getUsuario().getEmail());
@@ -149,7 +164,10 @@ public class UsuarioControllerTest {
     // Helper method to convert object to JSON string
     public static String asJsonString(final Object obj) {
         try {
-            return new ObjectMapper().writeValueAsString(obj);
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.registerModule(new JavaTimeModule()); // Registro del módulo JavaTime
+            mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+            return mapper.writeValueAsString(obj);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -174,7 +192,7 @@ public class UsuarioControllerTest {
         // Realizar la solicitud y verificar la respuesta esperada
         MvcResult result = mockMvc.perform(get("/api/usuario/private/getUsuarios")
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())  // Verifica el estado de la respuesta HTTP
+                .andExpect(status().isOk()) // Verifica el estado de la respuesta HTTP
                 .andReturn();
 
         // Convertir la respuesta de String a un objeto JSON
@@ -183,14 +201,15 @@ public class UsuarioControllerTest {
         ApiBaseTransformer response = objectMapper.readValue(jsonResponse, ApiBaseTransformer.class);
 
         // Verificar los valores en el objeto JSON deserializado
-        assertEquals(200, response.getCode());  // Verificar el campo 'code'
-        assertEquals("OK", response.getMessage());  // Verificar el mensaje
-        List<?> data = objectMapper.convertValue(response.getData(), List.class);  // Convertir 'data' a lista
-        assertEquals(2, data.size());  // Verificar que la lista contiene 2 usuarios
+        assertEquals(200, response.getCode()); // Verificar el campo 'code'
+        assertEquals("OK", response.getMessage()); // Verificar el mensaje
+        List<?> data = objectMapper.convertValue(response.getData(), List.class); // Convertir 'data' a lista
+        assertEquals(2, data.size()); // Verificar que la lista contiene 2 usuarios
 
         // Verificar que el servicio fue llamado una vez
         verify(usuarioService, times(1)).getUsuarios();
     }
+
     @Test
     void testEnviarMailDeRecuperacion_Success() throws Exception {
         // Simular el correo de recuperación exitoso
@@ -205,7 +224,7 @@ public class UsuarioControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"correoElectronico\":\"" + correo + "\"}")
                 .characterEncoding("UTF-8"))
-                .andExpect(status().isOk())  // Verifica el estado de la respuesta HTTP
+                .andExpect(status().isOk()) // Verifica el estado de la respuesta HTTP
                 .andReturn();
 
         // Convertir la respuesta de String a un objeto JSON
@@ -214,9 +233,9 @@ public class UsuarioControllerTest {
         ApiBaseTransformer response = objectMapper.readValue(jsonResponse, ApiBaseTransformer.class);
 
         // Verificar los valores en el objeto JSON deserializado
-        assertEquals(200, response.getCode());  // Verificar el campo 'code'
-        assertEquals("OK", response.getMessage());  // Verificar el mensaje
-        assertEquals(mensaje, response.getData());  // Verificar el mensaje de recuperación
+        assertEquals(200, response.getCode()); // Verificar el campo 'code'
+        assertEquals("OK", response.getMessage()); // Verificar el mensaje
+        assertEquals(mensaje, response.getData()); // Verificar el mensaje de recuperación
 
         // Verificar que el servicio fue llamado una vez
         verify(usuarioService, times(1)).enviarMailDeRecuperacion(correo);
@@ -238,7 +257,7 @@ public class UsuarioControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"codigo\":\"12345\", \"nuevaPassword\":\"newPassword123\"}")
                 .characterEncoding("UTF-8"))
-                .andExpect(status().isOk())  // Verifica el estado de la respuesta HTTP
+                .andExpect(status().isOk()) // Verifica el estado de la respuesta HTTP
                 .andReturn();
 
         // Convertir la respuesta de String a un objeto JSON
@@ -247,9 +266,9 @@ public class UsuarioControllerTest {
         ApiBaseTransformer response = objectMapper.readValue(jsonResponse, ApiBaseTransformer.class);
 
         // Verificar los valores en el objeto JSON deserializado
-        assertEquals(200, response.getCode());  // Verificar el campo 'code'
-        assertEquals("OK", response.getMessage());  // Verificar el mensaje
-        assertEquals(mensaje, response.getData());  // Verificar el mensaje de éxito
+        assertEquals(200, response.getCode()); // Verificar el campo 'code'
+        assertEquals("OK", response.getMessage()); // Verificar el mensaje
+        assertEquals(mensaje, response.getData()); // Verificar el mensaje de éxito
 
         // Verificar que el servicio fue llamado una vez
         verify(usuarioService, times(1)).recuperarPassword(any(PasswordChange.class));
@@ -276,7 +295,7 @@ public class UsuarioControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"id\":1, \"password\":\"newPassword123\"}")
                 .characterEncoding("UTF-8"))
-                .andExpect(status().isOk())  // Verifica el estado de la respuesta HTTP
+                .andExpect(status().isOk()) // Verifica el estado de la respuesta HTTP
                 .andReturn();
 
         // Convertir la respuesta de String a un objeto JSON
@@ -285,13 +304,14 @@ public class UsuarioControllerTest {
         ApiBaseTransformer response = objectMapper.readValue(jsonResponse, ApiBaseTransformer.class);
 
         // Verificar los valores en el objeto JSON deserializado
-        assertEquals(200, response.getCode());  // Verificar el campo 'code'
-        assertEquals("OK", response.getMessage());  // Verificar el mensaje
-        assertEquals(mensaje, response.getData());  // Verificar el mensaje de éxito
+        assertEquals(200, response.getCode()); // Verificar el campo 'code'
+        assertEquals("OK", response.getMessage()); // Verificar el mensaje
+        assertEquals(mensaje, response.getData()); // Verificar el mensaje de éxito
 
         // Verificar que el servicio fue llamado una vez
         verify(usuarioService, times(1)).cambiarPassword(any(Usuario.class), anyString());
     }
+
     @Test
     void testLogin_Success() throws Exception {
         // Crear un objeto Usuario simulado con email y contraseña
@@ -310,7 +330,7 @@ public class UsuarioControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .characterEncoding("UTF-8")
                 .content("{\"email\":\"test@example.com\", \"password\":\"password123\"}"))
-                .andExpect(status().isOk())  // Verificar que el estado de respuesta es 200 OK
+                .andExpect(status().isOk()) // Verificar que el estado de respuesta es 200 OK
                 .andReturn();
 
         // Convertir la respuesta de String a un objeto JSON
@@ -319,9 +339,9 @@ public class UsuarioControllerTest {
         ApiBaseTransformer response = objectMapper.readValue(jsonResponse, ApiBaseTransformer.class);
 
         // Verificar los valores en el objeto JSON deserializado
-        assertEquals(200, response.getCode());  // Verificar el código de estado
-        assertEquals("OK", response.getMessage());  // Verificar el mensaje
-        LoginDto data = objectMapper.convertValue(response.getData(), LoginDto.class);  // Extraer el LoginDto
+        assertEquals(200, response.getCode()); // Verificar el código de estado
+        assertEquals("OK", response.getMessage()); // Verificar el mensaje
+        LoginDto data = objectMapper.convertValue(response.getData(), LoginDto.class); // Extraer el LoginDto
         assertEquals("test@example.com", data.getUsuario().getEmail());
         assertEquals("fake-jwt-token", data.getJwt());
 
@@ -331,7 +351,8 @@ public class UsuarioControllerTest {
 
     @Test
     void testLogin_Failure() throws Exception {
-        // Simular un caso en el que el servicio arroje una excepción por credenciales incorrectas
+        // Simular un caso en el que el servicio arroje una excepción por credenciales
+        // incorrectas
         when(usuarioService.iniciarSesion(any(Usuario.class))).thenThrow(new Exception("Credenciales incorrectas"));
 
         // Realizar la solicitud de inicio de sesión
@@ -339,13 +360,14 @@ public class UsuarioControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .characterEncoding("UTF-8")
                 .content("{\"email\":\"wrong@example.com\", \"password\":\"wrongpassword\"}"))
-                .andExpect(status().isBadRequest())  // Verificar que el estado de respuesta es 400 BAD REQUEST
+                .andExpect(status().isBadRequest()) // Verificar que el estado de respuesta es 400 BAD REQUEST
                 .andExpect(jsonPath("$.message").value("Error"))
-                .andExpect(jsonPath("$.error").value("Credenciales incorrectas"));  // Verificar el mensaje de error
+                .andExpect(jsonPath("$.error").value("Credenciales incorrectas")); // Verificar el mensaje de error
 
         // Verificar que el servicio fue llamado correctamente
         verify(usuarioService, times(1)).iniciarSesion(any(Usuario.class));
     }
+
     @Test
     void testValidateTwoFactorToken_Success() throws Exception {
         // Crear un objeto Usuario simulado con email y código de dos factores
@@ -364,7 +386,7 @@ public class UsuarioControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .characterEncoding("UTF-8")
                 .content("{\"email\":\"user@example.com\", \"twoFactorCode\":\"67858\"}"))
-                .andExpect(status().isOk())  // Verificar que el estado de respuesta es 200 OK
+                .andExpect(status().isOk()) // Verificar que el estado de respuesta es 200 OK
                 .andReturn();
 
         // Convertir la respuesta de String a un objeto JSON
@@ -373,9 +395,9 @@ public class UsuarioControllerTest {
         ApiBaseTransformer response = objectMapper.readValue(jsonResponse, ApiBaseTransformer.class);
 
         // Verificar los valores en el objeto JSON deserializado
-        assertEquals(200, response.getCode());  // Verificar el código de estado
-        assertEquals("OK", response.getMessage());  // Verificar el mensaje
-        LoginDto data = objectMapper.convertValue(response.getData(), LoginDto.class);  // Extraer el LoginDto
+        assertEquals(200, response.getCode()); // Verificar el código de estado
+        assertEquals("OK", response.getMessage()); // Verificar el mensaje
+        LoginDto data = objectMapper.convertValue(response.getData(), LoginDto.class); // Extraer el LoginDto
         assertEquals("user@example.com", data.getUsuario().getEmail());
         assertEquals("fake-jwt-token", data.getJwt());
 
@@ -385,21 +407,25 @@ public class UsuarioControllerTest {
 
     @Test
     void testValidateTwoFactorToken_Failure() throws Exception {
-        // Simular un caso en el que el servicio arroje una excepción por código incorrecto
-        when(usuarioService.login2FT(any(Usuario.class))).thenThrow(new Exception("Código de autenticación incorrecto"));
+        // Simular un caso en el que el servicio arroje una excepción por código
+        // incorrecto
+        when(usuarioService.login2FT(any(Usuario.class)))
+                .thenThrow(new Exception("Código de autenticación incorrecto"));
 
         // Realizar la solicitud de validación del código de dos factores
         mockMvc.perform(post("/api/usuario/public/validateTwoFactorToken")
                 .contentType(MediaType.APPLICATION_JSON)
                 .characterEncoding("UTF-8")
                 .content("{\"email\":\"user@example.com\", \"twoFactorCode\":\"12345\"}"))
-                .andExpect(status().isBadRequest())  // Verificar que el estado de respuesta es 400 BAD REQUEST
+                .andExpect(status().isBadRequest()) // Verificar que el estado de respuesta es 400 BAD REQUEST
                 .andExpect(jsonPath("$.message").value("Error"))
-                .andExpect(jsonPath("$.error").value("Código de autenticación incorrecto"));  // Verificar el mensaje de error
+                .andExpect(jsonPath("$.error").value("Código de autenticación incorrecto")); // Verificar el mensaje de
+                                                                                             // error
 
         // Verificar que el servicio fue llamado correctamente
         verify(usuarioService, times(1)).login2FT(any(Usuario.class));
     }
+
     @Test
     void testCrearAdministrador_Success() throws Exception {
         // Crear un objeto Usuario simulado
@@ -415,7 +441,7 @@ public class UsuarioControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"email\":\"admin@example.com\"}")
                 .characterEncoding("UTF-8"))
-                .andExpect(status().isOk())  // Verificar que el estado de respuesta es 200 OK
+                .andExpect(status().isOk()) // Verificar que el estado de respuesta es 200 OK
                 .andReturn();
 
         // Verificar los valores de la respuesta
@@ -436,20 +462,22 @@ public class UsuarioControllerTest {
     @Test
     void testCrearAdministrador_Failure() throws Exception {
         // Simular un caso en el que el servicio arroje una excepción
-        when(usuarioService.crearAdministrador(any(Usuario.class))).thenThrow(new Exception("Error al crear administrador"));
+        when(usuarioService.crearAdministrador(any(Usuario.class)))
+                .thenThrow(new Exception("Error al crear administrador"));
 
         // Realizar la solicitud de creación de administrador
         mockMvc.perform(post("/api/usuario/private/crearAdministrador")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"email\":\"admin@example.com\"}")
                 .characterEncoding("UTF-8"))
-                .andExpect(status().isBadRequest())  // Verificar que el estado de respuesta es 400 BAD REQUEST
+                .andExpect(status().isBadRequest()) // Verificar que el estado de respuesta es 400 BAD REQUEST
                 .andExpect(jsonPath("$.message").value("Error"))
                 .andExpect(jsonPath("$.error").value("Error al crear administrador"));
 
         // Verificar que el servicio fue llamado correctamente
         verify(usuarioService, times(1)).crearAdministrador(any(Usuario.class));
     }
+
     @Test
     void testGetPerfil_Success() throws Exception {
         // Crear un objeto Usuario simulado
@@ -463,7 +491,7 @@ public class UsuarioControllerTest {
         // Realizar la solicitud de obtención del perfil
         MvcResult result = mockMvc.perform(get("/api/usuario/private/all/perfil/1")
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())  // Verificar que el estado de respuesta es 200 OK
+                .andExpect(status().isOk()) // Verificar que el estado de respuesta es 200 OK
                 .andReturn();
 
         // Verificar los valores de la respuesta
@@ -488,13 +516,14 @@ public class UsuarioControllerTest {
         // Realizar la solicitud de obtención del perfil
         mockMvc.perform(get("/api/usuario/private/all/perfil/1")
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest())  // Verificar que el estado de respuesta es 400 BAD REQUEST
+                .andExpect(status().isBadRequest()) // Verificar que el estado de respuesta es 400 BAD REQUEST
                 .andExpect(jsonPath("$.message").value("Error"))
                 .andExpect(jsonPath("$.error").value("Usuario no encontrado"));
 
         // Verificar que el servicio fue llamado correctamente
         verify(usuarioService, times(1)).getUsuario(1L);
     }
+
     @Test
     void testEliminarUsuario_Success() throws Exception {
         Authentication authentication = mock(Authentication.class);
@@ -506,7 +535,7 @@ public class UsuarioControllerTest {
         // Realizar la solicitud de eliminación de usuario
         MvcResult result = mockMvc.perform(delete("/api/usuario/private/eliminarUsuario/1")
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())  // Verificar que el estado de respuesta es 200 OK
+                .andExpect(status().isOk()) // Verificar que el estado de respuesta es 200 OK
                 .andReturn();
 
         // Verificar los valores de la respuesta
@@ -528,12 +557,13 @@ public class UsuarioControllerTest {
         when(authentication.getName()).thenReturn("admin@example.com");
         SecurityContextHolder.getContext().setAuthentication(authentication);
         // Simular un caso en el que el servicio arroje una excepción
-        when(usuarioService.eliminarUsuario(anyLong(), anyString())).thenThrow(new Exception("Error al eliminar usuario"));
+        when(usuarioService.eliminarUsuario(anyLong(), anyString()))
+                .thenThrow(new Exception("Error al eliminar usuario"));
 
         // Realizar la solicitud de eliminación de usuario
         mockMvc.perform(delete("/api/usuario/private/eliminarUsuario/1")
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest())  // Verificar que el estado de respuesta es 400 BAD REQUEST
+                .andExpect(status().isBadRequest()) // Verificar que el estado de respuesta es 400 BAD REQUEST
                 .andExpect(jsonPath("$.message").value("Error"))
                 .andExpect(jsonPath("$.error").value("Error al eliminar usuario"));
 
@@ -560,7 +590,7 @@ public class UsuarioControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"id\": 1, \"email\":\"updated@example.com\"}")
                 .characterEncoding("UTF-8"))
-                .andExpect(status().isOk())  // Verificar que el estado de respuesta es 200 OK
+                .andExpect(status().isOk()) // Verificar que el estado de respuesta es 200 OK
                 .andReturn();
 
         // Verificar los valores de la respuesta
@@ -583,90 +613,297 @@ public class UsuarioControllerTest {
         when(authentication.getName()).thenReturn("admin@example.com");
         SecurityContextHolder.getContext().setAuthentication(authentication);
         // Simular un caso en el que el servicio arroje una excepción
-        when(usuarioService.updateUsuario(any(Usuario.class), anyString())).thenThrow(new Exception("Error al actualizar usuario"));
+        when(usuarioService.updateUsuario(any(Usuario.class), anyString()))
+                .thenThrow(new Exception("Error al actualizar usuario"));
 
         // Realizar la solicitud de actualización parcial
         mockMvc.perform(patch("/api/usuario/private/all/updateUsuario")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"id\": 1, \"email\":\"updated@example.com\"}")
                 .characterEncoding("UTF-8"))
-                .andExpect(status().isBadRequest())  // Verificar que el estado de respuesta es 400 BAD REQUEST
+                .andExpect(status().isBadRequest()) // Verificar que el estado de respuesta es 400 BAD REQUEST
                 .andExpect(jsonPath("$.message").value("Error"))
                 .andExpect(jsonPath("$.error").value("Error al actualizar usuario"));
 
         // Verificar que el servicio fue llamado correctamente
         verify(usuarioService, times(1)).updateUsuario(any(Usuario.class), anyString());
     }
-    /*
+
     @Test
-    void testActualizarPermisos_Success() throws Exception {
-        // Crear un objeto Usuario simulado
-        Usuario usuario = new Usuario();
-        usuario.setId(1L);
-        usuario.setEmail("test@example.com");
+    void testCambiarTwoFactor_Success() throws Exception {
+        // Crear un objeto TwoFactorActivate simulado
+        TwoFactorActivate updates = new TwoFactorActivate();
+        updates.setActivacion(true);
 
-        // Crear un objeto UsuarioPermisoRequest simulado
-        UsuarioPermisoRequest usuarioPermisoRequest = new UsuarioPermisoRequest();
-        usuarioPermisoRequest.setIdUsuario(1L);
-        usuarioPermisoRequest.setPermisos(new ArrayList<>()); // Puedes agregar permisos si lo prefieres
+        String mensajeExito = "Two-factor authentication actualizado correctamente.";
 
-        // Simular el Authentication en el SecurityContext
+        // Simular autenticación
         Authentication authentication = mock(Authentication.class);
-        when(authentication.getName()).thenReturn("admin@example.com");
+        when(authentication.getName()).thenReturn("user@example.com");
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        // Simular la respuesta del servicio
-        when(usuarioService.actualizarPermisosUsuario(any(UsuarioPermisoRequest.class))).thenReturn(usuario);
+        // Simular respuesta del servicio
+        when(usuarioService.cambiarTwoFactor(any(TwoFactorActivate.class), anyString())).thenReturn(mensajeExito);
 
-        // Realizar la solicitud de actualización de permisos
-        MvcResult result = mockMvc.perform(patch("/api/usuario/private/actualizarPermisos")
+        // Realizar la solicitud de actualización de two-factor
+        MvcResult result = mockMvc.perform(patch("/api/usuario/public/cambiarTwoFactor")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(usuarioPermisoRequest))
+                .content(asJsonString(updates))
                 .characterEncoding("UTF-8"))
-                .andExpect(status().isOk())  // Verificar que el estado de respuesta es 200 OK
+                .andExpect(status().isOk()) // Verificar que el estado de respuesta es 200 OK
                 .andReturn();
 
-        // Verificar los valores de la respuesta
+        // Convertir la respuesta de String a un objeto JSON
         String jsonResponse = result.getResponse().getContentAsString();
         ObjectMapper objectMapper = new ObjectMapper();
         ApiBaseTransformer response = objectMapper.readValue(jsonResponse, ApiBaseTransformer.class);
 
+        // Verificar los valores en el objeto JSON deserializado
         assertEquals(200, response.getCode());
         assertEquals("OK", response.getMessage());
-        Usuario data = objectMapper.convertValue(response.getData(), Usuario.class);
-        assertEquals(1L, data.getId());
+        assertEquals(mensajeExito, response.getData());
 
         // Verificar que el servicio fue llamado correctamente
-        verify(usuarioService, times(1)).actualizarPermisosUsuario(any(UsuarioPermisoRequest.class));
+        verify(usuarioService, times(1)).cambiarTwoFactor(any(TwoFactorActivate.class), anyString());
     }
 
     @Test
-    void testActualizarPermisos_Failure() throws Exception {
-        // Crear un objeto UsuarioPermisoRequest simulado
-        UsuarioPermisoRequest usuarioPermisoRequest = new UsuarioPermisoRequest();
-        usuarioPermisoRequest.setIdUsuario(1L);
-        usuarioPermisoRequest.setPermisos(new ArrayList<>()); // Puedes agregar permisos si lo prefieres
+    void testCambiarTwoFactor_Failure() throws Exception {
+        // Crear un objeto TwoFactorActivate simulado
+        TwoFactorActivate updates = new TwoFactorActivate();
+        updates.setActivacion(false);
 
-        // Simular el Authentication en el SecurityContext
+        // Simular autenticación
         Authentication authentication = mock(Authentication.class);
-        when(authentication.getName()).thenReturn("admin@example.com");
+        when(authentication.getName()).thenReturn("user@example.com");
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        // Simular un caso en el que el servicio arroje una excepción
-        when(usuarioService.actualizarPermisosUsuario(any(UsuarioPermisoRequest.class))).thenThrow(new Exception("Error al actualizar permisos"));
+        // Simular excepción en el servicio
+        when(usuarioService.cambiarTwoFactor(any(TwoFactorActivate.class), anyString()))
+                .thenThrow(new Exception("Error al actualizar two-factor"));
 
-        // Realizar la solicitud de actualización de permisos
-        mockMvc.perform(patch("/api/usuario/private/actualizarPermisos")
+        // Realizar la solicitud de actualización de two-factor
+        mockMvc.perform(patch("/api/usuario/public/cambiarTwoFactor")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(usuarioPermisoRequest))
+                .content(asJsonString(updates))
                 .characterEncoding("UTF-8"))
-                .andExpect(status().isBadRequest())  // Verificar que el estado de respuesta es 400 BAD REQUEST
+                .andExpect(status().isBadRequest()) // Verificar que el estado de respuesta es 400 BAD REQUEST
                 .andExpect(jsonPath("$.message").value("Error"))
-                .andExpect(jsonPath("$.error").value("Error al actualizar permisos"));
+                .andExpect(jsonPath("$.error").value("Error al actualizar two-factor"));
 
         // Verificar que el servicio fue llamado correctamente
-        verify(usuarioService, times(1)).actualizarPermisosUsuario(any(UsuarioPermisoRequest.class));
+        verify(usuarioService, times(1)).cambiarTwoFactor(any(TwoFactorActivate.class), anyString());
     }
-     */
 
+    @Test
+    void testActualizarHorariosUsuario_Success() throws Exception {
+        // Crear un objeto HorariosUsuarioRequest simulado
+        HorariosUsuarioRequest updates = new HorariosUsuarioRequest();
+        updates.setEmailUsuario("user@example.com");
+
+        HorarioAtencionUsuario horario1 = new HorarioAtencionUsuario();
+        horario1.setId(1L);
+        horario1.setHoraInicio(LocalTime.of(9, 0));
+        horario1.setHoraFinal(LocalTime.of(17, 0));
+        HorarioAtencionUsuario horario2 = new HorarioAtencionUsuario();
+        horario2.setId(2L);
+        horario2.setHoraInicio(LocalTime.of(10, 0));
+        horario2.setHoraFinal(LocalTime.of(18, 0));
+        updates.setHorariosAtencionUsuario(Arrays.asList(horario1, horario2));
+
+        // Crear un objeto Usuario simulado
+        Usuario usuario = new Usuario();
+        usuario.setEmail("user@example.com");
+
+        // Simular respuesta del servicio
+        when(usuarioService.actualizarHorariosUsuario(any(HorariosUsuarioRequest.class))).thenReturn(usuario);
+
+        // Realizar la solicitud de actualización de horarios
+        MvcResult result = mockMvc.perform(patch("/api/usuario/private/actualizarHorariosUsuario")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(updates))
+                .characterEncoding("UTF-8"))
+                .andExpect(status().isOk()) // Verificar que el estado de respuesta es 200 OK
+                .andReturn();
+
+        // Convertir la respuesta de String a un objeto JSON
+        String jsonResponse = result.getResponse().getContentAsString();
+        ObjectMapper objectMapper = new ObjectMapper();
+        ApiBaseTransformer response = objectMapper.readValue(jsonResponse, ApiBaseTransformer.class);
+
+        // Verificar los valores en el objeto JSON deserializado
+        assertEquals(200, response.getCode());
+        assertEquals("OK", response.getMessage());
+        Usuario data = objectMapper.convertValue(response.getData(), Usuario.class);
+        assertEquals("user@example.com", data.getEmail());
+
+        // Verificar que el servicio fue llamado correctamente
+        verify(usuarioService, times(1)).actualizarHorariosUsuario(any(HorariosUsuarioRequest.class));
+    }
+
+    @Test
+    void testActualizarHorariosUsuario_Failure() throws Exception {
+        // Crear un objeto HorariosUsuarioRequest simulado
+        HorariosUsuarioRequest updates = new HorariosUsuarioRequest();
+        updates.setEmailUsuario("user@example.com");
+
+        // Simular excepción en el servicio
+        when(usuarioService.actualizarHorariosUsuario(any(HorariosUsuarioRequest.class)))
+                .thenThrow(new Exception("Error al actualizar horarios"));
+
+        // Realizar la solicitud de actualización de horarios
+        mockMvc.perform(patch("/api/usuario/private/actualizarHorariosUsuario")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(updates))
+                .characterEncoding("UTF-8"))
+                .andExpect(status().isBadRequest()) // Verificar que el estado de respuesta es 400 BAD REQUEST
+                .andExpect(jsonPath("$.message").value("Error"))
+                .andExpect(jsonPath("$.error").value("Error al actualizar horarios"));
+
+        // Verificar que el servicio fue llamado correctamente
+        verify(usuarioService, times(1)).actualizarHorariosUsuario(any(HorariosUsuarioRequest.class));
+    }
+
+        @Test
+    void testCrearAyudante_Success() throws Exception {
+        // Configurar el DTO de entrada y el usuario de respuesta
+        Usuario usuario = new Usuario();
+        usuario.setId(1L);
+        usuario.setEmail("ayudante@example.com");
+
+        Rol rolAyudante = new Rol();
+        rolAyudante.setNombre("Ayudante");
+
+        CreateUsuarioDto crearDto = new CreateUsuarioDto();
+        crearDto.setUsuario(usuario);
+        crearDto.setRoles(Collections.singletonList(rolAyudante));
+
+        // Simular la respuesta del servicio
+        when(usuarioService.crearAyudante(any(CreateUsuarioDto.class))).thenReturn(usuario);
+
+        // Realizar la solicitud y verificar la respuesta esperada
+        MvcResult result = mockMvc.perform(post("/api/usuario/private/crearAyudante")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(crearDto)))
+                .andExpect(status().isOk())  // Verifica el estado de la respuesta HTTP
+                .andReturn();
+
+        // Convertir la respuesta a un objeto JSON
+        String jsonResponse = result.getResponse().getContentAsString();
+        ObjectMapper objectMapper = new ObjectMapper();
+        ApiBaseTransformer response = objectMapper.readValue(jsonResponse, ApiBaseTransformer.class);
+
+        // Verificar los valores en el objeto JSON deserializado
+        assertEquals(200, response.getCode());  // Verificar el código de estado
+        assertEquals("OK", response.getMessage());  // Verificar el mensaje
+        Usuario data = objectMapper.convertValue(response.getData(), Usuario.class);  // Extraer el usuario
+        assertEquals("ayudante@example.com", data.getEmail());
+
+        // Verificar que el servicio fue llamado correctamente
+        verify(usuarioService, times(1)).crearAyudante(any(CreateUsuarioDto.class));
+    }
+
+    @Test
+    void testCrearAyudante_EmailYaExiste() throws Exception {
+        // Configurar el DTO de entrada
+        Usuario usuario = new Usuario();
+        usuario.setEmail("ayudante@example.com");
+
+        Rol rolAyudante = new Rol();
+        rolAyudante.setNombre("Ayudante");
+
+        CreateUsuarioDto crearDto = new CreateUsuarioDto();
+        crearDto.setUsuario(usuario);
+        crearDto.setRoles(Collections.singletonList(rolAyudante));
+
+        // Simular un caso en el que el servicio arroje una excepción de email duplicado
+        when(usuarioService.crearAyudante(any(CreateUsuarioDto.class)))
+                .thenThrow(new Exception("El Email ya existe."));
+
+        // Realizar la solicitud y verificar el estado de la respuesta
+        mockMvc.perform(post("/api/usuario/private/crearAyudante")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(crearDto)))
+                .andExpect(status().isBadRequest())  // Verificar que el estado de respuesta es 400 BAD REQUEST
+                .andExpect(jsonPath("$.message").value("Error"))
+                .andExpect(jsonPath("$.error").value("El Email ya existe."));  // Verificar el mensaje de error
+
+        // Verificar que el servicio fue llamado correctamente
+        verify(usuarioService, times(1)).crearAyudante(any(CreateUsuarioDto.class));
+    }
+
+        @Test
+    void testVerificarUsuario_Success() throws Exception {
+        // Configurar el DTO de entrada y la respuesta esperada
+        String codigoVerificacion = "123456";
+        VerifyUserRequest verifyRequest = new VerifyUserRequest(codigoVerificacion);
+        String mensajeExito = "Se verifico tu usuario con exito.";
+
+        // Simular la respuesta del servicio
+        when(usuarioService.verificarUsuario(codigoVerificacion)).thenReturn(mensajeExito);
+
+        // Realizar la solicitud y verificar la respuesta esperada
+        MvcResult result = mockMvc.perform(patch("/api/usuario/public/verificarUsuario")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(verifyRequest)))
+                .andExpect(status().isOk())  // Verifica el estado de la respuesta HTTP
+                .andReturn();
+
+        // Convertir la respuesta a un objeto JSON
+        String jsonResponse = result.getResponse().getContentAsString();
+        ObjectMapper objectMapper = new ObjectMapper();
+        ApiBaseTransformer response = objectMapper.readValue(jsonResponse, ApiBaseTransformer.class);
+
+        // Verificar los valores en el objeto JSON deserializado
+        assertEquals(200, response.getCode());  // Verificar el código de estado
+        assertEquals("OK", response.getMessage());  // Verificar el mensaje
+        assertEquals(mensajeExito, response.getData());  // Verificar el mensaje de éxito en el 'data'
+
+        // Verificar que el servicio fue llamado correctamente
+        verify(usuarioService, times(1)).verificarUsuario(codigoVerificacion);
+    }
+
+    @Test
+    void testVerificarUsuario_CodigoInvalido() throws Exception {
+        // Configurar el DTO de entrada
+        String codigoVerificacion = "invalid-code";
+        VerifyUserRequest verifyRequest = new VerifyUserRequest(codigoVerificacion);
+
+        // Simular que el servicio lanza una excepción de código inválido
+        when(usuarioService.verificarUsuario(codigoVerificacion))
+                .thenThrow(new Exception("Tu código de autorización invalido."));
+
+        // Realizar la solicitud y verificar el estado de la respuesta
+        mockMvc.perform(patch("/api/usuario/public/verificarUsuario")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(verifyRequest)))
+                .andExpect(status().isBadRequest())  // Verificar que el estado de respuesta es 400 BAD REQUEST
+                .andExpect(jsonPath("$.message").value("Error"))
+                .andExpect(jsonPath("$.error").value("Tu código de autorización invalido."));  // Verificar el mensaje de error
+
+        // Verificar que el servicio fue llamado correctamente
+        verify(usuarioService, times(1)).verificarUsuario(codigoVerificacion);
+    }
+
+    @Test
+    void testVerificarUsuario_UsuarioEliminado() throws Exception {
+        // Configurar el DTO de entrada
+        String codigoVerificacion = "deleted-code";
+        VerifyUserRequest verifyRequest = new VerifyUserRequest(codigoVerificacion);
+
+        // Simular que el servicio lanza una excepción de usuario eliminado
+        when(usuarioService.verificarUsuario(codigoVerificacion))
+                .thenThrow(new Exception("Usuario ya ha sido eliminado."));
+
+        // Realizar la solicitud y verificar el estado de la respuesta
+        mockMvc.perform(patch("/api/usuario/public/verificarUsuario")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(verifyRequest)))
+                .andExpect(status().isBadRequest())  // Verificar que el estado de respuesta es 400 BAD REQUEST
+                .andExpect(jsonPath("$.message").value("Error"))
+                .andExpect(jsonPath("$.error").value("Usuario ya ha sido eliminado."));  // Verificar el mensaje de error
+
+        // Verificar que el servicio fue llamado correctamente
+        verify(usuarioService, times(1)).verificarUsuario(codigoVerificacion);
+    }
 }

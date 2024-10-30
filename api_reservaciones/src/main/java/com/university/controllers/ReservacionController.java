@@ -140,12 +140,12 @@ public class ReservacionController {
     @PostMapping("/reservacion/public/cancelarReservacion")
     public ResponseEntity<?> cancelarReservacion(@RequestBody CreateCancelacionDto cancelacionRequest) {
         try {
-            //String resultado = reservacionService.cancelarReservacion(
-                    //cancelacionRequest.getIdReservacion(), cancelacionRequest.getMotivoCancelacion());
-            return ResponseEntity.ok("");
+            String resultado = reservacionService.cancelarReservacion(
+            cancelacionRequest.getIdReservacion(), cancelacionRequest.getMotivoCancelacion(),
+            cancelacionRequest.getFechaCancelacion());
+            return new ApiBaseTransformer(HttpStatus.OK, "Reservacion cancelada exitosamente y factura generada.", resultado, null, null).sendResponse();
         } catch (Exception ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error al cancelar la reservación: " + ex.getMessage());
+            return new ApiBaseTransformer(HttpStatus.INTERNAL_SERVER_ERROR, "Error interno del servidor", null, null, ex.getMessage()).sendResponse();
         }
     }
 }

@@ -3,7 +3,9 @@ package com.university.repositories;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.university.models.Reservacion;
@@ -33,4 +35,10 @@ public interface ReservacionRepository extends CrudRepository<Reservacion, Long>
             String estadoReservacionNombre);
 
     int countByEncargadoAndEstadoReservacion_Nombre(Usuario encargado, String estadoNombre);
+
+     @Query("SELECT COUNT(r) FROM Reservacion r WHERE r.fecha BETWEEN :fechaInicio AND :fechaFin " +
+           "AND (:estado IS NULL OR r.estadoReservacion.nombre = :estado)")
+    Long countByFechaAndEstado(@Param("fechaInicio") LocalDate fechaInicio,
+                               @Param("fechaFin") LocalDate fechaFin,
+                               @Param("estado") String estado);
 }

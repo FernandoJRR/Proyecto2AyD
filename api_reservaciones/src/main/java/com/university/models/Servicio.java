@@ -119,6 +119,10 @@ public class Servicio extends Auditor {
         this.negocio = negocio;
     }
 
+    public Servicio(String nombre) {
+        this.nombre = nombre;
+    }
+
     public Servicio() {
     }
 

@@ -363,7 +363,8 @@ public class Inserts implements ApplicationListener<ContextRefreshedEvent> {
                     null,
                     null,
                     false,
-                    null);
+                    null,
+                    true);
             Usuario usuario = new Usuario(
                     "Carlos",
                     "Pac",

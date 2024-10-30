@@ -47,6 +47,11 @@ public class JwtGeneratorService {
         claims.put("roles", userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList()));
+
+        for (String entry : claims.keySet()) {
+            System.out.println("COSA");
+            System.out.println(entry);
+        }
         return createToken(claims, userDetails.getUsername());
     }
 

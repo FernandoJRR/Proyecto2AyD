@@ -24,6 +24,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(value = "api", produces =  MediaType.APPLICATION_JSON_VALUE + ";charset=UTF-8")
 @Tag(name = "Servicios", description = "Operaciones para administrar los Servicios")
@@ -31,6 +33,22 @@ public class ServicioController {
 
     @Autowired
     private ServicioService servicioService;
+
+    @Operation(summary = "Obtener todos los servicios", description = "Obtiene la información de todos los roles del sistema.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Roles encontrados", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Servicio.class)) }),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+    })
+    @GetMapping("/recurso/public/getServicios")
+    public ResponseEntity<?> getServicios() {
+        try {
+            List<Servicio> data = servicioService.getServicios();
+            return new ApiBaseTransformer(HttpStatus.OK, "OK", data, null, null).sendResponse();
+        } catch (Exception ex) {
+            return new ApiBaseTransformer(HttpStatus.BAD_REQUEST, "Error", null, null, ex.getMessage()).sendResponse();
+        }
+    }
 
     @Operation(summary = "Obtener servicio por ID", description = "Obtiene la información de un servicio con el ID proporcionado.")
     @ApiResponses(value = {

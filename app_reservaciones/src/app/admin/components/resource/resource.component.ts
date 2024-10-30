@@ -1,31 +1,28 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ResourceService } from '../../services/resource.service';
-import { MatDialog } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { DialogComponent } from '../../../utils/dialog/dialog.component';
-import { Resource } from '../../../models/Resource';
-import { Router } from '@angular/router';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
+import { Router } from '@angular/router';
+import { ResourceService } from '../../services/resource.service';
+import { Resource } from '../../../models/Resource';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogComponent } from '../../../utils/dialog/dialog.component';
 
 @Component({
   selector: 'app-resource',
   templateUrl: './resource.component.html',
-  styleUrls: ['./resource.component.css']
+  styleUrls: ['./resource.component.css'],
 })
 export class ResourceComponent implements OnInit {
-  displayedColumns: string[] = ['id', 'nombre', 'actions'];
+  displayedColumns: string[] = ['id', 'nombre', 'acciones'];
   dataSource: MatTableDataSource<Resource> = new MatTableDataSource();
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-
   constructor(
     private resourceService: ResourceService,
     private router: Router,
-    private snackBar: MatSnackBar,
     private dialog: MatDialog
   ) {}
 
@@ -36,13 +33,11 @@ export class ResourceComponent implements OnInit {
   loadResources(): void {
     this.resourceService.getAllResources().subscribe({
       next: (resources) => {
-        console.log('Recursos obtenidos:', resources); // Verifica la respuesta aquí
+        console.log('Recursos obtenidos:', resources);
         this.dataSource.data = resources;
       },
       error: () => {
-        this.snackBar.open('Error al cargar los recursos', 'Cerrar', {
-          duration: 3000,
-        });
+        this.openErrorDialog('Error al cargar los recursos', 'No se pudieron cargar los recursos. Intente nuevamente.');
       },
     });
   }
@@ -56,38 +51,42 @@ export class ResourceComponent implements OnInit {
   }
 
   createResource(): void {
-    
+    this.router.navigate(['/admin/resource-create']);
   }
 
-  editResource(id: number): void {
-    this.router.navigate(['/admin/resources/edit', id]);
+  editResource(resource: Resource): void {
+    this.router.navigate(['/admin/resource-edit', resource.id]);
   }
 
   deleteResource(id: number): void {
-    const dialogRef = this.dialog.open(DialogComponent, {
+    const confirmDialog = this.dialog.open(DialogComponent, {
       data: {
-        title: "Confirmar eliminación",
-        description: "¿Estás seguro de que deseas eliminar este recurso?",
-        backgroundColor: 'gray',
-      }
+        title: 'Confirmar eliminación',
+        description: '¿Estás seguro de que deseas eliminar este recurso?',
+        backgroundColor: 'red',
+      },
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    confirmDialog.afterClosed().subscribe((result) => {
       if (result) {
         this.resourceService.deleteResource(id).subscribe({
-          next: () => this.loadResources(),
-          error: () => this.showErrorDialog("Error al eliminar el recurso")
+          next: () => {
+            this.loadResources();
+            this.openSuccessDialog('Recurso eliminado con éxito', 'El recurso ha sido eliminado correctamente.');
+          },
+          error: () => {
+            this.openErrorDialog('Error al eliminar el recurso', 'No se pudo eliminar el recurso. Intente nuevamente.');
+          },
         });
       }
     });
   }
 
-  private showErrorDialog(message: string): void {
-    this.dialog.open(DialogComponent, {
-      data: {
-        title: "Error",
-        description: message
-      }
-    });
+  openErrorDialog(title: string, description: string): void {
+    this.dialog.open(DialogComponent, { data: { title, description, backgroundColor: 'red' } });
+  }
+
+  openSuccessDialog(title: string, description: string): void {
+    this.dialog.open(DialogComponent, { data: { title, description, backgroundColor: 'green' } });
   }
 }

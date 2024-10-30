@@ -8,13 +8,10 @@ import { Resource } from '../../../models/Resource';
 @Component({
   selector: 'app-resource-create',
   templateUrl: './resource-create.component.html',
-  styleUrls: ['./resource-create.component.css']
+  styleUrls: ['./resource-create.component.css'],
 })
 export class ResourceCreateComponent {
-  resource: Resource = {
-    id: 0,
-    nombre: ''
-  };
+  resource: Resource = { id: 0, nombre: '' };
 
   constructor(
     private resourceService: ResourceService,
@@ -23,30 +20,41 @@ export class ResourceCreateComponent {
   ) {}
 
   onSubmit(): void {
-    if (!this.resource.nombre) return;
+    if (!this.resource.nombre) {
+      this.dialog.open(DialogComponent, {
+        data: {
+          title: 'Campo Requerido',
+          description: 'Debe ingresar un nombre para el recurso.',
+          backgroundColor: 'red',
+        },
+      });
+      return;
+    }
 
-    this.resourceService.createResource(this.resource).subscribe(
-      () => {
+    this.resourceService.createResource(this.resource).subscribe({
+      next: () => {
         this.dialog.open(DialogComponent, {
           data: {
-            title: 'Recurso Creado',
-            description: 'El recurso se ha creado exitosamente.',
+            title: 'Éxito',
+            description: 'Recurso creado con éxito.',
+            backgroundColor: 'green',
           },
         });
-        this.router.navigate(['/admin/resource']);
+        this.router.navigate(['/admin/resources']);
       },
-      () => {
+      error: () => {
         this.dialog.open(DialogComponent, {
           data: {
             title: 'Error',
-            description: 'No se pudo crear el recurso.',
+            description: 'Hubo un problema al crear el recurso.',
+            backgroundColor: 'red',
           },
         });
-      }
-    );
+      },
+    });
   }
 
   onCancel(): void {
-    this.router.navigate(['/admin/resource']);
+    this.router.navigate(['/admin/resources']);
   }
 }

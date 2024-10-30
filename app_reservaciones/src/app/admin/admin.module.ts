@@ -15,24 +15,40 @@ import { BusinessCreateComponent } from './components/business-create/business-c
 import { ResourceComponent } from './components/resource/resource.component';
 import { ResourceCreateComponent } from './components/resource-create/resource-create.component';
 import { ResourceEditComponent } from './components/resource-edit/resource-edit.component';
+import { ServiceCreateComponent } from './components/service-create/service-create.component';
+import { ServiceEditComponent } from './components/service-edit/service-edit.component';
+import { ServiceComponent } from './components/service/service.component';
 
 @NgModule({
   declarations: [
     //Views
     AdminViewComponent,
-    //Components,
+    //Components
+    //Permissions
     PermissionComponent,
-    //ServiceTypeComponent,
-    //ResourceUnit,
-    //Service,
-    RoleComponent,
-    UserComponent,
+    //Businesses
     BusinessComponent,
-    BusinessEditComponent,
     BusinessCreateComponent,
+    BusinessEditComponent,
+    //Resources
     ResourceComponent,
     ResourceCreateComponent,
     ResourceEditComponent,
+    //Services
+    ServiceComponent,
+    ServiceCreateComponent,
+    ServiceEditComponent,
+
+    //------------------------------
+    
+    //Roles
+    RoleComponent,
+    //RoleCreateComponent,
+    //RoleEditComponent,
+    //Users
+    UserComponent,
+    //UserCreateComponent,
+    //UserEditComponent,
   ],
   imports: [
     CommonModule,

@@ -119,6 +119,10 @@ public class Servicio extends Auditor {
         this.negocio = negocio;
     }
 
+    public Servicio(String nombre) {
+        this.nombre = nombre;
+    }
+
     public Servicio() {
     }
 
@@ -200,5 +204,13 @@ public class Servicio extends Auditor {
 
     public void setTrabajadores_simultaneos(Integer trabajadores_simultaneos) {
         this.trabajadores_simultaneos = trabajadores_simultaneos;
+    }
+
+    public Float getCosto() {
+        return costo;
+    }
+
+    public void setCosto(Float costo) {
+        this.costo = costo;
     }
 }

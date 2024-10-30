@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.21.3.final using JasperReports Library version 6.21.3-4a3078d20785ebe464f18037d738d12fc98c13cf  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="FacturaAyD" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="444dfd54-0454-4724-bd93-f451cbb2673b">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<subDataset name="TablaDesgloce" uuid="e857e698-be71-4bec-8b1a-f636fe9842ff">
+		<queryString>
+			<![CDATA[]]>
+		</queryString>
+		<field name="cantidad" class="java.lang.Integer"/>
+		<field name="precio" class="java.lang.String"/>
+		<field name="producto" class="java.lang.String"/>
+		<field name="descripcion" class="java.lang.String"/>
+		<field name="total" class="java.lang.String"/>
+		<field name="impuesto" class="java.lang.String"/>
+	</subDataset>
+	<parameter name="nombre_tienda" class="java.lang.String"/>
+	<parameter name="imagen_tienda" class="java.io.InputStream"/>
+	<parameter name="tablaDesgloce" class="net.sf.jasperreports.engine.data.JRBeanArrayDataSource"/>
+	<parameter name="total" class="java.lang.String"/>
+	<parameter name="nombreComprador" class="java.lang.String"/>
+	<parameter name="fecha" class="java.lang.String"/>
+	<parameter name="noItems" class="java.lang.String"/>
+	<parameter name="direccion_tienda" class="java.lang.String"/>
+	<parameter name="cuota_pago_entrega" class="java.lang.String"/>
+	<parameter name="nit" class="java.lang.String"/>
+	<parameter name="nombreServicio" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="96" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="80" width="556" height="10" backcolor="#54B9DE" uuid="3ec708d9-d4cf-4e95-877d-43aa8e5572da">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.0" lineStyle="Double" lineColor="#050505"/>
+				</graphicElement>
+			</rectangle>
+			<textField textAdjust="ScaleFont">
+				<reportElement x="411" y="0" width="145" height="20" uuid="3fa8437f-002c-423e-ae14-04ed2d7d19d1"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{nombre_tienda}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="210" y="40" width="130" height="40" uuid="f55584f5-3195-4aed-af5f-4134c1123ad3"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="26" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Factura]]></text>
+			</staticText>
+			<image>
+				<reportElement x="0" y="0" width="70" height="70" uuid="3ff28dcb-f21c-419d-95e3-8aaead733b00"/>
+				<imageExpression><![CDATA[$P{imagen_tienda}]]></imageExpression>
+			</image>
+		</band>
+	</title>
+	<detail>
+		<band height="362" splitType="Stretch">
+			<staticText>
+				<reportElement x="80" y="20" width="120" height="20" uuid="14a5f710-8da9-4110-a418-fec9d4e80fb5"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Nombre del cliente:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="80" y="140" width="40" height="20" uuid="840c18a2-9473-4d52-99d9-ef65b321ab03"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Total:]]></text>
+			</staticText>
+			<textField textAdjust="ScaleFont">
+				<reportElement x="120" y="140" width="360" height="20" uuid="d5e3b920-9b76-400b-9f01-5f6e93601a8d"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{total}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="ScaleFont">
+				<reportElement x="200" y="20" width="280" height="20" uuid="3b6de951-25ee-4909-a753-15570c6896f5"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{nombreComprador}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="80" y="50" width="30" height="20" uuid="eeffb8f8-d5da-4655-a3c7-3729aa7bfb79"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[NIT:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="110" y="50" width="370" height="20" uuid="34af8a9e-aab1-43d4-8fe9-8f7a45b05583"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{nit}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="210" y="80" width="270" height="23" uuid="8e5703c9-072f-4835-92c8-cfa11f07b665"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{fecha}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="80" y="81" width="130" height="20" uuid="7fcc2dfb-8120-4ecb-82d0-6144bdc6245c"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Fecha de Reservacion:]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="80" y="350" width="400" height="10" backcolor="#54B9DE" uuid="583e0121-541e-4401-abd0-52977c3056a6">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.0" lineStyle="Double" lineColor="#050505"/>
+				</graphicElement>
+			</rectangle>
+			<staticText>
+				<reportElement x="80" y="110" width="130" height="20" uuid="344dc355-f714-46bd-b673-001c34fa5e86"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Servicio Reservado:]]></text>
+			</staticText>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="210" y="110" width="270" height="23" uuid="c8484474-55b3-4e02-ac32-e94aec6ad48a"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{nombreServicio}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="27" splitType="Stretch"/>
+	</pageFooter>
+</jasperReport>

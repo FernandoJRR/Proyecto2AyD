@@ -541,7 +541,7 @@ public class UsuarioService extends com.university.services.Service {
     public List<Usuario> getUsuariosByRol(Rol rol) throws Exception {
         // validamos
         this.validarAtributo(rol, "nombre");
-        // traer rol AYUDANTE
+
         Rol rolSearch = this.rolService.getRol(rol.getNombre());
         // buscar todos los usuarios por rol
         return this.ignorarEliminados(this.usuarioRolRepository.findUsuariosByRolNombre(

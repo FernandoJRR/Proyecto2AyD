@@ -46,7 +46,7 @@ public class ServicioService {
         DuracionServicio duracionServicio = servicioDto.getDuracionServicio();
         List<HorarioAtencionServicio> horariosAtencionServicio = servicioDto.getHorariosAtencionServicio();
 
-        if (duracionServicio.equals(null)) {
+        if (duracionServicio == null) {
             throw new Exception("Debes asignar una duracion al servicio");
         }
 
@@ -72,7 +72,7 @@ public class ServicioService {
         return servicioCreado;
     }
 
-    public Servicio updateRol(Long id, Servicio servicio) {
+    public Servicio updateServicio(Long id, Servicio servicio) {
         Servicio servicioExistente = servicioRepository.findById(id).orElse(null);
         if (servicioExistente != null) {
             return servicioRepository.save(servicioExistente);

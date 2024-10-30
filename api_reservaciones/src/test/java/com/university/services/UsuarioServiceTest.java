@@ -1,7 +1,9 @@
 package com.university.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -19,13 +21,18 @@ import static org.mockito.Mockito.when;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
+import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -38,6 +45,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.university.models.DiaAtencion;
+import com.university.models.HorarioAtencionUsuario;
 import com.university.models.Permiso;
 import com.university.models.Rol;
 import com.university.models.Usuario;
@@ -45,8 +54,10 @@ import com.university.models.PermisoRol;
 import com.university.models.UsuarioRol;
 import com.university.models.dto.LoginDto;
 import com.university.models.request.PasswordChange;
+import com.university.models.request.TwoFactorActivate;
 import com.university.models.request.HorariosUsuarioRequest;
 import com.university.repositories.UsuarioRepository;
+import com.university.repositories.UsuarioRolRepository;
 import com.university.services.authentication.AuthenticationService;
 import com.university.services.authentication.JwtGeneratorService;
 import com.university.tools.Encriptador;
@@ -77,6 +88,9 @@ public class UsuarioServiceTest {
 
     @Mock
     private MailService mailService;
+
+    @Mock
+    private UsuarioRolRepository usuarioRolRepository;
 
     @BeforeEach
     void setUp() {
@@ -1012,5 +1026,343 @@ public class UsuarioServiceTest {
 
         // Simular que no se llamó al servicio de correo ya que falló la asignación del código
         verify(mailService, times(0)).enviarCorreoEnSegundoPlano(anyString(), anyString(), anyInt());
+    }
+
+     @Test
+    void testGetUsuariosByRol_Success() throws Exception {
+        Rol rol = new Rol();
+        rol.setNombre("AYUDANTE");
+
+        Usuario usuario1 = new Usuario();
+        usuario1.setEmail("user1@example.com");
+
+        Usuario usuario2 = new Usuario();
+        usuario2.setEmail("user2@example.com");
+
+        List<Usuario> usuarios = List.of(usuario1, usuario2);
+
+        when(rolService.getRol("AYUDANTE")).thenReturn(rol);
+        when(usuarioRolRepository.findUsuariosByRolNombre("AYUDANTE")).thenReturn(usuarios);
+
+        List<Usuario> result = usuarioService.getUsuariosByRol(rol);
+
+        assertEquals(2, result.size());
+        assertEquals("user1@example.com", result.get(0).getEmail());
+        assertEquals("user2@example.com", result.get(1).getEmail());
+
+        verify(rolService, times(1)).getRol("AYUDANTE");
+        verify(usuarioRolRepository, times(1)).findUsuariosByRolNombre("AYUDANTE");
+    }
+
+    @Test
+    void testGetUsuariosByRol_InvalidRole() throws Exception {
+        Rol rol = new Rol();
+        rol.setNombre(null);  // Simulamos un rol con nombre nulo
+
+        // Simulamos una violación de validación para el campo `nombre`
+        ConstraintViolation<Rol> violation = mock(ConstraintViolation.class);
+        when(violation.getMessage()).thenReturn("El nombre del rol no puede ser nulo");
+        Set<ConstraintViolation<Rol>> violations = new HashSet<>();
+        violations.add((ConstraintViolation<Rol>) violation);
+
+        // Configuramos el validator para devolver esta violación cuando se valida `nombre`
+        when(validator.validateProperty(rol, "nombre")).thenReturn(violations);
+
+        // Llamamos al método y verificamos que lanza la excepción correcta
+        Exception exception = assertThrows(Exception.class, () -> {
+            usuarioService.getUsuariosByRol(rol);
+        });
+
+        assertEquals("El nombre del rol no puede ser nulo\n", exception.getMessage());
+    }
+
+    @Test
+    void testActualizarHorariosUsuario_Success() throws Exception {
+        Usuario usuario = new Usuario();
+        usuario.setEmail("user@example.com");
+
+        HorariosUsuarioRequest horariosRequest = new HorariosUsuarioRequest();
+        horariosRequest.setEmailUsuario("user@example.com");
+
+        HorarioAtencionUsuario horario1 = new HorarioAtencionUsuario();
+        horario1.setHoraInicio(LocalTime.of(8, 0));
+        horario1.setHoraFinal(LocalTime.of(10, 0));
+        horario1.setDiaAtencion(new DiaAtencion("Lunes"));
+
+        HorarioAtencionUsuario horario2 = new HorarioAtencionUsuario();
+        horario2.setHoraInicio(LocalTime.of(14, 0));
+        horario2.setHoraFinal(LocalTime.of(16, 0));
+        horario2.setDiaAtencion(new DiaAtencion("Martes"));
+
+        List<HorarioAtencionUsuario> horarios = List.of(horario1, horario2);
+        horariosRequest.setHorariosAtencionUsuario(horarios);
+
+        when(usuarioRepository.findByEmail("user@example.com")).thenReturn(Optional.of(usuario));
+        when(usuarioRepository.save(any(Usuario.class))).thenReturn(usuario);
+
+        Usuario result = usuarioService.actualizarHorariosUsuario(horariosRequest);
+
+        assertNotNull(result);
+        assertEquals(2, result.getHorariosAtencionUsuario().size());
+        assertEquals("08:00", result.getHorariosAtencionUsuario().get(0).getHoraInicio().toString());
+        assertEquals("Lunes", result.getHorariosAtencionUsuario().get(0).getDiaAtencion().getNombre());
+
+        verify(usuarioRepository, times(1)).findByEmail("user@example.com");
+        verify(usuarioRepository, times(1)).save(usuario);
+    }
+
+    @Test
+    void testActualizarHorariosUsuario_UserNotFound() {
+        HorariosUsuarioRequest horariosRequest = new HorariosUsuarioRequest();
+        horariosRequest.setEmailUsuario("user@example.com");
+
+        when(usuarioRepository.findByEmail("user@example.com")).thenReturn(Optional.empty());
+
+        Exception exception = assertThrows(Exception.class, () -> {
+            usuarioService.actualizarHorariosUsuario(horariosRequest);
+        });
+
+        assertEquals("Usuario no encontrado.", exception.getMessage());
+        verify(usuarioRepository, times(1)).findByEmail("user@example.com");
+    }
+
+    @Test
+    void testActualizarHorariosUsuario_UserDeleted() {
+        Usuario usuario = new Usuario();
+        usuario.setEmail("user@example.com");
+        usuario.setDeletedAt(Instant.now()); // Usuario eliminado
+
+        HorariosUsuarioRequest horariosRequest = new HorariosUsuarioRequest();
+        horariosRequest.setEmailUsuario("user@example.com");
+
+        when(usuarioRepository.findByEmail("user@example.com")).thenReturn(Optional.of(usuario));
+
+        Exception exception = assertThrows(Exception.class, () -> {
+            usuarioService.actualizarHorariosUsuario(horariosRequest);
+        });
+
+        assertEquals("Usuario eliminado.", exception.getMessage());
+        verify(usuarioRepository, times(1)).findByEmail("user@example.com");
+    }
+
+    @Test
+    void testVerificarUsuario_CodigoInvalido() {
+        String codigoVerificacion = "invalid-code";
+
+        // Simulamos que el código de verificación no se encuentra
+        when(usuarioRepository.findByCodigoVerificacion(codigoVerificacion)).thenReturn(Optional.empty());
+
+        // Verificamos que se lanza la excepción con el mensaje esperado
+        Exception exception = assertThrows(Exception.class, () -> {
+            usuarioService.verificarUsuario(codigoVerificacion);
+        });
+
+        assertEquals("Tu código de autorización invalido.", exception.getMessage());
+        verify(usuarioRepository, times(1)).findByCodigoVerificacion(codigoVerificacion);
+    }
+
+    @Test
+    void testVerificarUsuario_UsuarioEliminado() {
+        String codigoVerificacion = "valid-code";
+
+        // Simulamos un usuario que ha sido eliminado
+        Usuario usuario = new Usuario();
+        usuario.setDeletedAt(Instant.now());
+
+        when(usuarioRepository.findByCodigoVerificacion(codigoVerificacion)).thenReturn(Optional.of(usuario));
+
+        // Verificamos que se lanza la excepción con el mensaje esperado
+        Exception exception = assertThrows(Exception.class, () -> {
+            usuarioService.verificarUsuario(codigoVerificacion);
+        });
+
+        assertEquals("Usuario ya ha sido eliminado.", exception.getMessage());
+        verify(usuarioRepository, times(1)).findByCodigoVerificacion(codigoVerificacion);
+    }
+
+    @Test
+    void testVerificarUsuario_FalloAlActualizar() {
+        String codigoVerificacion = "valid-code";
+
+        // Simulamos un usuario válido
+        Usuario usuario = new Usuario();
+        usuario.setId(1L);
+        usuario.setCodigoVerificacion(codigoVerificacion);
+
+        // Simulamos que el usuario se encuentra
+        when(usuarioRepository.findByCodigoVerificacion(codigoVerificacion)).thenReturn(Optional.of(usuario));
+
+        // Simulamos que la actualización falla (retorna un usuario con ID diferente)
+        Usuario usuarioActualizado = new Usuario();
+        usuarioActualizado.setId(2L);
+        when(usuarioRepository.save(any(Usuario.class))).thenReturn(usuarioActualizado);
+
+        // Verificamos que se lanza la excepción con el mensaje esperado
+        Exception exception = assertThrows(Exception.class, () -> {
+            usuarioService.verificarUsuario(codigoVerificacion);
+        });
+
+        assertEquals("No pudimos verificar tu usuario, inténtalo más tarde.", exception.getMessage());
+        verify(usuarioRepository, times(1)).findByCodigoVerificacion(codigoVerificacion);
+        verify(usuarioRepository, times(1)).save(any(Usuario.class));
+    }
+
+    @Test
+    void testVerificarUsuario_Exitoso() throws Exception {
+        String codigoVerificacion = "valid-code";
+
+        // Simulamos un usuario válido
+        Usuario usuario = new Usuario();
+        usuario.setId(1L);
+        usuario.setCodigoVerificacion(codigoVerificacion);
+
+        when(usuarioRepository.findByCodigoVerificacion(codigoVerificacion)).thenReturn(Optional.of(usuario));
+
+        // Simulamos que la actualización es exitosa
+        ArgumentCaptor<Usuario> usuarioCaptor = ArgumentCaptor.forClass(Usuario.class);
+        when(usuarioRepository.save(usuarioCaptor.capture())).thenReturn(usuario);
+
+        String resultado = usuarioService.verificarUsuario(codigoVerificacion);
+
+        // Verificamos que el mensaje de éxito sea el esperado
+        assertEquals("Se verifico tu usuario con exito.", resultado);
+
+        // Verificamos que los cambios en el usuario fueron los esperados
+        Usuario usuarioActualizado = usuarioCaptor.getValue();
+        assertNull(usuarioActualizado.getCodigoVerificacion());
+        assertTrue(usuarioActualizado.isVerificado());
+
+        // Verificamos interacciones con el repositorio
+        verify(usuarioRepository, times(1)).findByCodigoVerificacion(codigoVerificacion);
+        verify(usuarioRepository, times(1)).save(usuario);
+    }
+
+    @Test
+    void testCambiarTwoFactor_ActivacionYaHabilitada() {
+        TwoFactorActivate cambio = new TwoFactorActivate();
+        cambio.setId(1L);
+        cambio.setActivacion(true);
+        String usuarioString = "authUser@example.com";
+
+        Usuario usuario = new Usuario();
+        usuario.setId(1L);
+        usuario.setTwoFactorEnabled(true);
+
+        this.simulateAuthenticatedUser(usuarioString);
+
+        when(usuarioRepository.findById(1L)).thenReturn(Optional.of(usuario));
+
+        Exception exception = assertThrows(Exception.class, () -> {
+            usuarioService.cambiarTwoFactor(cambio, usuarioString);
+        });
+
+        assertEquals("Esto ya esta activado.", exception.getMessage());
+        verify(usuarioRepository, times(1)).findById(1L);
+    }
+
+    @Test
+    void testCambiarTwoFactor_DesactivacionYaDeshabilitada() {
+        TwoFactorActivate cambio = new TwoFactorActivate();
+        cambio.setId(1L);
+        cambio.setActivacion(false);
+        String usuarioString = "authUser@example.com";
+
+        Usuario usuario = new Usuario();
+        usuario.setId(1L);
+        usuario.setTwoFactorEnabled(false);
+
+        this.simulateAuthenticatedUser(usuarioString);
+
+        when(usuarioRepository.findById(1L)).thenReturn(Optional.of(usuario));
+
+        Exception exception = assertThrows(Exception.class, () -> {
+            usuarioService.cambiarTwoFactor(cambio, usuarioString);
+        });
+
+        assertEquals("Esto ya esta desactivado.", exception.getMessage());
+        verify(usuarioRepository, times(1)).findById(1L);
+    }
+
+    @Test
+    void testCambiarTwoFactor_ErrorAlActualizar() {
+        TwoFactorActivate cambio = new TwoFactorActivate();
+        cambio.setId(1L);
+        cambio.setActivacion(true);
+        String usuarioString = "authUser@example.com";
+
+        Usuario usuario = new Usuario();
+        usuario.setId(1L);
+        usuario.setTwoFactorEnabled(false);
+
+        this.simulateAuthenticatedUser(usuarioString);
+
+        when(usuarioRepository.findById(1L)).thenReturn(Optional.of(usuario));
+
+        // Simula un fallo en la actualización (retorna un usuario con ID 0)
+        Usuario usuarioGuardado = new Usuario();
+        usuarioGuardado.setId(0L);
+        when(usuarioRepository.save(any(Usuario.class))).thenReturn(usuarioGuardado);
+
+        Exception exception = assertThrows(Exception.class, () -> {
+            usuarioService.cambiarTwoFactor(cambio, usuarioString);
+        });
+
+        assertEquals("Error al tratar de actualizar el two factor.", exception.getMessage());
+        verify(usuarioRepository, times(1)).findById(1L);
+        verify(usuarioRepository, times(1)).save(usuario);
+    }
+
+    @Test
+    void testCambiarTwoFactor_ActivacionExitosa() throws Exception {
+        TwoFactorActivate cambio = new TwoFactorActivate();
+        cambio.setId(1L);
+        cambio.setActivacion(true);
+        String usuarioString = "authUser@example.com";
+
+        Usuario usuario = new Usuario();
+        usuario.setId(1L);
+        usuario.setTwoFactorEnabled(false);
+
+        this.simulateAuthenticatedUser(usuarioString);
+
+        when(usuarioRepository.findById(1L)).thenReturn(Optional.of(usuario));
+
+        Usuario usuarioGuardado = new Usuario();
+        usuarioGuardado.setId(1L);
+        usuarioGuardado.setTwoFactorEnabled(true);
+        when(usuarioRepository.save(any(Usuario.class))).thenReturn(usuarioGuardado);
+
+        String resultado = usuarioService.cambiarTwoFactor(cambio, usuarioString);
+
+        assertEquals("Se activo el two factor con exito", resultado);
+        verify(usuarioRepository, times(1)).findById(1L);
+        verify(usuarioRepository, times(1)).save(usuario);
+    }
+
+    @Test
+    void testCambiarTwoFactor_DesactivacionExitosa() throws Exception {
+        TwoFactorActivate cambio = new TwoFactorActivate();
+        cambio.setId(1L);
+        cambio.setActivacion(false);
+        String usuarioString = "authUser@example.com";
+
+        Usuario usuario = new Usuario();
+        usuario.setId(1L);
+        usuario.setTwoFactorEnabled(true);
+
+        this.simulateAuthenticatedUser(usuarioString);
+
+        when(usuarioRepository.findById(1L)).thenReturn(Optional.of(usuario));
+
+        Usuario usuarioGuardado = new Usuario();
+        usuarioGuardado.setId(1L);
+        usuarioGuardado.setTwoFactorEnabled(false);
+        when(usuarioRepository.save(any(Usuario.class))).thenReturn(usuarioGuardado);
+
+        String resultado = usuarioService.cambiarTwoFactor(cambio, usuarioString);
+
+        assertEquals("Se desactivo el two factor con exito", resultado);
+        verify(usuarioRepository, times(1)).findById(1L);
+        verify(usuarioRepository, times(1)).save(usuario);
     }
 }

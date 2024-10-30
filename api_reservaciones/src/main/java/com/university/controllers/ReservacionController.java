@@ -6,14 +6,17 @@ import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.university.models.EstadoReservacion;
@@ -23,6 +26,7 @@ import com.university.models.Reservacion;
 import com.university.models.request.CreateCancelacionDto;
 import com.university.models.request.CreateReservacionDto;
 import com.university.services.EstadoReservacionService;
+import com.university.services.FacturaService;
 import com.university.services.MetodoPagoService;
 import com.university.services.ReservacionService;
 import com.university.transformers.ApiBaseTransformer;
@@ -47,6 +51,8 @@ public class ReservacionController {
     private EstadoReservacionService estadoReservacionService;
     @Autowired
     private MetodoPagoService metodoPagoService;
+    @Autowired
+    private FacturaService facturaService;
 
     @Operation(summary = "Obtener todos los estados de reservacion", description = "Obtiene la información de todos los estados de reservacion.")
     @ApiResponses(value = {
@@ -140,12 +146,81 @@ public class ReservacionController {
     @PostMapping("/reservacion/public/cancelarReservacion")
     public ResponseEntity<?> cancelarReservacion(@RequestBody CreateCancelacionDto cancelacionRequest) {
         try {
-            //String resultado = reservacionService.cancelarReservacion(
-                    //cancelacionRequest.getIdReservacion(), cancelacionRequest.getMotivoCancelacion());
-            return ResponseEntity.ok("");
+            String resultado = reservacionService.cancelarReservacion(
+            cancelacionRequest.getIdReservacion(), cancelacionRequest.getMotivoCancelacion(),
+            cancelacionRequest.getFechaCancelacion());
+            return new ApiBaseTransformer(HttpStatus.OK, "Reservacion cancelada exitosamente y factura generada.", resultado, null, null).sendResponse();
         } catch (Exception ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error al cancelar la reservación: " + ex.getMessage());
+            return new ApiBaseTransformer(HttpStatus.INTERNAL_SERVER_ERROR, "Error interno del servidor", null, null, ex.getMessage()).sendResponse();
+        }
+    }
+
+    @Operation(summary = "Obtiene una factura en pdf")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Se obtiene una factura en pdf"),
+        @ApiResponse(responseCode = "400", description = "Error en cualquier parte de la busqueda")
+    })
+    @GetMapping("/reservacion/public/factura/{id}")
+    @ResponseBody
+    public ResponseEntity<?> getFactura(@PathVariable Long id) {
+        try {
+            byte[] factura = facturaService.getFactura(id);
+            // Configuramos los headers de la respuesta
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_PDF);
+            headers.setContentDispositionFormData("inline", "Factura.pdf");
+            // Devolvemos el PDF en la respuesta HTTP
+            return new ResponseEntity<>(factura, headers, HttpStatus.OK);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return new ApiBaseTransformer(HttpStatus.BAD_REQUEST,
+                    null, null, null, ex.getMessage()).sendResponse();
+        }
+    }
+
+    @Operation(summary = "Obtiene una factura de una cancelacion en pdf")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Se obtiene una factura en pdf"),
+        @ApiResponse(responseCode = "400", description = "Error en cualquier parte de la busqueda")
+    })
+    @GetMapping("/reservacion/public/cancelacion/{id}")
+    @ResponseBody
+    public ResponseEntity<?> getCancelacion(@PathVariable Long id) {
+        try {
+            byte[] factura = facturaService.getFacturaCancelacion(id);
+            // Configuramos los headers de la respuesta
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_PDF);
+            headers.setContentDispositionFormData("inline", "FacturaCancelacion.pdf");
+            // Devolvemos el PDF en la respuesta HTTP
+            return new ResponseEntity<>(factura, headers, HttpStatus.OK);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return new ApiBaseTransformer(HttpStatus.BAD_REQUEST,
+                    null, null, null, ex.getMessage()).sendResponse();
+        }
+    }
+
+    @Operation(summary = "Obtiene un comprobante de reservacion en pdf")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Se obtiene un comprobante en pdf"),
+        @ApiResponse(responseCode = "400", description = "Error en cualquier parte de la busqueda")
+    })
+    @GetMapping("/reservacion/public/comprobante/{id}")
+    @ResponseBody
+    public ResponseEntity<?> getComprobante(@PathVariable Long id) {
+        try {
+            byte[] comprobante = reservacionService.getComprobante(id);
+            // Configuramos los headers de la respuesta
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_PDF);
+            headers.setContentDispositionFormData("inline", "FacturaCancelacion.pdf");
+            // Devolvemos el PDF en la respuesta HTTP
+            return new ResponseEntity<>(comprobante, headers, HttpStatus.OK);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return new ApiBaseTransformer(HttpStatus.BAD_REQUEST,
+                    null, null, null, ex.getMessage()).sendResponse();
         }
     }
 }

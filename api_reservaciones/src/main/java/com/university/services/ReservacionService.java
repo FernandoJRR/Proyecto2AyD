@@ -9,6 +9,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 import java.util.Comparator;
@@ -37,6 +38,7 @@ import com.university.repositories.ReservacionRepository;
 import com.university.repositories.ServicioRepository;
 import com.university.repositories.UnidadRecursoRepository;
 import com.university.repositories.UsuarioRepository;
+import com.university.services.jasper.ComprobanteImprimible;
 
 @Service
 public class ReservacionService {
@@ -61,6 +63,8 @@ public class ReservacionService {
     private FacturaRepository facturaRepository;
     @Autowired
     private CancelacionRepository cancelacionRepository;
+    @Autowired
+    private ComprobanteImprimible comprobanteImprimible;
 
     /**
      * Método para crear una reservación
@@ -193,6 +197,25 @@ public class ReservacionService {
         return "Reservación cancelada exitosamente y factura generada.";
     }
 
+    public Reservacion getReservacion(Long id) throws Exception {
+        if (id == null || id <= 0) {
+            throw new Exception("Id invalido.");
+        }
+
+        Optional<Reservacion> reservacionSearch = this.reservacionRepository.findById(id);
+
+        if (reservacionSearch.isEmpty()) {
+            throw new Exception("Reservacion no encontrada.");
+        }
+
+        return reservacionSearch.get();
+    }
+
+    public byte[] getComprobante(Long id) throws Exception {
+        Reservacion reservacion = this.getReservacion(id);
+
+        return this.comprobanteImprimible.init(reservacion);
+    }
 
     /**
      * Método para crear un pago con el método de pago, número y monto

@@ -5,26 +5,21 @@ import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
-import com.university.models.Factura;
 import com.university.models.Reservacion;
 import com.university.tools.ManejadorFecha;
 
-import net.sf.jasperreports.engine.data.JRBeanArrayDataSource;
-
 @Component
-public class FacturaImprimible extends ReportBuilder{
+public class ComprobanteImprimible extends ReportBuilder{
 
     private Reservacion reservacion;
-    private Factura factura;
     private ManejadorFecha manejadorFecha;
 
-    public byte[] init(Reservacion reservacion, Factura datosFacturacion) throws Exception {
+    public byte[] init(Reservacion reservacion) throws Exception {
         this.reservacion = reservacion;
-        this.factura = datosFacturacion;
         //si pasaron las comporbaciones mandamos a traer los parametros
         Map<String, Object> parametrosReporte = this.construirFactura();
         //mandamos ha abrir el reporte
-        return this.exportarReporte("Factura", parametrosReporte,
+        return this.exportarReporte("Comprobante", parametrosReporte,
                 "pdf");
     }
 
@@ -32,15 +27,26 @@ public class FacturaImprimible extends ReportBuilder{
         //crear el mapa que contendra los parametros del reporte
         Map<String, Object> parametrosReporte = new HashMap<>();
 
-        parametrosReporte.put("total", "Q" + factura.getMonto());
+        parametrosReporte.put("costoServicio", "Q" + reservacion.getServicio().getCosto());
         parametrosReporte.put("nombreServicio", reservacion.getServicio().getNombre());
+
+        if (reservacion.getServicio().getTipoServicio().getNombre() == "Recurso") {
+            parametrosReporte.put("nombreRecurso", reservacion.getServicio().getRecurso().getNombre());
+            parametrosReporte.put("nombreUnidadRecurso", reservacion.getUnidadRecurso().getNombre());
+        } else {
+            parametrosReporte.put("nombreRecurso", "No aplica");
+            parametrosReporte.put("nombreUnidadRecurso", "");
+        }
+
         parametrosReporte.put("nombreComprador",
-                factura.getUsuario().getNombres());
+                reservacion.getUsuario().getNombres());
+        parametrosReporte.put("nombreEncargado",
+                reservacion.getEncargado().getNombres());
         parametrosReporte.put("fecha", "Fecha: "
                 + this.manejadorFecha.parsearFechaYHoraAFormatoRegional(
                         reservacion.getCreatedAt()));
         parametrosReporte.put("nit",
-                factura.getUsuario().getNit());
+                reservacion.getUsuario().getNit());
         return parametrosReporte;
     }
 }

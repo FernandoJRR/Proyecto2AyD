@@ -48,7 +48,7 @@ public class ReportBuilder extends Service {
         //cargamos el reporte
         JasperReport reporte
                 = (JasperReport) JRLoader.loadObject(
-                        getClass().getResource("/imprimibles/" + reportePath + ".jasper"));
+                        getClass().getResource("/compilado/" + reportePath + ".jasper"));
         //creamos un nuevo Jasper imprimible
         return JasperFillManager.fillReport(
                 reporte, parametros, new JREmptyDataSource());

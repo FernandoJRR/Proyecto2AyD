@@ -24,6 +24,9 @@
 	<parameter name="cuota_pago_entrega" class="java.lang.String"/>
 	<parameter name="nit" class="java.lang.String"/>
 	<parameter name="nombreServicio" class="java.lang.String"/>
+	<parameter name="fechaCancelacion" class="java.lang.String"/>
+	<parameter name="costoServicio" class="java.lang.String"/>
+	<parameter name="porcentajeReembolso" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -33,7 +36,7 @@
 	<title>
 		<band height="96" splitType="Stretch">
 			<rectangle>
-				<reportElement x="0" y="80" width="556" height="10" backcolor="#54B9DE" uuid="3ec708d9-d4cf-4e95-877d-43aa8e5572da">
+				<reportElement x="0" y="80" width="556" height="10" backcolor="#ED3251" uuid="3ec708d9-d4cf-4e95-877d-43aa8e5572da">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<graphicElement>
@@ -48,7 +51,7 @@
 				<textFieldExpression><![CDATA[$P{nombre_tienda}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="210" y="40" width="130" height="40" uuid="f55584f5-3195-4aed-af5f-4134c1123ad3"/>
+				<reportElement positionType="Float" x="210" y="0" width="130" height="40" uuid="f55584f5-3195-4aed-af5f-4134c1123ad3"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="26" isBold="true"/>
 				</textElement>
@@ -58,6 +61,13 @@
 				<reportElement x="0" y="0" width="70" height="70" uuid="3ff28dcb-f21c-419d-95e3-8aaead733b00"/>
 				<imageExpression><![CDATA[$P{imagen_tienda}]]></imageExpression>
 			</image>
+			<staticText>
+				<reportElement positionType="Float" x="180" y="40" width="200" height="40" uuid="fd9c8f88-bbbe-4538-bf1c-ba47c1d2f1ea"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="20" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Servicio Cancelado]]></text>
+			</staticText>
 		</band>
 	</title>
 	<detail>
@@ -70,14 +80,14 @@
 				<text><![CDATA[Nombre del cliente:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="80" y="140" width="40" height="20" uuid="840c18a2-9473-4d52-99d9-ef65b321ab03"/>
+				<reportElement x="80" y="310" width="40" height="20" uuid="840c18a2-9473-4d52-99d9-ef65b321ab03"/>
 				<textElement verticalAlignment="Middle">
 					<font size="12"/>
 				</textElement>
 				<text><![CDATA[Total:]]></text>
 			</staticText>
 			<textField textAdjust="ScaleFont">
-				<reportElement x="120" y="140" width="360" height="20" uuid="d5e3b920-9b76-400b-9f01-5f6e93601a8d"/>
+				<reportElement x="120" y="310" width="360" height="20" uuid="d5e3b920-9b76-400b-9f01-5f6e93601a8d"/>
 				<textElement verticalAlignment="Middle">
 					<font size="12"/>
 				</textElement>
@@ -119,7 +129,7 @@
 				<text><![CDATA[Fecha de Reservacion:]]></text>
 			</staticText>
 			<rectangle>
-				<reportElement x="80" y="350" width="400" height="10" backcolor="#54B9DE" uuid="583e0121-541e-4401-abd0-52977c3056a6">
+				<reportElement x="80" y="350" width="400" height="10" backcolor="#E83C56" uuid="583e0121-541e-4401-abd0-52977c3056a6">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<graphicElement>
@@ -127,18 +137,67 @@
 				</graphicElement>
 			</rectangle>
 			<staticText>
-				<reportElement x="80" y="110" width="130" height="20" uuid="344dc355-f714-46bd-b673-001c34fa5e86"/>
+				<reportElement x="80" y="140" width="130" height="20" uuid="344dc355-f714-46bd-b673-001c34fa5e86"/>
 				<textElement verticalAlignment="Middle">
 					<font size="12"/>
 				</textElement>
 				<text><![CDATA[Servicio Reservado:]]></text>
 			</staticText>
 			<textField textAdjust="StretchHeight">
-				<reportElement x="210" y="110" width="270" height="23" uuid="c8484474-55b3-4e02-ac32-e94aec6ad48a"/>
+				<reportElement x="210" y="140" width="270" height="23" uuid="c8484474-55b3-4e02-ac32-e94aec6ad48a"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{nombreServicio}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="80" y="110" width="130" height="20" uuid="b17b0c5f-8540-4ad0-8997-e693fd4a8237"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Fecha de Cancelacion:]]></text>
+			</staticText>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="210" y="109" width="270" height="23" uuid="c584e183-3b74-4c9e-a0b8-c8f7245be4e0"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{fechaCancelacion}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="180" y="190" width="197" height="40" uuid="b56b9c26-9f8a-4b5d-8d3a-9756fc3b46e4"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="24" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Facturacion]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="80" y="240" width="130" height="20" uuid="6b55c142-bea1-45e0-b283-5fd37bff544f"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Costo del Servicio:]]></text>
+			</staticText>
+			<textField textAdjust="ScaleFont">
+				<reportElement x="210" y="240" width="270" height="20" uuid="48b527b0-5126-408e-864c-53a465321a08"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{costoServicio}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="80" y="270" width="150" height="20" uuid="01db5fbb-98a3-4877-a188-7025c4c4ab7c"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Porcentaje Reembolsado:]]></text>
+			</staticText>
+			<textField textAdjust="ScaleFont">
+				<reportElement x="230" y="270" width="250" height="20" uuid="ebcde54d-c05f-4ef0-96af-eb270966056b"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{porcentajeReembolso}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

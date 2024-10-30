@@ -24,6 +24,10 @@
 	<parameter name="cuota_pago_entrega" class="java.lang.String"/>
 	<parameter name="nit" class="java.lang.String"/>
 	<parameter name="nombreServicio" class="java.lang.String"/>
+	<parameter name="nombreRecurso" class="java.lang.String"/>
+	<parameter name="nombreUnidadRecurso" class="java.lang.String"/>
+	<parameter name="costoServicio" class="java.lang.String"/>
+	<parameter name="nombreEncargado" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -48,11 +52,11 @@
 				<textFieldExpression><![CDATA[$P{nombre_tienda}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="210" y="40" width="130" height="40" uuid="f55584f5-3195-4aed-af5f-4134c1123ad3"/>
+				<reportElement positionType="Float" x="180" y="10" width="200" height="70" uuid="f55584f5-3195-4aed-af5f-4134c1123ad3"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="26" isBold="true"/>
+					<font size="20" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Factura]]></text>
+				<text><![CDATA[Comprobante de Reservacion]]></text>
 			</staticText>
 			<image>
 				<reportElement x="0" y="0" width="70" height="70" uuid="3ff28dcb-f21c-419d-95e3-8aaead733b00"/>
@@ -61,7 +65,7 @@
 		</band>
 	</title>
 	<detail>
-		<band height="362" splitType="Stretch">
+		<band height="360" splitType="Stretch">
 			<staticText>
 				<reportElement x="80" y="20" width="120" height="20" uuid="14a5f710-8da9-4110-a418-fec9d4e80fb5"/>
 				<textElement verticalAlignment="Middle">
@@ -69,20 +73,6 @@
 				</textElement>
 				<text><![CDATA[Nombre del cliente:]]></text>
 			</staticText>
-			<staticText>
-				<reportElement x="80" y="140" width="40" height="20" uuid="840c18a2-9473-4d52-99d9-ef65b321ab03"/>
-				<textElement verticalAlignment="Middle">
-					<font size="12"/>
-				</textElement>
-				<text><![CDATA[Total:]]></text>
-			</staticText>
-			<textField textAdjust="ScaleFont">
-				<reportElement x="120" y="140" width="360" height="20" uuid="d5e3b920-9b76-400b-9f01-5f6e93601a8d"/>
-				<textElement verticalAlignment="Middle">
-					<font size="12"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{total}]]></textFieldExpression>
-			</textField>
 			<textField textAdjust="ScaleFont">
 				<reportElement x="200" y="20" width="280" height="20" uuid="3b6de951-25ee-4909-a753-15570c6896f5"/>
 				<textElement>
@@ -139,6 +129,55 @@
 					<font size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{nombreServicio}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="80" y="140" width="130" height="20" uuid="09a57f53-297b-4f52-8f9f-e462bae5ba32"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Recurso Reservado:]]></text>
+			</staticText>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="210" y="137" width="270" height="23" uuid="fb9da5b2-3eb9-461e-a5ee-11893a620d81"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{nombreRecurso}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="210" y="160" width="270" height="23" uuid="40f9ed6e-09dd-4ea3-9ab3-9464c5244b94"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{nombreUnidadRecurso}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="80" y="270" width="130" height="20" uuid="ca90f277-f2a4-40fa-9be0-55130b9fa6a6"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Costo del Servicio:]]></text>
+			</staticText>
+			<textField textAdjust="ScaleFont">
+				<reportElement x="210" y="270" width="270" height="20" uuid="8f346202-0bef-4d96-a245-4bec46461d07"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{costoServicio}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="80" y="190" width="130" height="20" uuid="e449c5e7-49ce-4b00-b0b5-3899b1d8f43b"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Encargado:]]></text>
+			</staticText>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="210" y="189" width="270" height="23" uuid="258f7749-73fe-47b8-aa3e-46f76f020bd3"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{nombreEncargado}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

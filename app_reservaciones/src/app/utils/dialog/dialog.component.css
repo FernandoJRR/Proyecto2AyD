@@ -1,0 +1,19 @@
+/* dialog.component.css */
+.gray {
+  background-color: #f0f0f0;
+}
+.red {
+  background-color: #ffcccc;
+}
+.green {
+  background-color: #ccffcc;
+}
+mat-dialog-content {
+  font-size: 1rem;
+  margin-bottom: 20px;
+}
+mat-dialog-actions button {
+  font-weight: bold;
+  background: #3498db;
+  color: white;
+}

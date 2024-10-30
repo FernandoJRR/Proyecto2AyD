@@ -1,0 +1,87 @@
+/* Contenedor general con padding coherente */
+.content-container {
+    padding: 5%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Caja del formulario */
+.form-box {
+    background-color: white;
+    border: 2px solid #3498db;
+    border-radius: 8px;
+    padding: 2rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    width: 100%;
+}
+
+/* Estilo para el título */
+h2 {
+    text-align: center;
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 1.5rem;
+}
+
+/* Ajustes de los campos del formulario */
+.mat-form-field {
+    width: 100%;
+    margin-bottom: 1.2rem;
+}
+
+.mat-form-field.mat-form-field-appearance-outline .mat-mdc-form-field-wrapper {
+    padding: 0 12px; /* Ajuste de padding */
+}
+
+/* Estilos para los botones */
+.button-container {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.save-button {
+    background-color: #32eb3e;
+    color: white;
+    font-weight: bold;
+    border-radius: 8px;
+    height: 2.5rem;
+    width: 6rem;
+}
+
+.cancel-button {
+    color: #f44336;
+    border-color: #f44336;
+    font-weight: bold;
+    border-radius: 8px;
+    height: 2.5rem;
+    width: 6rem;
+}
+
+/* Responsive para pantallas pequeñas */
+@media screen and (max-width: 768px) {
+    .form-box {
+        padding: 1.5rem;
+    }
+    h2 {
+        font-size: 1.5rem;
+    }
+    .save-button, .cancel-button {
+        width: 5rem;
+        font-size: 14px;
+    }
+}
+
+@media screen and (max-width: 425px) {
+    .content-container {
+        padding: 2%;
+    }
+    .save-button, .cancel-button {
+        width: 4rem;
+        font-size: 12px;
+    }
+}

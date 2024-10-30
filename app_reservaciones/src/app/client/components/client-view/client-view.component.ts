@@ -4,13 +4,12 @@ import { AuthService } from '../../../auth/services/auth.service';
 import { UserStorageService } from '../../../storages/user-storage.service';
 import { RoleStorageService } from '../../../storages/role-storage.service';
 import { PermissionStorageService } from '../../../storages/permission-storage.service';
-
 @Component({
-  selector: 'app-admin-view',
-  templateUrl: './admin-view.component.html',
-  styleUrls: ['./admin-view.component.css'],
+  selector: 'app-client-view',
+  templateUrl: './client-view.component.html',
+  styleUrl: './client-view.component.css',
 })
-export class AdminViewComponent {
+export class ClientViewComponent {
   opened = false;
 
   constructor(

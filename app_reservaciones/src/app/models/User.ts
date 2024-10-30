@@ -1,17 +1,6 @@
-// export interface User {
-//     id: number;
-//     nombres: string;
-//     apellidos: string;
-//     email: string;
-//     nit: string;
-//     cui: string;
-//     telefono: string;
-//     roles: { rol: UserRole }[];
-//     twoFactorEnabled: boolean;
-//     twoFactorCode?: string;
-//     verificado: number;
-//   }
 import { Role } from './Role';
+import { Schedule } from './Schedule';
+import { UserRole } from './UserRole';
 
 export interface User {
   id: number;
@@ -19,10 +8,14 @@ export interface User {
   nombres: string;
   apellidos: string;
   email: string;
-  nit: string;
-  cui: string;
-  telefono: string;
-  verificado: boolean;
+  nit?: string;
+  cui?: string;
+  password: string;
+  telefono?: string;
+  roles: UserRole[];
+  horariosAtencionUsuario?: Schedule[];
+  validated?: boolean; //Asi aparece en la API/Backend
+  verificado: boolean; //Asi lo usamos en el Frontend porque asi esta en la DB
   twoFactorEnabled: boolean;
-  roles: Role[]; // Los roles asociados a este usuario
+  twoFactorCode: string; //PARA CUANDO ESTE HABILITADO EL TWO FACTOR AUTH
 }

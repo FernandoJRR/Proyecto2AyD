@@ -1,11 +1,18 @@
 import { Business } from './Business';
+//import { Resource } from './Resource';
+//import { ServiceType } from './ServiceType';
+import { Schedule } from './Schedule';
 
 export interface Service {
   id: number;
-  nombre: string; // Nombre del servicio
+  createdAt: string;
+  nombre: string;
   costo: number;
-  diasCancelacion: number;
-  porcentajeReembolso: number;
-  trabajadoresSimultaneos: number;
-  negocio: Business; // Negocio al que pertenece el servicio
+  dias_cancelacion: number;
+  porcentaje_reembolso: number;
+  trabajadores_simultaneos: number;
+  negocio: Business;
+  //recurso: Resource;
+  //tipoServicio: ServiceType;
+  horariosAtencionServicios: Schedule[];
 }

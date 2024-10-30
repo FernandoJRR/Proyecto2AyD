@@ -2,24 +2,32 @@
   <div class="w-full max-w-md bg-white p-8 rounded-lg shadow-md">
     <h2 class="text-2xl font-bold mb-6 text-center">Iniciar Sesión</h2>
     <p class="text-center mb-4 text-gray-600">Ingresa tu correo y contraseña</p>
-    
+
     <form (ngSubmit)="onSubmit()">
       <!-- Campo de correo electrónico con Angular Material -->
       <mat-form-field class="w-full mb-4" appearance="outline">
         <mat-label>Correo Electrónico</mat-label>
-        <input matInput type="email" [(ngModel)]="loginData.email" name="email" required>
+        <input matInput type="email" [(ngModel)]="loginData.email" name="email" required email #emailCtrl="ngModel">
         <mat-icon matSuffix>email</mat-icon>
+        <mat-error *ngIf="emailCtrl.hasError('required')">
+          Debes ingresar tu correo electrónico
+        </mat-error>
+        <mat-error *ngIf="emailCtrl.hasError('email')">
+          Ingresa un correo electrónico válido
+        </mat-error>
       </mat-form-field>
 
       <!-- Campo de contraseña con opción de mostrar/ocultar -->
       <mat-form-field class="w-full mb-4" appearance="outline">
         <mat-label>Contraseña</mat-label>
-        <input matInput [type]="hidePassword ? 'password' : 'text'" [(ngModel)]="loginData.password" name="password" required>
+        <input matInput [type]="hidePassword ? 'password' : 'text'" [(ngModel)]="loginData.password" name="password" required #passwordCtrl="ngModel">
         <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" type="button">
           <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
         </button>
+        <mat-error *ngIf="passwordCtrl.hasError('required')">
+          Debes ingresar tu contraseña
+        </mat-error>
       </mat-form-field>
-
 
       <!-- Enlace para olvidaste tu contraseña -->
       <div class="flex justify-between items-center mb-4">

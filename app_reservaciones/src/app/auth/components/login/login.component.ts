@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-import { Role } from '../../../models/Role';
+import { UserRole } from '../../../models/UserRole';
+import { User } from '../../../models/User';
 
 @Component({
   selector: 'app-login',
@@ -15,28 +16,34 @@ export class LoginComponent {
   };
   hidePassword = true;
 
-  constructor(
-    private authService: AuthService,
-    private router: Router
-  ) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
   onSubmit() {
+    if (!this.loginData.email || !this.loginData.password) {
+      this.authService.openConfirmationDialog(
+        'Campos Requeridos',
+        'Debes completar ambos campos para iniciar sesión.',
+        'red'
+      );
+      return;
+    }
+
     console.log('Iniciando proceso de login');
-    console.log('Datos enviados para login:', this.loginData);
+    console.log('Datos capturados del login:', this.loginData);
 
     this.authService.login(this.loginData).subscribe({
       next: (response) => {
         console.log('Respuesta de la API de login:', response);
 
-        // Acceso correcto a response.data.usuario y response.data.jwt
         if (response?.data?.usuario) {
-          const usuario = response.data.usuario;
+          const usuario: User = response.data.usuario; // Aplica el tipo User
+          
+          //Probar con validated la activacion tambien!
+          usuario.verificado = response.data.validated; // Asegura que esté en `verificado`
 
-          console.log('Usuario recibido:', usuario);
+          console.log('Usuario extraído de la respuesta de la API:', usuario);
 
-          // Verificación de estado de verificación
           if (!usuario.verificado) {
-            console.log('Usuario no verificado');
             this.authService.openConfirmationDialog(
               'Cuenta no verificada',
               'Por favor, verifica tu cuenta antes de iniciar sesión.',
@@ -45,45 +52,45 @@ export class LoginComponent {
             return;
           }
 
-          // Verificación de autenticación de dos factores
           if (usuario.twoFactorEnabled) {
-            console.log('2FA activado, redirigiendo a /auth/two-factor');
-            this.authService.setTempUserData(usuario, response.data.jwt); // Guardar usuario temporal para 2FA
+            this.authService.setTempUserData(usuario, response.data.jwt);
             this.router.navigate(['/auth/two-factor']);
             return;
           }
 
-          // Verificar si el usuario tiene rol de ADMIN
+          // Verificación del rol "ADMIN" accediendo correctamente a la propiedad `rol.nombre`
           const isAdmin = usuario.roles.some(
-            (role: Role) => role.nombre === 'ADMIN'
+            (userRole: UserRole) => userRole.rol.nombre === 'ADMIN'
           );
-          console.log('¿Es Admin?', isAdmin);
-
-          // Redirigir según el rol
           if (isAdmin) {
-            console.log('Redirigiendo a /admin');
+            console.log('Redirigiendo a la ruta /admin');
             this.router.navigate(['/admin']);
           } else {
-            console.log('Redirigiendo a /user');
-            this.router.navigate(['/user']);
+            console.log('Redirigiendo a la ruta /client');
+            this.router.navigate(['/client']);
           }
         } else {
-          // Si las credenciales son incorrectas
-          console.log('Credenciales inválidas');
           this.authService.openConfirmationDialog(
-            'Credenciales inválidas',
+            'Credenciales incorrectas',
             'El correo o la contraseña no son correctos.',
             'red'
           );
         }
       },
       error: (error) => {
-        console.error('Error en la API de login:', error);
-        this.authService.openConfirmationDialog(
-          'Error',
-          'Ha ocurrido un error en el inicio de sesión.',
-          'red'
-        );
+        if (error.status === 400) {
+          this.authService.openConfirmationDialog(
+            'Credenciales incorrectas',
+            'El correo o la contraseña no son correctos.',
+            'red'
+          );
+        } else {
+          this.authService.openConfirmationDialog(
+            'Error',
+            'Ha ocurrido un error al intentar iniciar sesión.',
+            'red'
+          );
+        }
       },
     });
   }

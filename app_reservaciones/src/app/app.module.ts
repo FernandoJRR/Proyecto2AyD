@@ -1,19 +1,17 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http'; 
-
-import { AppRoutingModule } from './app-routing.module';
-import { AuthModule } from './auth/auth.module';
-import { AdminModule } from './admin/admin.module';
-
-//Demas imports de modules principales
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http'; 
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
 import { AppComponent } from './app.component';
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { AppRoutingModule } from './app-routing.module';
+
 import { MaterialModule } from './material/material.module';
-import { DialogComponent } from './utils/dialog/dialog.component';
 
-
+import { AuthInterceptor } from './auth/services/auth.interceptor';
+import { AuthModule } from './auth/auth.module';
+import { AdminModule } from './admin/admin.module';
+import { ClientModule } from './client/client.module';
 
 @NgModule({
   declarations: [
@@ -23,15 +21,20 @@ import { DialogComponent } from './utils/dialog/dialog.component';
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    //Modulos principales
+    //Modulo de Material Modules
     MaterialModule,
+    //Modulos Principales
     AuthModule,
     AdminModule,
-    //UserModule,
-    
+    ClientModule,
   ],
   providers: [
-    provideAnimationsAsync()
+    provideAnimationsAsync(),
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true,
+    },
   ],
   bootstrap: [AppComponent]
 })

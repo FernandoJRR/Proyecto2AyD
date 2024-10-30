@@ -8,7 +8,7 @@
         <input matInput (keyup)="applyFilter($event)" placeholder="Buscar negocio">
       </mat-form-field>
   
-      <button mat-raised-button class="create-button">+ Negocio</button>
+      <button mat-raised-button class="create-button" (click)="createBusiness()">+ Negocio</button>
     </div>
   
     <div class="table-container">
@@ -29,10 +29,10 @@
         <ng-container matColumnDef="acciones">
           <th mat-header-cell *matHeaderCellDef>Acciones</th>
           <td mat-cell *matCellDef="let negocio">
-            <button mat-icon-button (click)="editarNegocio(negocio)">
+            <button mat-icon-button (click)="editBusiness(negocio)">
               <mat-icon>edit</mat-icon>
             </button>
-            <button mat-icon-button (click)="eliminarNegocio(negocio.id)">
+            <button mat-icon-button (click)="deleteBusiness(negocio.id)">
               <mat-icon>delete</mat-icon>
             </button>
           </td>

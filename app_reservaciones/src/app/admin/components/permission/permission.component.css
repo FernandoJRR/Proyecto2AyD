@@ -1,0 +1,89 @@
+.content-container {
+  padding: 5%;
+}
+
+/* Ajuste del campo de búsqueda */
+.mat-mdc-form-field {
+  display: inline-flex;
+  width: 30%; /* Ajuste dinámico del tamaño */
+}
+
+.mat-mdc-form-field.mat-form-field-appearance-outline .mat-mdc-form-field-wrapper {
+  padding: 0 12px; /* Ajuste del padding para mantener el diseño limpio */
+}
+
+/* Responsividad del input y tamaño de texto */
+@media screen and (max-width: 1200px) {
+  .mat-mdc-form-field {
+    width: 30%;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .mat-mdc-form-field {
+    width: 40%;
+  }
+}
+
+@media screen and (max-width: 425px) {
+  .mat-mdc-form-field {
+    width: 60%;
+  }
+}
+
+/* Estilo del título para que sea más negrita en pantallas pequeñas */
+h3 {
+  font-weight: 700; /* Refuerza el peso del texto */
+}
+
+@media screen and (max-width: 768px) {
+  h3 {
+    font-size: 1.4rem; /* Ajusta el tamaño del título en pantallas pequeñas */
+    font-weight: 800;
+  }
+}
+
+/* Contenedor de la tabla CON EL BORDE ORIGINAL */
+.table-container {
+  border: 2px solid #3498db;
+  border-radius: 4px;
+  padding: -1px; /* Mantén el padding mínimo para ajustarlo a la tabla */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: white;
+  /* width: 100%; */
+  width: max-content;
+}
+
+/* Estilo del encabezado */
+.mat-mdc-header-row {
+  background-color: #3498db;
+  color: white;
+  font-weight: bold;
+}
+
+/* Estilos para filas y hover */
+.mat-mdc-row:hover {
+  background-color: #d1ecf1;
+}
+
+.mat-mdc-row:nth-child(2n) {
+  background-color: #f9f9f9;
+}
+
+.mat-mdc-row:nth-child(2n):hover {
+  background-color: #b0d4e1;
+}
+
+/* Paginador sin bordes redondeados */
+.mat-paginator {
+  border-radius: 0;
+  margin-top: 16px;
+}
+
+@media screen and (max-width: 425px) {
+  .table-container {
+    width: min-content;
+    /* width: 100%; */
+    /* Asegura que el contenedor abarque todo el ancho (ANTES TENIA ESTO PERO EL TABLE-CONTAINER NO ABARCABA TODA LA TABLA EN MOVILES) */
+  }
+}

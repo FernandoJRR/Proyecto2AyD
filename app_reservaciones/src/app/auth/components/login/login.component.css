@@ -1,0 +1,25 @@
+/* Estilos específicos para desactivar el borde sólido en los mat-form-field */
+.mat-form-field-wrapper {
+    border-style: none !important;
+    border-width: 0 !important;
+}
+
+.mat-mdc-text-field-wrapper {
+    border-style: none !important;
+    border-width: 0 !important;
+}
+
+/* Apunta al fieldset que genera el borde */
+.mat-form-field-outline {
+    border-style: none !important;
+}
+
+/* Desactiva el borde en los inputs de Angular Material */
+.mat-mdc-form-field .mat-mdc-form-field-outline {
+    border-style: none !important;
+    border-width: 0 !important;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

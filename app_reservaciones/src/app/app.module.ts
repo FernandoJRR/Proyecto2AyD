@@ -1,19 +1,44 @@
-import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http'; 
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
 import { AppComponent } from './app.component';
-import { AppRoutingModule } from './app.routing.module';  // Asegúrate de importar el módulo de enrutamiento
+import { AppRoutingModule } from './app-routing.module';
+
+import { MaterialModule } from './material/material.module';
+
+import { AuthInterceptor } from './auth/services/auth.interceptor';
+import { AuthModule } from './auth/auth.module';
+import { AdminModule } from './admin/admin.module';
+import { ClientModule } from './client/client.module';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
     AppComponent,
-    // Declara aquí cualquier otro componente que utilices
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule  // Importa el módulo de enrutamiento
+    AppRoutingModule,
+    HttpClientModule,
+    FormsModule,
+    ReactiveFormsModule,
+    //Modulo de Material Modules
+    MaterialModule,
+    //Modulos Principales
+    AuthModule,
+    AdminModule,
+    ClientModule,
   ],
-  providers: [],
+  providers: [
+    provideAnimationsAsync(),
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true,
+    },
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

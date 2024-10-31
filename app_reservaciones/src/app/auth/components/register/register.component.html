@@ -1,0 +1,78 @@
+<div class="flex items-center justify-center min-h-screen bg-gray-100">
+  <div class="w-full max-w-md bg-white p-8 rounded-lg shadow-md">
+    <h2 class="text-2xl font-bold mb-6 text-center">Regístrate</h2>
+    <p class="text-center mb-4 text-gray-600">Ingresa tus datos para registrarte</p>
+
+    <form (ngSubmit)="onSubmit()">
+      <!-- Campo de nombres -->
+      <mat-form-field class="w-full mb-4" appearance="outline">
+        <mat-label>Nombres</mat-label>
+        <input matInput [(ngModel)]="registerData.nombres" name="nombres" required>
+      </mat-form-field>
+
+      <!-- Campo de apellidos -->
+      <mat-form-field class="w-full mb-4" appearance="outline">
+        <mat-label>Apellidos</mat-label>
+        <input matInput [(ngModel)]="registerData.apellidos" name="apellidos" required>
+      </mat-form-field>
+
+      <!-- Campo de correo electrónico -->
+      <mat-form-field class="w-full mb-4" appearance="outline">
+        <mat-label>Correo Electrónico</mat-label>
+        <input matInput type="email" [(ngModel)]="registerData.email" name="email" required>
+        <mat-icon matSuffix>email</mat-icon>
+      </mat-form-field>
+
+      <!-- Campo de NIT -->
+      <mat-form-field class="w-full mb-4" appearance="outline">
+        <mat-label>NIT</mat-label>
+        <input matInput [(ngModel)]="registerData.nit" name="nit" required>
+      </mat-form-field>
+
+      <!-- Campo de CUI -->
+      <mat-form-field class="w-full mb-4" appearance="outline">
+        <mat-label>CUI</mat-label>
+        <input matInput [(ngModel)]="registerData.cui" name="cui" required>
+      </mat-form-field>
+
+      <!-- Campo de Teléfono -->
+      <mat-form-field class="w-full mb-4" appearance="outline">
+        <mat-label>Teléfono</mat-label>
+        <input matInput [(ngModel)]="registerData.telefono" name="telefono" required>
+      </mat-form-field>
+
+      <!-- Campo de contraseña con opción de mostrar/ocultar -->
+      <mat-form-field class="w-full mb-4" appearance="outline">
+        <mat-label>Contraseña</mat-label>
+        <input matInput [type]="hidePassword ? 'password' : 'text'" [(ngModel)]="registerData.password" name="password" required>
+        <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" type="button">
+          <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+        </button>
+      </mat-form-field>
+
+      <!-- Campo de confirmación de contraseña con opción de mostrar/ocultar -->
+      <mat-form-field class="w-full mb-4" appearance="outline">
+        <mat-label>Confirmar Contraseña</mat-label>
+        <input matInput [type]="hideConfirmPassword ? 'password' : 'text'" [(ngModel)]="registerData.confirmPassword" name="confirmPassword" required>
+        <button mat-icon-button matSuffix (click)="hideConfirmPassword = !hideConfirmPassword" type="button">
+          <mat-icon>{{hideConfirmPassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+        </button>
+      </mat-form-field>
+
+      <!-- Botón de registrar -->
+      <button mat-raised-button color="primary" type="submit" class="w-full mb-4">
+        Registrarse
+      </button>
+    </form>
+
+    <!-- Sección inferior (footer) -->
+    <p class="text-center text-sm mt-4">
+      ¿Ya tienes una cuenta? 
+      <a routerLink="/auth/login" class="text-blue-500 font-bold">Inicia sesión</a>
+    </p>
+
+    <footer class="text-center text-gray-500 mt-6">
+      <p>© 2024 - <a href="https://github.com/FernandoJRR/Proyecto2AyD" class="text-blue-500">Booking App</a>® by <a href="https://github.com/FernandoJRR" class="text-blue-500">FerJRR</a> y <a href="https://github.com/MenWic" class="text-blue-500">MenWic</a>.</p>
+    </footer>
+  </div>
+</div>

@@ -1,0 +1,29 @@
+<div class="content-container">
+  <div class="form-box">
+    <h2>Crear Nuevo Negocio</h2>
+    
+    <form (ngSubmit)="onSubmit()" class="form-container">
+      <!-- Nombre del Negocio -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Nombre del Negocio</mat-label>
+        <input
+          matInput
+          [(ngModel)]="business.nombre"
+          name="nombre"
+          required
+          #nombre="ngModel"
+          placeholder="Ingrese el nombre del negocio"
+        />
+        <mat-error *ngIf="nombre.invalid && nombre.touched">
+          El nombre del negocio es obligatorio.
+        </mat-error>
+      </mat-form-field>
+      
+      <!-- Botones de Acción -->
+      <div class="button-container">
+        <button mat-raised-button color="primary" type="submit">Guardar</button>
+        <button mat-stroked-button color="warn" type="button" (click)="onCancel()">Cancelar</button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -458,7 +458,7 @@ public class UsuarioService extends com.university.services.Service {
     @Transactional
     public Usuario crearAyudante(CreateUsuarioDto crear) throws Exception {
         Usuario usuario = crear.getUsuario();
-        usuario.setEstadoActivacion(true);
+        usuario.setVerificado(true);
         List<Rol> roles = crear.getRoles();
         List<HorarioAtencionUsuario> horarios = crear.getHorarioAtencionUsuarios();
         return this.guardarUsuario(usuario, roles, horarios);

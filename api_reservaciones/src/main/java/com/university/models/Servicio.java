@@ -213,4 +213,12 @@ public class Servicio extends Auditor {
     public void setCosto(Float costo) {
         this.costo = costo;
     }
+
+    public boolean isAsignacion_automatica() {
+        return asignacion_automatica;
+    }
+
+    public void setAsignacion_automatica(boolean asignacion_automatica) {
+        this.asignacion_automatica = asignacion_automatica;
+    }
 }

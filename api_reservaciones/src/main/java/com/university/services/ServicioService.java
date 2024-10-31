@@ -11,6 +11,7 @@ import com.university.repositories.DuracionServicioRepository;
 import com.university.repositories.HorarioAtencionServicioRepository;
 import com.university.repositories.ServicioRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -58,6 +59,10 @@ public class ServicioService {
 
         duracionServicioRepository.save(duracionServicioCreado);
 
+        servicioCreado.setDuracionServicio(duracionServicioCreado);
+        servicioCreado = servicioRepository.save(servicioCreado);
+
+        List<HorarioAtencionServicio> horariosAtencionServicioCreados = new ArrayList<>();
         // Se crean los horarios de atencion que tendra el usuario
         for (HorarioAtencionServicio horarioAtencionServicio : horariosAtencionServicio) {
             HorarioAtencionServicio horarioAtencionServicioCreado = new HorarioAtencionServicio(
@@ -67,7 +72,11 @@ public class ServicioService {
             horarioAtencionServicioCreado.setServicio(servicioCreado);
 
             horarioAtencionServicioRepository.save(horarioAtencionServicioCreado);
+            horariosAtencionServicioCreados.add(horarioAtencionServicioCreado);
         }
+
+        servicioCreado.setHorariosAtencionServicios(horariosAtencionServicioCreados);
+        servicioCreado = servicioRepository.save(servicioCreado);
 
         return servicioCreado;
     }

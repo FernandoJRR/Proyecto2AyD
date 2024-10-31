@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import com.university.repositories.ReservacionRepository;
 
 import java.util.List;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.time.LocalDate;
@@ -74,6 +76,34 @@ public class ReporteService {
         return conteoServicios.entrySet().stream()
                 .sorted((entry1, entry2) -> entry2.getValue().compareTo(entry1.getValue()))
                 .limit(5)
+                .collect(Collectors.toList());
+    }
+
+    public List<Map<String, Object>> obtenerServiciosMasReservados(LocalDate fechaInicio, LocalDate fechaFin) {
+        List<Object[]> resultados = reservacionRepository.contarReservasPorServicio(fechaInicio, fechaFin);
+        List<Map<String, Object>> reporte = new ArrayList<>();
+
+        for (Object[] resultado : resultados) {
+            Map<String, Object> servicio = new HashMap<>();
+            servicio.put("nombre", resultado[0]);
+            servicio.put("totalReservas", resultado[1]);
+            reporte.add(servicio);
+        }
+
+        return reporte;
+    }
+
+    public List<Map<String, Object>> obtenerTopClientesConMasReservaciones(LocalDate fechaInicio, LocalDate fechaFin, int topN) {
+        List<Object[]> resultados = reservacionRepository.contarReservacionesPorCliente(fechaInicio, fechaFin);
+
+        return resultados.stream()
+                .limit(topN)
+                .map(obj -> {
+                    Map<String, Object> clienteData = new HashMap<>();
+                    clienteData.put("clienteId", obj[0]);
+                    clienteData.put("cantidadReservaciones", obj[1]);
+                    return clienteData;
+                })
                 .collect(Collectors.toList());
     }
 }

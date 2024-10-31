@@ -39,4 +39,8 @@ public class UnidadRecursoService {
         Recurso recurso = new Recurso(id_recurso);
         return this.unidadRecursoRepository.findByRecurso(recurso);
     }
+
+    public List<UnidadRecurso> getUnidadRecurso() {
+        return this.unidadRecursoRepository.findAll();
+    }
 }

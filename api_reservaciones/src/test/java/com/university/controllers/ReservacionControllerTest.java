@@ -44,6 +44,7 @@ import com.university.models.request.CreateReservacionDto;
 import com.university.models.request.CreateUsuarioDto;
 import com.university.models.request.HorariosUsuarioRequest;
 import com.university.services.EstadoReservacionService;
+import com.university.services.FacturaService;
 import com.university.services.MetodoPagoService;
 import com.university.services.ReservacionService;
 import com.university.services.UsuarioService;
@@ -74,6 +75,9 @@ public class ReservacionControllerTest {
 
     @Mock
     private MetodoPagoService metodoPagoService;
+
+    @Mock
+    private FacturaService facturaService;
 
     @InjectMocks
     private ReservacionController reservacionController;
@@ -332,4 +336,100 @@ public class ReservacionControllerTest {
         // Verificar que el servicio fue llamado correctamente
         verify(reservacionService, times(1)).cancelarReservacion(1L, "Cambio de planes", LocalDate.now());
     }
+
+        // Test para obtener una factura en PDF
+        @Test
+        void testGetFactura_Success() throws Exception {
+            Long id = 1L;
+            byte[] pdfContent = new byte[]{1, 2, 3};
+
+            when(facturaService.getFactura(id)).thenReturn(pdfContent);
+
+            mockMvc.perform(get("/api/reservacion/public/factura/{id}", id)
+                    .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk())
+                    .andExpect(content().contentType(MediaType.APPLICATION_PDF))
+                    .andExpect(header().string("Content-Disposition", "form-data; name=\"inline\"; filename=\"Factura.pdf\""))
+                    .andExpect(content().bytes(pdfContent));
+
+            verify(facturaService, times(1)).getFactura(id);
+        }
+
+        @Test
+        void testGetFactura_NotFound() throws Exception {
+            Long id = 1L;
+
+            when(facturaService.getFactura(id)).thenThrow(new Exception("Factura no encontrada"));
+
+            mockMvc.perform(get("/api/reservacion/public/factura/{id}", id)
+                    .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.error").value("Factura no encontrada"));
+
+            verify(facturaService, times(1)).getFactura(id);
+        }
+
+        // Test para obtener una factura de cancelación en PDF
+        @Test
+        void testGetCancelacion_Success() throws Exception {
+            Long id = 1L;
+            byte[] pdfContent = new byte[]{4, 5, 6};
+
+            when(facturaService.getFacturaCancelacion(id)).thenReturn(pdfContent);
+
+            mockMvc.perform(get("/api/reservacion/public/cancelacion/{id}", id)
+                    .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk())
+                    .andExpect(content().contentType(MediaType.APPLICATION_PDF))
+                    .andExpect(header().string("Content-Disposition", "form-data; name=\"inline\"; filename=\"FacturaCancelacion.pdf\""))
+                    .andExpect(content().bytes(pdfContent));
+
+            verify(facturaService, times(1)).getFacturaCancelacion(id);
+        }
+
+        @Test
+        void testGetCancelacion_NotFound() throws Exception {
+            Long id = 1L;
+
+            when(facturaService.getFacturaCancelacion(id)).thenThrow(new Exception("Cancelación no encontrada"));
+
+            mockMvc.perform(get("/api/reservacion/public/cancelacion/{id}", id)
+                    .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.error").value("Cancelación no encontrada"));
+
+            verify(facturaService, times(1)).getFacturaCancelacion(id);
+        }
+
+        // Test para obtener un comprobante de reservación en PDF
+        @Test
+        void testGetComprobante_Success() throws Exception {
+            Long id = 1L;
+            byte[] pdfContent = new byte[]{7, 8, 9};
+
+            when(reservacionService.getComprobante(id)).thenReturn(pdfContent);
+
+            mockMvc.perform(get("/api/reservacion/public/comprobante/{id}", id)
+                    .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk())
+                    .andExpect(content().contentType(MediaType.APPLICATION_PDF))
+                    .andExpect(header().string("Content-Disposition", "form-data; name=\"inline\"; filename=\"FacturaCancelacion.pdf\""))
+                    .andExpect(content().bytes(pdfContent));
+
+            verify(reservacionService, times(1)).getComprobante(id);
+        }
+
+        @Test
+        void testGetComprobante_NotFound() throws Exception {
+            Long id = 1L;
+
+            when(reservacionService.getComprobante(id)).thenThrow(new Exception("Comprobante no encontrado"));
+
+            mockMvc.perform(get("/api/reservacion/public/comprobante/{id}", id)
+                    .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.error").value("Comprobante no encontrado"));
+
+            verify(reservacionService, times(1)).getComprobante(id);
+        }
 }

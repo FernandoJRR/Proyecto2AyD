@@ -66,6 +66,10 @@ public class ReservacionService {
     @Autowired
     private ComprobanteImprimible comprobanteImprimible;
 
+    public List<Reservacion> getReservacionesByCliente(Long id_cliente) throws Exception {
+        return reservacionRepository.findByUsuario(new Usuario(id_cliente));
+    }
+
     /**
      * Método para crear una reservación
      */

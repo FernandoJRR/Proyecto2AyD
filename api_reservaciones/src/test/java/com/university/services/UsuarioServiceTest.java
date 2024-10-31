@@ -1365,4 +1365,44 @@ public class UsuarioServiceTest {
         verify(usuarioRepository, times(1)).findById(1L);
         verify(usuarioRepository, times(1)).save(usuario);
     }
+
+@Test
+void testIniciarSesion_2F_UserNotFound() {
+    // Simular el objeto de log
+    Usuario log = new Usuario();
+    log.setEmail("user@example.com");
+    log.setPassword("password");
+
+    // Simular que el usuario no se encuentra
+    when(usuarioRepository.findByEmail("user@example.com")).thenReturn(Optional.empty());
+
+    // Verificar que se lanza la excepción
+    Exception exception = assertThrows(Exception.class, () -> {
+        usuarioService.iniciarSesion(log);
+    });
+
+    assertEquals("Correo electronico incorrecto.", exception.getMessage());
+}
+
+@Test
+void testIniciarSesion_2F_UserDeleted() {
+    // Simular el objeto de log
+    Usuario log = new Usuario();
+    log.setEmail("user@example.com");
+    log.setPassword("password");
+
+    // Simular un usuario eliminado
+    Usuario usuario = new Usuario();
+    usuario.setDeletedAt(Instant.now());
+
+    // Simular que el usuario es encontrado pero ha sido eliminado
+    when(usuarioRepository.findByEmail("user@example.com")).thenReturn(Optional.of(usuario));
+
+    // Verificar que se lanza la excepción
+    Exception exception = assertThrows(Exception.class, () -> {
+        usuarioService.iniciarSesion(log);
+    });
+
+    assertEquals("Usuario ya ha sido eliminado.", exception.getMessage());
+}
 }

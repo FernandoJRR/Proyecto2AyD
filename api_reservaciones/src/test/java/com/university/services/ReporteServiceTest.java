@@ -156,5 +156,189 @@ public class ReporteServiceTest {
         assertEquals("La fecha de inicio no puede ser posterior a la fecha de fin.", exception.getMessage());
         verify(reservacionRepository, times(0)).contarServiciosPorFecha(fechaInicio, fechaFin);
     }
+    @Test
+    void testContarReservacionesPorTiempoYCantidad_SemanaConEstado() throws Exception {
+        String tipoTiempo = "semana";
+        int cantidad = 2;
+        String estado = "Completa";
 
+        LocalDate fechaFin = LocalDate.now();
+        LocalDate fechaInicio = fechaFin.minusWeeks(cantidad);
+
+        when(reservacionRepository.countByFechaBetweenAndEstadoReservacion_Nombre(fechaInicio, fechaFin, estado)).thenReturn(10L);
+
+        long result = reporteService.contarReservacionesPorTiempoYCantidad(tipoTiempo, cantidad, estado);
+        assertEquals(10L, result);
+    }
+
+    @Test
+    void testContarReservacionesPorTiempoYCantidad_MesSinEstado() throws Exception {
+        String tipoTiempo = "mes";
+        int cantidad = 3;
+
+        LocalDate fechaFin = LocalDate.now();
+        LocalDate fechaInicio = fechaFin.minusMonths(cantidad);
+
+        when(reservacionRepository.countByFechaBetween(fechaInicio, fechaFin)).thenReturn(20L);
+
+        long result = reporteService.contarReservacionesPorTiempoYCantidad(tipoTiempo, cantidad, null);
+        assertEquals(20L, result);
+    }
+
+    @Test
+    void testContarReservacionesPorTiempoYCantidad_AnioConEstado() throws Exception {
+        String tipoTiempo = "anio";
+        int cantidad = 1;
+        String estado = "Pendiente";
+
+        LocalDate fechaFin = LocalDate.now();
+        LocalDate fechaInicio = fechaFin.minusYears(cantidad);
+
+        when(reservacionRepository.countByFechaBetweenAndEstadoReservacion_Nombre(fechaInicio, fechaFin, estado)).thenReturn(5L);
+
+        long result = reporteService.contarReservacionesPorTiempoYCantidad(tipoTiempo, cantidad, estado);
+        assertEquals(5L, result);
+    }
+
+    @Test
+    void testContarReservacionesPorTiempoYCantidad_TipoTiempoInvalido() {
+        String tipoTiempo = "dia";
+        int cantidad = 5;
+        String estado = "Completa";
+
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            reporteService.contarReservacionesPorTiempoYCantidad(tipoTiempo, cantidad, estado);
+        });
+
+        assertEquals("Tipo de tiempo no válido. Usa 'semana', 'mes' o 'año'.", exception.getMessage());
+    }
+
+    @Test
+    void testContarReservacionesPorTiempoYCantidad_SemanaSinEstado() throws Exception {
+        String tipoTiempo = "semana";
+        int cantidad = 4;
+
+        LocalDate fechaFin = LocalDate.now();
+        LocalDate fechaInicio = fechaFin.minusWeeks(cantidad);
+
+        when(reservacionRepository.countByFechaBetween(fechaInicio, fechaFin)).thenReturn(15L);
+
+        long result = reporteService.contarReservacionesPorTiempoYCantidad(tipoTiempo, cantidad, null);
+        assertEquals(15L, result);
+    }
+
+    @Test
+    void testContarReservacionesPorTiempoYCantidad_MesConEstado() throws Exception {
+        String tipoTiempo = "mes";
+        int cantidad = 2;
+        String estado = "Cancelada";
+
+        LocalDate fechaFin = LocalDate.now();
+        LocalDate fechaInicio = fechaFin.minusMonths(cantidad);
+
+        when(reservacionRepository.countByFechaBetweenAndEstadoReservacion_Nombre(fechaInicio, fechaFin, estado)).thenReturn(8L);
+
+        long result = reporteService.contarReservacionesPorTiempoYCantidad(tipoTiempo, cantidad, estado);
+        assertEquals(8L, result);
+    }
+
+    @Test
+    void testObtenerServiciosMasReservados_Success() {
+        LocalDate fechaInicio = LocalDate.of(2023, 1, 1);
+        LocalDate fechaFin = LocalDate.of(2023, 12, 31);
+
+        List<Object[]> resultados = Arrays.asList(
+                new Object[]{"Servicio A", 100L},
+                new Object[]{"Servicio B", 80L},
+                new Object[]{"Servicio C", 60L}
+        );
+
+        when(reservacionRepository.contarReservasPorServicio(fechaInicio, fechaFin)).thenReturn(resultados);
+
+        List<Map<String, Object>> reporte = reporteService.obtenerServiciosMasReservados(fechaInicio, fechaFin);
+
+        assertEquals(3, reporte.size());
+        assertEquals("Servicio A", reporte.get(0).get("nombre"));
+        assertEquals(100L, reporte.get(0).get("totalReservas"));
+        assertEquals("Servicio B", reporte.get(1).get("nombre"));
+        assertEquals(80L, reporte.get(1).get("totalReservas"));
+
+        verify(reservacionRepository, times(1)).contarReservasPorServicio(fechaInicio, fechaFin);
+    }
+
+    @Test
+    void testObtenerServiciosMasReservados_SinResultados() {
+        LocalDate fechaInicio = LocalDate.of(2023, 1, 1);
+        LocalDate fechaFin = LocalDate.of(2023, 12, 31);
+
+        when(reservacionRepository.contarReservasPorServicio(fechaInicio, fechaFin)).thenReturn(Collections.emptyList());
+
+        List<Map<String, Object>> reporte = reporteService.obtenerServiciosMasReservados(fechaInicio, fechaFin);
+
+        assertTrue(reporte.isEmpty());
+        verify(reservacionRepository, times(1)).contarReservasPorServicio(fechaInicio, fechaFin);
+    }
+
+    @Test
+    void testObtenerTopClientesConMasReservaciones_Success() {
+        LocalDate fechaInicio = LocalDate.of(2023, 1, 1);
+        LocalDate fechaFin = LocalDate.of(2023, 12, 31);
+        int topN = 2;
+
+        List<Object[]> resultados = Arrays.asList(
+                new Object[]{1L, 50L},
+                new Object[]{2L, 40L},
+                new Object[]{3L, 30L}
+        );
+
+        when(reservacionRepository.contarReservacionesPorCliente(fechaInicio, fechaFin)).thenReturn(resultados);
+
+        List<Map<String, Object>> reporte = reporteService.obtenerTopClientesConMasReservaciones(fechaInicio, fechaFin, topN);
+
+        assertEquals(2, reporte.size());
+        assertEquals(1L, reporte.get(0).get("clienteId"));
+        assertEquals(50L, reporte.get(0).get("cantidadReservaciones"));
+        assertEquals(2L, reporte.get(1).get("clienteId"));
+        assertEquals(40L, reporte.get(1).get("cantidadReservaciones"));
+
+        verify(reservacionRepository, times(1)).contarReservacionesPorCliente(fechaInicio, fechaFin);
+    }
+
+    @Test
+    void testObtenerTopClientesConMasReservaciones_SinResultados() {
+        LocalDate fechaInicio = LocalDate.of(2023, 1, 1);
+        LocalDate fechaFin = LocalDate.of(2023, 12, 31);
+        int topN = 2;
+
+        when(reservacionRepository.contarReservacionesPorCliente(fechaInicio, fechaFin)).thenReturn(Collections.emptyList());
+
+        List<Map<String, Object>> reporte = reporteService.obtenerTopClientesConMasReservaciones(fechaInicio, fechaFin, topN);
+
+        assertTrue(reporte.isEmpty());
+        verify(reservacionRepository, times(1)).contarReservacionesPorCliente(fechaInicio, fechaFin);
+    }
+
+    @Test
+    void testObtenerTopClientesConMasReservaciones_TopMayorQueResultados() {
+        LocalDate fechaInicio = LocalDate.of(2023, 1, 1);
+        LocalDate fechaFin = LocalDate.of(2023, 12, 31);
+        int topN = 5;
+
+        List<Object[]> resultados = Arrays.asList(
+                new Object[]{1L, 50L},
+                new Object[]{2L, 40L}
+        );
+
+        when(reservacionRepository.contarReservacionesPorCliente(fechaInicio, fechaFin)).thenReturn(resultados);
+
+        List<Map<String, Object>> reporte = reporteService.obtenerTopClientesConMasReservaciones(fechaInicio, fechaFin, topN);
+
+        assertEquals(2, reporte.size());
+        assertEquals(1L, reporte.get(0).get("clienteId"));
+        assertEquals(50L, reporte.get(0).get("cantidadReservaciones"));
+        assertEquals(2L, reporte.get(1).get("clienteId"));
+        assertEquals(40L, reporte.get(1).get("cantidadReservaciones"));
+
+        verify(reservacionRepository, times(1)).contarReservacionesPorCliente(fechaInicio, fechaFin);
+    }
 }

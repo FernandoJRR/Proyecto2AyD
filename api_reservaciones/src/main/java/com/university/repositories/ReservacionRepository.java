@@ -18,6 +18,8 @@ import com.university.models.Usuario;
 @Repository
 public interface ReservacionRepository extends CrudRepository<Reservacion, Long> {
 
+    List<Reservacion> findByUsuario(Usuario usuario);
+
     boolean existsByEncargadoAndFechaAndHoraInicioLessThanEqualAndHoraFinalGreaterThanEqual(Usuario encargado,
             LocalDate fecha,
             LocalTime horaFinal, LocalTime horaInicio);

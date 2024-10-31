@@ -51,8 +51,6 @@ public class ServicioService {
             throw new Exception("Debes asignar una duracion al servicio");
         }
 
-        System.out.println(servicio.getCosto());
-        System.out.println(servicio.getTrabajadores_simultaneos());
         Servicio servicioCreado = servicioRepository.save(servicio);
 
         // Se le asigna una duracion al Servicio

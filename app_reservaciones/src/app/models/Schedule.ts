@@ -1,14 +1,8 @@
+import { Day } from './Day';
+
 export interface Schedule {
-    id: number;
-    createdAt: string;
-    horaInicio: Time;
-    horaFinal: Time;
-  }
-  
-  export interface Time {
-    hour: number;
-    minute: number;
-    second: number;
-    nano: number;
-  }
-  
+  id: number;
+  horaInicio: string;
+  horaFinal: string;
+  diaAtencion: Day;
+}

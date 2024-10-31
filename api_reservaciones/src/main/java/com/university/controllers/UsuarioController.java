@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.university.models.Usuario;
 import com.university.models.dto.LoginDto;
 import com.university.models.request.PasswordChange;
+import com.university.models.request.RolesUsuarioRequest;
 import com.university.models.request.SendRecoveryMailRequest;
 import com.university.models.request.TwoFactorActivate;
 import com.university.models.request.VerifyUserRequest;
@@ -295,6 +296,27 @@ public class UsuarioController {
     public ResponseEntity<?> actualizarHorarios(@RequestBody HorariosUsuarioRequest updates) {
         try {
             Usuario confirmacion = usuarioService.actualizarHorariosUsuario(updates);
+            return new ApiBaseTransformer(HttpStatus.OK, "OK", confirmacion, null, null).sendResponse();
+        } catch (NumberFormatException ex) {
+            return new ApiBaseTransformer(HttpStatus.BAD_REQUEST,
+                    "Id con formato invalido",
+                    null, null, ex.getMessage()).sendResponse();
+        } catch (Exception ex) {
+            return new ApiBaseTransformer(HttpStatus.BAD_REQUEST, "Error", null, null, ex.getMessage()).sendResponse();
+        }
+    }
+
+    @Operation(summary = "Actualiza los roles de un usuario.", description = "Actualiza los horarios de un usuario en base a su id y los id "
+            + "de los horarios enviados (todo aquel horario que no se mande se eliminara de la "
+            + "lista de horarios del rol).")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Usuario encontrado", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Usuario.class))),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+    })
+    @PatchMapping("/usuario/private/actualizarRolesUsuario")
+    public ResponseEntity<?> actualizarRoles(@RequestBody RolesUsuarioRequest updates) {
+        try {
+            Usuario confirmacion = usuarioService.actualizarRolesUsuario(updates);
             return new ApiBaseTransformer(HttpStatus.OK, "OK", confirmacion, null, null).sendResponse();
         } catch (NumberFormatException ex) {
             return new ApiBaseTransformer(HttpStatus.BAD_REQUEST,

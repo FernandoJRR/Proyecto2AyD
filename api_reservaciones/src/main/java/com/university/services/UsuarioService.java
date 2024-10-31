@@ -20,6 +20,7 @@ import com.university.models.PermisoRol;
 import com.university.models.UsuarioRol;
 import com.university.models.dto.LoginDto;
 import com.university.models.request.PasswordChange;
+import com.university.models.request.RolesUsuarioRequest;
 import com.university.models.request.TwoFactorActivate;
 import com.university.models.request.CreateUsuarioDto;
 import com.university.models.request.HorariosUsuarioRequest;
@@ -572,6 +573,34 @@ public class UsuarioService extends com.university.services.Service {
             // asignamos los nuevos permisos al usuario
             usuario.getHorariosAtencionUsuario().clear();
             usuario.getHorariosAtencionUsuario().addAll(horariosNuevos);
+        }
+        // Guardamos el usuario
+        return this.usuarioRepository.save(usuario);
+    }
+
+    /**
+     * Sobreescribir los roles de un usuario
+     *
+     * @param RolesUsuarioRequest
+     * @return
+     */
+    @Transactional
+    public Usuario actualizarRolesUsuario(RolesUsuarioRequest rolesUsuario) throws Exception {
+        // Buscamos el usuario en la base de datos
+        Usuario usuario = this.getByEmail(rolesUsuario.getEmailUsuario());
+
+        List<UsuarioRol> rolesNuevos = new ArrayList<>();
+        // por cada permiso que se haya especificado creamos un nuevo permiso
+        for (Rol rolActual : rolesUsuario.getRolesUsuario()) {
+            rolesNuevos.add(new UsuarioRol(usuario, rolActual));
+        }
+
+        if (usuario.getHorariosAtencionUsuario() == null) {
+            usuario.setRoles(rolesNuevos);
+        } else {
+            // asignamos los nuevos permisos al usuario
+            usuario.getRoles().clear();
+            usuario.getRoles().addAll(rolesNuevos);
         }
         // Guardamos el usuario
         return this.usuarioRepository.save(usuario);

@@ -1,0 +1,72 @@
+<div class="content-container">
+    <div class="form-box">
+        <h2>Crear Ayudante</h2>
+        <form [formGroup]="helperForm" class="form-container">
+            <!-- Datos básicos -->
+            <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Nombres</mat-label>
+                <input matInput formControlName="nombres" required />
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Apellidos</mat-label>
+                <input matInput formControlName="apellidos" required />
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Email</mat-label>
+                <input matInput formControlName="email" required />
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="full-width">
+                <mat-label>NIT</mat-label>
+                <input matInput formControlName="nit" />
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="full-width">
+                <mat-label>CUI</mat-label>
+                <input matInput formControlName="cui" />
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Teléfono</mat-label>
+                <input matInput formControlName="telefono" />
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Contraseña</mat-label>
+                <input matInput formControlName="password" type="password" required />
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Seleccionar Roles</mat-label>
+                <mat-select formControlName="roles" multiple>
+                    <mat-option *ngFor="let role of roles" [value]="role.id">
+                        {{ role.nombre }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <!-- Horarios de atención -->
+            <div formArrayName="horariosAtencion">
+                <div *ngFor="let horario of horariosAtencion.controls; let i = index" [formGroupName]="i" class="horario-form-group">
+                    <mat-form-field appearance="outline" class="half-width">
+                        <mat-label>Hora Inicio</mat-label>
+                        <input matInput type="time" formControlName="horaInicio" required />
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" class="half-width">
+                        <mat-label>Hora Final</mat-label>
+                        <input matInput type="time" formControlName="horaFinal" required />
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>Día de Atención</mat-label>
+                        <mat-select formControlName="diaAtencion" required>
+                            <mat-option *ngFor="let day of days" [value]="day.id">{{ day.nombre }}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <button mat-button color="warn" (click)="removeHorarioAtencion(i)">
+                        <mat-icon>delete</mat-icon>
+                    </button>
+                </div>
+            </div>
+            <button mat-raised-button color="accent" (click)="addHorarioAtencion()">+ Horario</button>
+
+            <div class="button-container">
+                <button mat-raised-button color="primary" (click)="onSubmit()">Crear Ayudante</button>
+            </div>
+        </form>
+    </div>
+</div>

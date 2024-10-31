@@ -19,6 +19,7 @@ import { ServiceCreateComponent } from './components/service-create/service-crea
 import { ServiceEditComponent } from './components/service-edit/service-edit.component';
 import { ServiceComponent } from './components/service/service.component';
 import { RoleCreateComponent } from './components/role-create/role-create.component';
+import { HelperCreateComponent } from './components/helper-create/helper-create.component';
 
 @NgModule({
   declarations: [
@@ -49,6 +50,7 @@ import { RoleCreateComponent } from './components/role-create/role-create.compon
     //Users
     UserComponent,
     RoleCreateComponent,
+    HelperCreateComponent,
     //UserCreateComponent,
     //UserEditComponent,
   ],

@@ -15,6 +15,7 @@ import { ServiceComponent } from './components/service/service.component';
 import { ServiceCreateComponent } from './components/service-create/service-create.component';
 import { ServiceEditComponent } from './components/service-edit/service-edit.component';
 import { RoleCreateComponent } from './components/role-create/role-create.component';
+import { HelperCreateComponent } from './components/helper-create/helper-create.component';
 
 const routes: Routes = [
   { path: '', component: AdminViewComponent, children: [
@@ -41,6 +42,10 @@ const routes: Routes = [
     { path: 'role-create', component: RoleCreateComponent },
     //Usuarios
     { path: 'users', component: UserComponent },
+    //{ path: 'admin-create', component: AdminCreateComponent },
+    { path: 'helper-create', component: HelperCreateComponent },
+    //{ path: 'user-create', component: UserCreateComponent },
+    
   ]}
 ];
 

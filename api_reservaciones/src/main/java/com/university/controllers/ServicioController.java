@@ -40,7 +40,7 @@ public class ServicioController {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = Servicio.class)) }),
             @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
-    @GetMapping("/recurso/public/getServicios")
+    @GetMapping("/servicio/public/getServicios")
     public ResponseEntity<?> getServicios() {
         try {
             List<Servicio> data = servicioService.getServicios();

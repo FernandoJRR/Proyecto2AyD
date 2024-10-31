@@ -140,6 +140,21 @@ public class Usuario extends Auditor {
         this.estadoActivacion = estadoActivacion;
     }
 
+    public Usuario(String nombres, String apellidos, String email, String nit, String cui, String password, String codigoActivacion,
+            String codigoRecuperacion, boolean estadoActivacion, String codigoVerificacion, boolean verificado) {
+        this.nombres = nombres;
+        this.apellidos = apellidos;
+        this.email = email;
+        this.nit = nit;
+        this.cui = cui;
+        this.password = password;
+        this.codigoActivacion = codigoActivacion;
+        this.codigoRecuperacion = codigoRecuperacion;
+        this.codigoVerificacion = codigoVerificacion;
+        this.estadoActivacion = estadoActivacion;
+        this.verificado = verificado;
+    }
+
     public Usuario(Long id) {
         super(id);
     }

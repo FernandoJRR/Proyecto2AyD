@@ -6,6 +6,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -31,6 +33,7 @@ public class HorarioAtencionUsuario extends Auditor {
     @ManyToOne
     @JoinColumn(name = "usuario", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
+    @Cascade(CascadeType.ALL)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Usuario usuario;
 

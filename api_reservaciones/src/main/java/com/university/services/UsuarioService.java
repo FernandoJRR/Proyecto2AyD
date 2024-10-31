@@ -548,14 +548,16 @@ public class UsuarioService extends com.university.services.Service {
             HorarioAtencionUsuario horarioUsuarioCreado = new HorarioAtencionUsuario(
                     horario.getHoraInicio(), horario.getHoraFinal(),
                     horario.getDiaAtencion());
-
             horarioUsuarioCreado.setUsuario(crearRol);
 
-            horarioAtencionUsuarioRepository.save(horarioUsuarioCreado);
-            horariosAtencionCreados.add(horarioUsuarioCreado);
+            HorarioAtencionUsuario horarioCreadoActual = horarioAtencionUsuarioRepository.save(horarioUsuarioCreado);
+            //horarioCreadoActual.setUsuario(crearRol);
+            horarioAtencionUsuarioRepository.save(horarioCreadoActual);
+
+            horariosAtencionCreados.add(horarioCreadoActual);
         }
 
-        crearRol.setHorariosAtencionUsuario(horarios);
+        crearRol.setHorariosAtencionUsuario(horariosAtencionCreados);
 
         // Encriptar la contraseña
         crearRol.setPassword(this.encriptador.encriptarPassword(crearRol.getPassword()));
@@ -563,6 +565,7 @@ public class UsuarioService extends com.university.services.Service {
         // Guardar el usuario
         return this.usuarioRepository.save(crearRol);
     }
+
 
     private boolean verificarUsuarioJwt(Usuario usuarioTratar, String emailUsuarioAutenticado) throws Exception {
         // validar si el usuario tiene permiso de eliminar

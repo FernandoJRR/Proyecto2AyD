@@ -540,6 +540,7 @@ public class UsuarioService extends com.university.services.Service {
             rols.add(usuarioRol);
         }
         crear.setRoles(rols);
+        Usuario crearRol = this.usuarioRepository.save(crear);
 
         List<HorarioAtencionUsuario> horariosAtencionCreados = new ArrayList<>();
         // Se crean los horarios de atencion que tendra el usuario
@@ -548,19 +549,19 @@ public class UsuarioService extends com.university.services.Service {
                     horario.getHoraInicio(), horario.getHoraFinal(),
                     horario.getDiaAtencion());
 
-            horarioUsuarioCreado.setUsuario(crear);
+            horarioUsuarioCreado.setUsuario(crearRol);
 
             horarioAtencionUsuarioRepository.save(horarioUsuarioCreado);
             horariosAtencionCreados.add(horarioUsuarioCreado);
         }
 
-        crear.setHorariosAtencionUsuario(horarios);
+        crearRol.setHorariosAtencionUsuario(horarios);
 
         // Encriptar la contraseña
-        crear.setPassword(this.encriptador.encriptarPassword(crear.getPassword()));
+        crearRol.setPassword(this.encriptador.encriptarPassword(crearRol.getPassword()));
 
         // Guardar el usuario
-        return this.usuarioRepository.save(crear);
+        return this.usuarioRepository.save(crearRol);
     }
 
     private boolean verificarUsuarioJwt(Usuario usuarioTratar, String emailUsuarioAutenticado) throws Exception {

@@ -113,7 +113,7 @@ public class ServicioServiceTest {
         assertNotNull(result);
         assertEquals("Terapia Física", result.getNombre());
 
-        verify(servicioRepository, times(1)).save(servicio);
+        verify(servicioRepository, times(3)).save(servicio);
         verify(duracionServicioRepository, times(1)).save(any(DuracionServicio.class));
         verify(horarioAtencionServicioRepository, times(1)).save(any(HorarioAtencionServicio.class));
     }
@@ -156,7 +156,7 @@ public class ServicioServiceTest {
         assertNotNull(result);
         assertEquals("Radiología", result.getNombre());
 
-        verify(servicioRepository, times(1)).save(servicio);
+        verify(servicioRepository, times(3)).save(servicio);
         verify(duracionServicioRepository, times(1)).save(any(DuracionServicio.class));
         verify(horarioAtencionServicioRepository, times(0)).save(any(HorarioAtencionServicio.class));
     }

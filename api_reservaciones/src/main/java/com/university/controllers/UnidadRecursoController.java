@@ -77,4 +77,15 @@ public class UnidadRecursoController {
     public List<UnidadRecurso> obtenerUnidadesPorRecurso(@PathVariable Long id) {
         return unidadRecursoService.getUnidadRecursoByRecursoId(id);
     }
+
+    @Operation(summary = "Obtener todas las unidad de recurso", description = "Obtiene la información de una unidad de recurso con el ID proporcionado.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Unidades encontradas", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = UnidadRecurso.class)) }),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+    })
+    @GetMapping("/unidad-recurso/private/getUnidadesRecurso")
+    public List<UnidadRecurso> obtenerTodasUnidadesPorRecurso() {
+        return unidadRecursoService.getUnidadRecurso();
+    }
 }

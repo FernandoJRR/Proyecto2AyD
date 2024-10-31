@@ -25,7 +25,6 @@ export class UserVerifyComponent implements OnInit {
   onVerifyAccount(): void {
     if (this.verificationCode) {
       const verificationPayload = { codigoVerificacion: this.verificationCode };
-
       // Imprime el JSON que se enviará
       console.log('Datos enviados al endpoint de verificación:', JSON.stringify(verificationPayload));
 

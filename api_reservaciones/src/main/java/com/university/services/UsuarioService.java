@@ -24,6 +24,7 @@ import com.university.models.request.RolesUsuarioRequest;
 import com.university.models.request.TwoFactorActivate;
 import com.university.models.request.CreateUsuarioDto;
 import com.university.models.request.HorariosUsuarioRequest;
+import com.university.repositories.HorarioAtencionUsuarioRepository;
 import com.university.repositories.UsuarioRepository;
 import com.university.repositories.UsuarioRolRepository;
 import com.university.services.authentication.AuthenticationService;
@@ -56,6 +57,8 @@ public class UsuarioService extends com.university.services.Service {
     private UsuarioRolRepository usuarioRolRepository;
     @Autowired
     private JwtGeneratorService jwtGenerator;
+    @Autowired
+    private HorarioAtencionUsuarioRepository horarioAtencionUsuarioRepository;
 
     public List<Usuario> getUsuarios() {
         return this.ignorarEliminados(usuarioRepository.findAll());
@@ -456,7 +459,8 @@ public class UsuarioService extends com.university.services.Service {
     public Usuario crearAyudante(CreateUsuarioDto crear) throws Exception {
         Usuario usuario = crear.getUsuario();
         List<Rol> roles = crear.getRoles();
-        return this.guardarUsuario(usuario, roles);
+        List<HorarioAtencionUsuario> horarios = crear.getHorarioAtencionUsuarios();
+        return this.guardarUsuario(usuario, roles, horarios);
     }
 
     /**
@@ -515,6 +519,42 @@ public class UsuarioService extends com.university.services.Service {
             rols.add(usuarioRol);
         }
         crear.setRoles(rols);
+
+        // Encriptar la contraseña
+        crear.setPassword(this.encriptador.encriptarPassword(crear.getPassword()));
+
+        // Guardar el usuario
+        return this.usuarioRepository.save(crear);
+    }
+
+    @Transactional
+    private Usuario guardarUsuario(Usuario crear, List<Rol> roles, List<HorarioAtencionUsuario> horarios) throws Exception {
+        if (this.usuarioRepository.existsByEmail(crear.getEmail())) {
+            throw new Exception("El Email ya existe.");
+        }
+
+        ArrayList<UsuarioRol> rols = new ArrayList<>();
+        for (Rol rolCreado : roles) {
+            // Asignamos un rol al usuario
+            UsuarioRol usuarioRol = new UsuarioRol(crear, rolCreado);
+            rols.add(usuarioRol);
+        }
+        crear.setRoles(rols);
+
+        List<HorarioAtencionUsuario> horariosAtencionCreados = new ArrayList<>();
+        // Se crean los horarios de atencion que tendra el usuario
+        for (HorarioAtencionUsuario horario : horarios) {
+            HorarioAtencionUsuario horarioUsuarioCreado = new HorarioAtencionUsuario(
+                    horario.getHoraInicio(), horario.getHoraFinal(),
+                    horario.getDiaAtencion());
+
+            horarioUsuarioCreado.setUsuario(crear);
+
+            horarioAtencionUsuarioRepository.save(horarioUsuarioCreado);
+            horariosAtencionCreados.add(horarioUsuarioCreado);
+        }
+
+        crear.setHorariosAtencionUsuario(horarios);
 
         // Encriptar la contraseña
         crear.setPassword(this.encriptador.encriptarPassword(crear.getPassword()));

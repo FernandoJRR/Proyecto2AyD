@@ -9,9 +9,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { DialogComponent } from '../../../utils/dialog/dialog.component';
 
 @Component({
-  selector: 'app-services',
+  selector: 'app-service',
   templateUrl: './service.component.html',
-  styleUrls: ['./service.component.css'],
+  styleUrls: ['./service.component.css']
 })
 export class ServiceComponent implements OnInit {
   displayedColumns: string[] = ['id', 'nombre', 'tipoServicio', 'negocio', 'acciones'];
@@ -31,22 +31,18 @@ export class ServiceComponent implements OnInit {
   }
 
   loadServices(): void {
+    console.log('Iniciando carga de servicios desde la API...');
     this.serviceService.getAllServices().subscribe({
-      next: (services) => {
-        console.log('Servicios obtenidos:', services);
+      next: (services: Service[]) => {
+        console.log('Servicios obtenidos de la API:', services);
         this.dataSource.data = services;
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
       },
-      error: () => {
-        this.dialog.open(DialogComponent, {
-          data: {
-            title: 'Error',
-            description: 'No se pudieron cargar los servicios. Intente nuevamente.',
-            backgroundColor: 'red',
-          },
-        });
-      },
+      error: (error) => {
+        console.error('Error al cargar los servicios:', error);
+        this.openDialog('Error', 'No se pudieron cargar los servicios. Intente nuevamente.', 'red');
+      }
     });
   }
 
@@ -59,14 +55,17 @@ export class ServiceComponent implements OnInit {
   }
 
   crearServicio(): void {
+    console.log('Redirigiendo a creación de nuevo servicio');
     this.router.navigate(['/admin/service-create']);
   }
 
-  editarServicio(service: Service): void {
-    this.router.navigate(['/admin/service-edit', service.id]);
+  editarServicio(servicio: Service): void {
+    console.log('Redirigiendo a edición del servicio con ID:', servicio.id);
+    this.router.navigate(['/admin/service-edit', servicio.id]);
   }
 
   eliminarServicio(id: number): void {
+    console.log('Preparando eliminación del servicio con ID:', id);
     const confirmDialog = this.dialog.open(DialogComponent, {
       data: {
         title: 'Confirmar eliminación',
@@ -79,26 +78,22 @@ export class ServiceComponent implements OnInit {
       if (result) {
         this.serviceService.deleteService(id).subscribe({
           next: () => {
-            this.loadServices();
-            this.dialog.open(DialogComponent, {
-              data: {
-                title: 'Éxito',
-                description: 'Servicio eliminado con éxito.',
-                backgroundColor: 'green',
-              },
-            });
+            console.log('Servicio eliminado exitosamente');
+            this.loadServices(); // Recargar la lista después de eliminar
+            this.openDialog('Eliminado', 'El servicio ha sido eliminado con éxito.', 'green');
           },
-          error: () => {
-            this.dialog.open(DialogComponent, {
-              data: {
-                title: 'Error',
-                description: 'Error al eliminar el servicio.',
-                backgroundColor: 'red',
-              },
-            });
+          error: (error) => {
+            console.error('Error al eliminar el servicio:', error);
+            this.openDialog('Error', 'Error al eliminar el servicio. Intente nuevamente.', 'red');
           },
         });
       }
+    });
+  }
+
+  openDialog(title: string, description: string, backgroundColor: 'red' | 'green' | 'gray'): void {
+    this.dialog.open(DialogComponent, {
+      data: { title, description, backgroundColor },
     });
   }
 }

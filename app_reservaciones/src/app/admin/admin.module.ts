@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms'; // Agregar FormsModule
+import { FormsModule, ReactiveFormsModule } from '@angular/forms'; // Agregar FormsModule
 
 import { AdminRoutingModule } from './admin-routing.module';
 import { MaterialModule } from '../material/material.module';
@@ -53,6 +53,7 @@ import { ServiceComponent } from './components/service/service.component';
   imports: [
     CommonModule,
     FormsModule,
+    ReactiveFormsModule,
     AdminRoutingModule,
     MaterialModule
   ]

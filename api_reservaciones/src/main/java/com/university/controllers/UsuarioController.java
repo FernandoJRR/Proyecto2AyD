@@ -215,7 +215,7 @@ public class UsuarioController {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = Usuario.class)) }),
             @ApiResponse(responseCode = "400", description = "Solicitud incorrecta")
     })
-    @PostMapping("/usuario/private/crearAyudante")
+    @PostMapping("/usuario/public/crearAyudante")
     public ResponseEntity<?> crearAyudante(@RequestBody CreateUsuarioDto crear) {
         try {
             Usuario respuesta = usuarioService.crearAyudante(crear);

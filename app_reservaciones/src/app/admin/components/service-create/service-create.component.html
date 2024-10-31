@@ -1,153 +1,165 @@
 <div class="content-container">
-  <mat-vertical-stepper #stepper orientation="vertical" linear>
-    <!-- Paso 1: Información Básica -->
-    <mat-step [stepControl]="basicInfoForm" label="Información Básica">
-      <form [formGroup]="basicInfoForm">
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Nombre del Servicio</mat-label>
-          <input matInput formControlName="nombre" required />
-          <mat-error *ngIf="basicInfoForm.get('nombre')?.hasError('required')">
-            El nombre es obligatorio.
-          </mat-error>
-        </mat-form-field>
+  <div class="form-box">
+    <h2>Crear Nuevo Servicio</h2>
 
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Tipo de Servicio</mat-label>
-          <mat-select formControlName="tipoServicio" required (selectionChange)="onTipoServicioChange()">
-            <mat-option *ngFor="let tipo of tiposServicio" [value]="tipo.id">{{ tipo.nombre }}</mat-option>
-          </mat-select>
-          <mat-error *ngIf="basicInfoForm.get('tipoServicio')?.hasError('required')">
-            Selecciona un tipo de servicio.
-          </mat-error>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Negocio</mat-label>
-          <mat-select formControlName="negocio" required>
-            <mat-option *ngFor="let negocio of negocios" [value]="negocio.id">{{ negocio.nombre }}</mat-option>
-          </mat-select>
-          <mat-error *ngIf="basicInfoForm.get('negocio')?.hasError('required')">
-            Selecciona un negocio.
-          </mat-error>
-        </mat-form-field>
-
-        <mat-form-field *ngIf="showResourceSelect" appearance="outline" class="full-width">
-          <mat-label>Recurso</mat-label>
-          <mat-select formControlName="recurso">
-            <mat-option *ngFor="let recurso of recursos" [value]="recurso.id">{{ recurso.nombre }}</mat-option>
-          </mat-select>
-          <mat-error *ngIf="basicInfoForm.get('recurso')?.hasError('required')">
-            Selecciona un recurso.
-          </mat-error>
-        </mat-form-field>
-      </form>
-
-      <div class="button-container">
-        <button mat-button matStepperNext [disabled]="basicInfoForm.invalid">Siguiente</button>
-      </div>
-    </mat-step>
-
-    <!-- Paso 2: Detalles del Servicio -->
-    <mat-step [stepControl]="detailsForm" label="Detalles del Servicio">
-      <form [formGroup]="detailsForm">
-        <mat-checkbox formControlName="asignacion_automatica" class="full-width">
-          Asignación Automática
-        </mat-checkbox>
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Duración en Horas</mat-label>
-          <input matInput type="number" formControlName="horas" required />
-          <mat-error *ngIf="detailsForm.get('horas')?.hasError('required')">
-            La duración en horas es obligatoria.
-          </mat-error>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Duración en Minutos</mat-label>
-          <input matInput type="number" formControlName="minutos" required />
-          <mat-error *ngIf="detailsForm.get('minutos')?.hasError('required')">
-            La duración en minutos es obligatoria.
-          </mat-error>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Costo</mat-label>
-          <input matInput type="number" formControlName="costo" required />
-          <mat-error *ngIf="detailsForm.get('costo')?.hasError('required')">
-            El costo es obligatorio.
-          </mat-error>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Días de Cancelación</mat-label>
-          <input matInput type="number" formControlName="dias_cancelacion" required />
-          <mat-error *ngIf="detailsForm.get('dias_cancelacion')?.hasError('required')">
-            Los días de cancelación son obligatorios.
-          </mat-error>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Porcentaje de Reembolso</mat-label>
-          <input matInput type="number" formControlName="porcentaje_reembolso" required />
-          <mat-error *ngIf="detailsForm.get('porcentaje_reembolso')?.hasError('required')">
-            El porcentaje de reembolso es obligatorio.
-          </mat-error>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Trabajadores Simultáneos</mat-label>
-          <input matInput type="number" formControlName="trabajadores_simultaneos" required />
-          <mat-error *ngIf="detailsForm.get('trabajadores_simultaneos')?.hasError('required')">
-            La cantidad de trabajadores es obligatoria.
-          </mat-error>
-        </mat-form-field>
-      </form>
-
-      <div class="button-container">
-        <button mat-button matStepperPrevious>Anterior</button>
-        <button mat-button matStepperNext [disabled]="detailsForm.invalid">Siguiente</button>
-      </div>
-    </mat-step>
-
-    <!-- Paso 3: Horarios de Atención -->
-    <mat-step label="Horarios de Atención">
-      <ng-container *ngFor="let horario of horariosAtencion; let i = index">
-        <div class="horario-form-group">
-          <mat-form-field appearance="outline" class="half-width">
-            <mat-label>Hora Inicio</mat-label>
-            <input matInput type="time" [(ngModel)]="horario.horaInicio" required />
-            <mat-error *ngIf="!horario.horaInicio">
-              La hora de inicio es obligatoria.
-            </mat-error>
-          </mat-form-field>
-
-          <mat-form-field appearance="outline" class="half-width">
-            <mat-label>Hora Final</mat-label>
-            <input matInput type="time" [(ngModel)]="horario.horaFinal" required />
-            <mat-error *ngIf="!horario.horaFinal">
-              La hora final es obligatoria.
+    <mat-vertical-stepper #stepper orientation="vertical" linear>
+      <!-- Paso 1: Información Básica -->
+      <mat-step [stepControl]="basicInfoForm" label="Información Básica">
+        <form [formGroup]="basicInfoForm" class="form-container">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Nombre del Servicio</mat-label>
+            <input matInput formControlName="nombre" required />
+            <mat-error *ngIf="basicInfoForm.get('nombre')?.hasError('required')">
+              El nombre es obligatorio.
             </mat-error>
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Día de Atención</mat-label>
-            <mat-select [(ngModel)]="horario.diaAtencion.id" required>
-              <mat-option *ngFor="let dia of diasAtencion" [value]="dia.id">{{ dia.nombre }}</mat-option>
+            <mat-label>Tipo de Servicio</mat-label>
+            <mat-select formControlName="tipoServicio" required (selectionChange)="onTipoServicioChange()">
+              <mat-option *ngFor="let tipo of tiposServicio" [value]="tipo.id">{{ tipo.nombre }}</mat-option>
             </mat-select>
-            <mat-error *ngIf="!horario.diaAtencion.id">
-              El día de atención es obligatorio.
+            <mat-error *ngIf="basicInfoForm.get('tipoServicio')?.hasError('required')">
+              Selecciona un tipo de servicio.
             </mat-error>
           </mat-form-field>
 
-          <button mat-button color="warn" (click)="removeHorarioAtencion(i)">Eliminar Horario</button>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Negocio</mat-label>
+            <mat-select formControlName="negocio" required>
+              <mat-option *ngFor="let negocio of negocios" [value]="negocio.id">{{ negocio.nombre }}</mat-option>
+            </mat-select>
+            <mat-error *ngIf="basicInfoForm.get('negocio')?.hasError('required')">
+              Selecciona un negocio.
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field *ngIf="showResourceSelect" appearance="outline" class="full-width">
+            <mat-label>Recurso</mat-label>
+            <mat-select formControlName="recurso">
+              <mat-option *ngFor="let recurso of recursos" [value]="recurso.id">{{ recurso.nombre }}</mat-option>
+            </mat-select>
+            <mat-error *ngIf="basicInfoForm.get('recurso')?.hasError('required')">
+              Selecciona un recurso.
+            </mat-error>
+          </mat-form-field>
+        </form>
+
+        <div class="button-container">
+          <button mat-button matStepperNext [disabled]="basicInfoForm.invalid">Siguiente</button>
         </div>
-      </ng-container>
+      </mat-step>
 
-      <button mat-raised-button color="primary" (click)="addHorarioAtencion()">Agregar Horario</button>
+      <!-- Paso 2: Detalles del Servicio -->
+      <mat-step [stepControl]="detailsForm" label="Detalles del Servicio">
+        <form [formGroup]="detailsForm" class="form-container">
+          <!-- Radio button para Asignación Automática -->
+          <div class="radio-group">
+            <mat-radio-group formControlName="asignacion_automatica" class="full-width">
+              <mat-radio-button [value]="true">Asignación Automática</mat-radio-button>
+              <mat-radio-button [value]="false">Asignación Manual</mat-radio-button>
+            </mat-radio-group>
+          </div>
 
-      <div class="button-container">
-        <button mat-button matStepperPrevious>Anterior</button>
-        <button mat-button (click)="onSubmit()" color="primary">Guardar Servicio</button>
-      </div>
-    </mat-step>
-  </mat-vertical-stepper>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Duración en Horas</mat-label>
+            <input matInput type="number" formControlName="horas" required />
+            <mat-error *ngIf="detailsForm.get('horas')?.hasError('required')">
+              La duración en horas es obligatoria.
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Duración en Minutos</mat-label>
+            <input matInput type="number" formControlName="minutos" required />
+            <mat-error *ngIf="detailsForm.get('minutos')?.hasError('required')">
+              La duración en minutos es obligatoria.
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Costo</mat-label>
+            <input matInput type="number" formControlName="costo" required />
+            <mat-error *ngIf="detailsForm.get('costo')?.hasError('required')">
+              El costo es obligatorio.
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Días de Cancelación</mat-label>
+            <input matInput type="number" formControlName="dias_cancelacion" required />
+            <mat-error *ngIf="detailsForm.get('dias_cancelacion')?.hasError('required')">
+              Los días de cancelación son obligatorios.
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Porcentaje de Reembolso</mat-label>
+            <input matInput type="number" formControlName="porcentaje_reembolso" required />
+            <mat-error *ngIf="detailsForm.get('porcentaje_reembolso')?.hasError('required')">
+              El porcentaje de reembolso es obligatorio.
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Trabajadores Simultáneos</mat-label>
+            <input matInput type="number" formControlName="trabajadores_simultaneos" required />
+            <mat-error *ngIf="detailsForm.get('trabajadores_simultaneos')?.hasError('required')">
+              La cantidad de trabajadores es obligatoria.
+            </mat-error>
+          </mat-form-field>
+        </form>
+
+        <div class="button-container">
+          <button mat-button matStepperPrevious>Anterior</button>
+          <button mat-button matStepperNext [disabled]="detailsForm.invalid">Siguiente</button>
+        </div>
+      </mat-step>
+
+      <!-- Paso 3: Horarios de Atención -->
+      <mat-step label="Horarios de Atención">
+        <ng-container *ngFor="let horario of horariosAtencion; let i = index">
+          <div class="horario-form-group">
+            <mat-form-field appearance="outline" class="half-width">
+              <mat-label>Hora Inicio</mat-label>
+              <input matInput type="time" [(ngModel)]="horario.horaInicio" required />
+              <mat-error *ngIf="!horario.horaInicio">
+                La hora de inicio es obligatoria.
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="half-width">
+              <mat-label>Hora Final</mat-label>
+              <input matInput type="time" [(ngModel)]="horario.horaFinal" required />
+              <mat-error *ngIf="!horario.horaFinal">
+                La hora final es obligatoria.
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Día de Atención</mat-label>
+              <mat-select [(ngModel)]="horario.diaAtencion.id" required>
+                <mat-option *ngFor="let dia of diasAtencion" [value]="dia.id">{{ dia.nombre }}</mat-option>
+              </mat-select>
+              <mat-error *ngIf="!horario.diaAtencion.id">
+                El día de atención es obligatorio.
+              </mat-error>
+            </mat-form-field>
+
+            <button mat-button color="warn" (click)="removeHorarioAtencion(i)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </ng-container>
+
+        <button mat-raised-button color="accent" (click)="addHorarioAtencion()">+ Horario</button>
+
+        <div class="button-container">
+          <button mat-button matStepperPrevious>Anterior</button>
+          <button mat-button (click)="onSubmit()" color="primary">Guardar Servicio</button>
+        </div>
+      </mat-step>
+    </mat-vertical-stepper>
+  </div>
 </div>

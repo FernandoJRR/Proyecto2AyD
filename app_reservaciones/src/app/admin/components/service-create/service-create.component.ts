@@ -13,14 +13,10 @@ import { BusinessService } from '../../services/business.service';
   styleUrls: ['./service-create.component.css'],
 })
 export class ServiceCreateComponent implements OnInit {
-  // Formularios
   basicInfoForm: FormGroup;
   detailsForm: FormGroup;
-
-  // Arreglo de horarios de atención
   horariosAtencion: ServiceSchedule[] = [];
 
-  // Listas y banderas
   tiposServicio: any[] = [];
   negocios: any[] = [];
   recursos: Resource[] = [];
@@ -46,7 +42,7 @@ export class ServiceCreateComponent implements OnInit {
       dias_cancelacion: [0, Validators.required],
       porcentaje_reembolso: [0, Validators.required],
       trabajadores_simultaneos: [1, Validators.required],
-      asignacion_automatica: [false, Validators.required], // Campo booleano para asignación automática
+      asignacion_automatica: [false, Validators.required],
     });
   }
 
@@ -57,7 +53,6 @@ export class ServiceCreateComponent implements OnInit {
     this.loadNegocios();
   }
 
-  // Carga de datos desde el servicio
   loadServiceTypes(): void {
     this.serviceService.getServiceTypes().subscribe((data) => {
       this.tiposServicio = data;
@@ -86,7 +81,6 @@ export class ServiceCreateComponent implements OnInit {
     });
   }
 
-  // Agregar horario al arreglo de horarios de atención
   addHorarioAtencion(): void {
     const nuevoHorario: ServiceSchedule = {
       horaInicio: '',
@@ -123,6 +117,15 @@ export class ServiceCreateComponent implements OnInit {
           recurso: this.showResourceSelect
             ? { id: this.basicInfoForm.get('recurso')?.value }
             : null,
+          asignacion_automatica: this.detailsForm.get('asignacion_automatica')
+            ?.value, // Sin conversión
+          costo: this.detailsForm.get('costo')?.value,
+          dias_cancelacion: this.detailsForm.get('dias_cancelacion')?.value,
+          porcentaje_reembolso: this.detailsForm.get('porcentaje_reembolso')
+            ?.value,
+          trabajadores_simultaneos: this.detailsForm.get(
+            'trabajadores_simultaneos'
+          )?.value,
         },
         duracionServicio: {
           horas: this.detailsForm.get('horas')?.value,
@@ -133,15 +136,6 @@ export class ServiceCreateComponent implements OnInit {
           horaFinal: horario.horaFinal,
           diaAtencion: { id: horario.diaAtencion.id },
         })),
-        asignacion_automatica: this.detailsForm.get('asignacion_automatica')
-          ?.value,
-        costo: this.detailsForm.get('costo')?.value,
-        dias_cancelacion: this.detailsForm.get('dias_cancelacion')?.value,
-        porcentaje_reembolso: this.detailsForm.get('porcentaje_reembolso')
-          ?.value,
-        trabajadores_simultaneos: this.detailsForm.get(
-          'trabajadores_simultaneos'
-        )?.value,
       };
 
       console.log('Objeto Service construido:', serviceData);

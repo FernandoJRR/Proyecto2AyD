@@ -12,6 +12,7 @@ import { AuthInterceptor } from './auth/services/auth.interceptor';
 import { AuthModule } from './auth/auth.module';
 import { AdminModule } from './admin/admin.module';
 import { ClientModule } from './client/client.module';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -21,6 +22,8 @@ import { ClientModule } from './client/client.module';
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
+    FormsModule,
+    ReactiveFormsModule,
     //Modulo de Material Modules
     MaterialModule,
     //Modulos Principales

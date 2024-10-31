@@ -17,7 +17,7 @@ export class ServiceService {
 
   // Obtener lista de servicios
   getAllServices(): Observable<Service[]> {
-    return this.http.get<{ data: Service[] }>(`${this.apiUrl}/public/getServicios`).pipe(
+    return this.http.get<{ data: Service[] }>(`${this.apiUrl}/servicio/public/getServicios`).pipe(
       map(response => response.data)
     );
   }

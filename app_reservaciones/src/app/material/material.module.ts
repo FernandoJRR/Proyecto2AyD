@@ -14,6 +14,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
+import { MatRadioButton, MatRadioModule } from '@angular/material/radio';
 
 @NgModule({
   exports: [
@@ -34,6 +35,7 @@ import { MatSelectModule } from '@angular/material/select';
     MatStepperModule,
     MatOptionModule,
     MatSelectModule,
+    MatRadioModule
 
 
   ]

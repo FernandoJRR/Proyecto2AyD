@@ -26,6 +26,17 @@
   line-height: 20px;
 }
 
+.create-button {
+    background-color: #32eb3e;
+    color: white;
+    font-weight: bold;
+    border-radius: 8px;
+    height: 2.5rem;
+    width: 8rem;
+    line-height: 20px;
+    margin-top: -1rem;
+  }
+
 /* Responsividad para dispositivos pequeños */
 @media screen and (max-width: 768px) {
   .mat-mdc-form-field {

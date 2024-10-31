@@ -27,9 +27,9 @@ export class AuthService {
   }
 
   // Función para verificar un usuario con código de verificación
-  verifyUser(code: any): Observable<any> {
-    return this.http.patch(`${this.apiUrl}/verificarUsuario`, { code });
-  }
+  verifyUser(verificationPayload: any): Observable<any> {
+    return this.http.patch(`${this.apiUrl}/verificarUsuario`, verificationPayload);
+}
 
   // Función para iniciar sesión
   login(data: { email: string; password: string }): Observable<any> {

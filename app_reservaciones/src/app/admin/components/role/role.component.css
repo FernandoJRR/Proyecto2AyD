@@ -1,0 +1,73 @@
+.content-container {
+  padding: 5%;
+}
+
+/* Ajuste del campo de búsqueda */
+.mat-mdc-form-field {
+  display: inline-flex;
+  width: 30%;
+}
+
+/* Contenedor de búsqueda y botón */
+.search-container {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+/* Estilo del botón de crear recurso */
+.create-button {
+  background-color: #32eb3e;
+  color: white;
+  font-weight: bold;
+  border-radius: 8px;
+  height: 2.5rem;
+  width: 8rem;
+  line-height: 20px;
+  margin-top: -1rem;
+}
+
+/* Responsividad para dispositivos pequeños */
+@media screen and (max-width: 768px) {
+  .mat-mdc-form-field {
+    width: 40%;
+  }
+  .create-button {
+    width: 8rem;
+  }
+}
+
+@media screen and (max-width: 425px) {
+  .mat-mdc-form-field {
+    width: 60%;
+  }
+  .create-button {
+    width: 4rem;
+    font-size: 14px;
+  }
+}
+
+/* Contenedor de la tabla */
+.table-container {
+  border: 2px solid #3498db;
+  border-radius: 4px;
+  padding: -1px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: white;
+  width: max-content;
+}
+
+/* Encabezado de la tabla */
+.mat-mdc-header-row {
+  background-color: #3498db;
+  color: white;
+  font-weight: bold;
+}
+
+/* Hover para filas */
+.mat-mdc-row:hover {
+  background-color: #d1ecf1;
+}
+.mat-mdc-row:nth-child(2n) {
+  background-color: #f9f9f9;
+}

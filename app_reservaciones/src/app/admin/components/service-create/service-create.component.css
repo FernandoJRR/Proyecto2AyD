@@ -1,0 +1,98 @@
+.content-container {
+  padding: 5%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.form-box {
+  background-color: white;
+  border: 2px solid #3498db;
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  width: 100%;
+}
+
+h2 {
+  text-align: center;
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 1.5rem;
+}
+
+.form-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 8px; /**/
+}
+
+.radio-group {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  align-items: center;
+}
+
+.horario-form-group {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.half-width {
+  width: 45%;
+}
+
+.button-container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 16px;
+}
+
+button[mat-button][color="primary"] {
+  background-color: #3498db; /* Celeste para 'Guardar Servicio' */
+  color: white;
+}
+
+button[mat-button][color="primary"]:hover {
+  background-color: #2980b9; /* Celeste más oscuro en hover */
+}
+
+button[mat-raised-button][color="accent"] {
+  background-color: #4CAF50; /* Verde para '+ Horario' */
+  color: white;
+}
+
+button[mat-raised-button][color="accent"]:hover {
+  background-color: #388e3c; /* Verde más oscuro en hover */
+}
+
+button[mat-button][color="warn"] {
+  background-color: #F44336; /* Rojo para 'Eliminar Horario' */
+  color: white;
+}
+
+button[mat-button][color="warn"]:hover {
+  background-color: #d32f2f; /* Rojo más oscuro en hover */
+}
+
+/* Ajustes para pantallas pequeñas */
+@media screen and (max-width: 768px) {
+  .horario-form-group {
+      flex-direction: column;
+      gap: 8px;
+  }
+  
+  .half-width {
+      width: 100%;
+  }
+}

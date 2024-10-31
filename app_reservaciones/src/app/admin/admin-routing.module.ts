@@ -11,6 +11,11 @@ import { BusinessCreateComponent } from './components/business-create/business-c
 import { ResourceComponent } from './components/resource/resource.component';
 import { ResourceCreateComponent } from './components/resource-create/resource-create.component';
 import { ResourceEditComponent } from './components/resource-edit/resource-edit.component';
+import { ServiceComponent } from './components/service/service.component';
+import { ServiceCreateComponent } from './components/service-create/service-create.component';
+import { ServiceEditComponent } from './components/service-edit/service-edit.component';
+import { RoleCreateComponent } from './components/role-create/role-create.component';
+import { HelperCreateComponent } from './components/helper-create/helper-create.component';
 
 const routes: Routes = [
   { path: '', component: AdminViewComponent, children: [
@@ -23,12 +28,24 @@ const routes: Routes = [
     { path: 'resources', component: ResourceComponent },
     { path: 'resource-create', component: ResourceCreateComponent },
     { path: 'resource-edit/:id', component: ResourceEditComponent },
-    //Usuarios
-    { path: 'users', component: UserComponent },
+    
+    //PEND. "UNIDAD DE RECURSO"
+
     //Permisos
     { path: 'permissions', component: PermissionComponent },
+    //Services
+    { path: 'services', component: ServiceComponent },
+    { path: 'service-create', component: ServiceCreateComponent },
+    { path: 'service-edit', component: ServiceEditComponent },
     //Roles
     { path: 'roles', component: RoleComponent },
+    { path: 'role-create', component: RoleCreateComponent },
+    //Usuarios
+    { path: 'users', component: UserComponent },
+    //{ path: 'admin-create', component: AdminCreateComponent },
+    { path: 'helper-create', component: HelperCreateComponent },
+    //{ path: 'user-create', component: UserCreateComponent },
+    
   ]}
 ];
 

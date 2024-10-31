@@ -15,7 +15,7 @@ export class PermissionService {
   constructor(private http: HttpClient, private dialog: MatDialog) {}
 
   // Función para obtener todos los permisos
-  getPermissions(): Observable<Permission[]> {
+  getAllPermissions(): Observable<Permission[]> {
     return this.http.get<{ data: Permission[] }>(`${this.apiUrl}/getPermisos`).pipe(
       map(response => response.data)
     );

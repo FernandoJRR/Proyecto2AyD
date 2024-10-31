@@ -18,6 +18,7 @@ import { ResourceEditComponent } from './components/resource-edit/resource-edit.
 import { ServiceCreateComponent } from './components/service-create/service-create.component';
 import { ServiceEditComponent } from './components/service-edit/service-edit.component';
 import { ServiceComponent } from './components/service/service.component';
+import { RoleCreateComponent } from './components/role-create/role-create.component';
 
 @NgModule({
   declarations: [
@@ -47,6 +48,7 @@ import { ServiceComponent } from './components/service/service.component';
     //RoleEditComponent,
     //Users
     UserComponent,
+    RoleCreateComponent,
     //UserCreateComponent,
     //UserEditComponent,
   ],

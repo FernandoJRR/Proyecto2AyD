@@ -24,7 +24,7 @@ export class PermissionComponent implements OnInit {
   }
 
   fetchPermissions(): void {
-    this.permissionService.getPermissions().subscribe({
+    this.permissionService.getAllPermissions().subscribe({
       next: (permissions: Permission[]) => {
         console.log('Permisos obtenidos:', permissions);
         this.dataSource.data = permissions;

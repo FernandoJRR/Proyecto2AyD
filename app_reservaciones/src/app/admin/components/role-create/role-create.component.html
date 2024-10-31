@@ -1,0 +1,39 @@
+<div class="content-container">
+    <div class="form-box">
+      <h2>Crear Nuevo Rol</h2>
+  
+      <form [formGroup]="roleForm" class="form-container">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Nombre del Rol</mat-label>
+          <input matInput formControlName="nombre" required />
+          <mat-error *ngIf="roleForm.get('nombre')?.hasError('required')">
+            El nombre es obligatorio.
+          </mat-error>
+        </mat-form-field>
+  
+        <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Seleccionar Permisos</mat-label>
+            <mat-select formControlName="permisos" multiple>
+              <mat-option *ngFor="let permiso of permisos" [value]="permiso.id">
+                {{ permiso.nombre }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Seleccionar Servicios</mat-label>
+            <mat-select formControlName="servicios" multiple>
+              <mat-option *ngFor="let servicio of servicios" [value]="servicio.id">
+                {{ servicio.nombre }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          
+  
+        <div class="button-container">
+          <button mat-raised-button color="primary" (click)="onSubmit()">Crear Rol</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  

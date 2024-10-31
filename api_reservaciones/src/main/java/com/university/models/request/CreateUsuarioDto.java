@@ -2,6 +2,7 @@ package com.university.models.request;
 
 import org.springframework.stereotype.Component;
 
+import com.university.models.HorarioAtencionUsuario;
 import com.university.models.Permiso;
 import com.university.models.Rol;
 import com.university.models.Servicio;
@@ -14,6 +15,7 @@ public class CreateUsuarioDto {
 
     private Usuario usuario;
     private List<Rol> roles;
+    private List<HorarioAtencionUsuario> horarioAtencionUsuarios;
 
     public CreateUsuarioDto(Usuario usuario, List<Rol> roles) {
         this.usuario = usuario;
@@ -37,5 +39,13 @@ public class CreateUsuarioDto {
 
     public void setRoles(List<Rol> roles) {
         this.roles = roles;
+    }
+
+    public List<HorarioAtencionUsuario> getHorarioAtencionUsuarios() {
+        return horarioAtencionUsuarios;
+    }
+
+    public void setHorarioAtencionUsuarios(List<HorarioAtencionUsuario> horarioAtencionUsuarios) {
+        this.horarioAtencionUsuarios = horarioAtencionUsuarios;
     }
 }

@@ -20,9 +20,11 @@ import com.university.models.PermisoRol;
 import com.university.models.UsuarioRol;
 import com.university.models.dto.LoginDto;
 import com.university.models.request.PasswordChange;
+import com.university.models.request.RolesUsuarioRequest;
 import com.university.models.request.TwoFactorActivate;
 import com.university.models.request.CreateUsuarioDto;
 import com.university.models.request.HorariosUsuarioRequest;
+import com.university.repositories.HorarioAtencionUsuarioRepository;
 import com.university.repositories.UsuarioRepository;
 import com.university.repositories.UsuarioRolRepository;
 import com.university.services.authentication.AuthenticationService;
@@ -55,6 +57,8 @@ public class UsuarioService extends com.university.services.Service {
     private UsuarioRolRepository usuarioRolRepository;
     @Autowired
     private JwtGeneratorService jwtGenerator;
+    @Autowired
+    private HorarioAtencionUsuarioRepository horarioAtencionUsuarioRepository;
 
     public List<Usuario> getUsuarios() {
         return this.ignorarEliminados(usuarioRepository.findAll());
@@ -455,7 +459,8 @@ public class UsuarioService extends com.university.services.Service {
     public Usuario crearAyudante(CreateUsuarioDto crear) throws Exception {
         Usuario usuario = crear.getUsuario();
         List<Rol> roles = crear.getRoles();
-        return this.guardarUsuario(usuario, roles);
+        List<HorarioAtencionUsuario> horarios = crear.getHorarioAtencionUsuarios();
+        return this.guardarUsuario(usuario, roles, horarios);
     }
 
     /**
@@ -522,6 +527,42 @@ public class UsuarioService extends com.university.services.Service {
         return this.usuarioRepository.save(crear);
     }
 
+    @Transactional
+    private Usuario guardarUsuario(Usuario crear, List<Rol> roles, List<HorarioAtencionUsuario> horarios) throws Exception {
+        if (this.usuarioRepository.existsByEmail(crear.getEmail())) {
+            throw new Exception("El Email ya existe.");
+        }
+
+        ArrayList<UsuarioRol> rols = new ArrayList<>();
+        for (Rol rolCreado : roles) {
+            // Asignamos un rol al usuario
+            UsuarioRol usuarioRol = new UsuarioRol(crear, rolCreado);
+            rols.add(usuarioRol);
+        }
+        crear.setRoles(rols);
+
+        List<HorarioAtencionUsuario> horariosAtencionCreados = new ArrayList<>();
+        // Se crean los horarios de atencion que tendra el usuario
+        for (HorarioAtencionUsuario horario : horarios) {
+            HorarioAtencionUsuario horarioUsuarioCreado = new HorarioAtencionUsuario(
+                    horario.getHoraInicio(), horario.getHoraFinal(),
+                    horario.getDiaAtencion());
+
+            horarioUsuarioCreado.setUsuario(crear);
+
+            horarioAtencionUsuarioRepository.save(horarioUsuarioCreado);
+            horariosAtencionCreados.add(horarioUsuarioCreado);
+        }
+
+        crear.setHorariosAtencionUsuario(horarios);
+
+        // Encriptar la contraseña
+        crear.setPassword(this.encriptador.encriptarPassword(crear.getPassword()));
+
+        // Guardar el usuario
+        return this.usuarioRepository.save(crear);
+    }
+
     private boolean verificarUsuarioJwt(Usuario usuarioTratar, String emailUsuarioAutenticado) throws Exception {
         // validar si el usuario tiene permiso de eliminar
         if (!emailUsuarioAutenticado.equals(usuarioTratar.getEmail())
@@ -572,6 +613,34 @@ public class UsuarioService extends com.university.services.Service {
             // asignamos los nuevos permisos al usuario
             usuario.getHorariosAtencionUsuario().clear();
             usuario.getHorariosAtencionUsuario().addAll(horariosNuevos);
+        }
+        // Guardamos el usuario
+        return this.usuarioRepository.save(usuario);
+    }
+
+    /**
+     * Sobreescribir los roles de un usuario
+     *
+     * @param RolesUsuarioRequest
+     * @return
+     */
+    @Transactional
+    public Usuario actualizarRolesUsuario(RolesUsuarioRequest rolesUsuario) throws Exception {
+        // Buscamos el usuario en la base de datos
+        Usuario usuario = this.getByEmail(rolesUsuario.getEmailUsuario());
+
+        List<UsuarioRol> rolesNuevos = new ArrayList<>();
+        // por cada permiso que se haya especificado creamos un nuevo permiso
+        for (Rol rolActual : rolesUsuario.getRolesUsuario()) {
+            rolesNuevos.add(new UsuarioRol(usuario, rolActual));
+        }
+
+        if (usuario.getHorariosAtencionUsuario() == null) {
+            usuario.setRoles(rolesNuevos);
+        } else {
+            // asignamos los nuevos permisos al usuario
+            usuario.getRoles().clear();
+            usuario.getRoles().addAll(rolesNuevos);
         }
         // Guardamos el usuario
         return this.usuarioRepository.save(usuario);

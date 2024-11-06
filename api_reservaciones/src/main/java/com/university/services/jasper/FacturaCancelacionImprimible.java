@@ -24,6 +24,7 @@ public class FacturaCancelacionImprimible extends ReportBuilder{
         this.reservacion = reservacion;
         this.factura = datosFacturacion;
         this.cancelacion = cancelacion;
+        this.manejadorFecha = new ManejadorFecha();
         //si pasaron las comporbaciones mandamos a traer los parametros
         Map<String, Object> parametrosReporte = this.construirFactura();
         //mandamos ha abrir el reporte

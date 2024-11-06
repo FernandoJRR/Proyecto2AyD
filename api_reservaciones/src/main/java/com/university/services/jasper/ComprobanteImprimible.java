@@ -16,6 +16,7 @@ public class ComprobanteImprimible extends ReportBuilder{
 
     public byte[] init(Reservacion reservacion) throws Exception {
         this.reservacion = reservacion;
+        this.manejadorFecha = new ManejadorFecha();
         //si pasaron las comporbaciones mandamos a traer los parametros
         Map<String, Object> parametrosReporte = this.construirFactura();
         //mandamos ha abrir el reporte

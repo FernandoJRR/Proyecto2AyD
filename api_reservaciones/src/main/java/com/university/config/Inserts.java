@@ -350,6 +350,7 @@ public class Inserts implements ApplicationListener<ContextRefreshedEvent> {
             byte[] img = getClass().getResourceAsStream("/img/logo.png").readAllBytes();
 
             ConfiguracionGlobal configuracionGlobal = new ConfiguracionGlobal("Reservaciones GT", img);
+            configuracionGlobal.setMimeTypeImg("image/png");
             this.insertarConfiguracionGlobal(configuracionGlobal);
 
             // Seeder de usuarios del sistema

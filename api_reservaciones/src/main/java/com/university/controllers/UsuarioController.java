@@ -86,7 +86,7 @@ public class UsuarioController {
     })
     @PostMapping("/usuario/public/recuperarPasswordMail")
     public ResponseEntity<?> enviarMailDeRecuperacion(
-            @Parameter(description = "Email para enviar el correo", required = true, example = "{correoElectronico:\"xd\"}")
+            @Parameter(description = "Email para enviar el correo", required = true, example = "{correoElectronico:\"correo@correo.com\"}")
             @RequestBody SendRecoveryMailRequest requestBody) {
         try {
             String correoElectronico = (String) requestBody.getCorreoElectronico();

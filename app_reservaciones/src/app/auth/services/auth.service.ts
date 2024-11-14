@@ -39,6 +39,7 @@ export class AuthService {
         if (response?.data?.usuario && response.data.jwt) {
           const usuario: User = response.data.usuario;
           usuario.verificado = response.data.validated;
+          usuario.twoFactorEnabled = response.data.hasTwoFactorCode;
 
           // Almacenando datos en los storages
           this.userStorage.setUser(usuario);
@@ -58,7 +59,43 @@ export class AuthService {
 
   // Función para recuperar contraseña
   resetPassword(email: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/recuperarPasswordMail`, { email });
+    return this.http.post(`${this.apiUrl}/recuperarPasswordMail`, { correoElectronico: email });
+  }
+
+  // Funcion para recuperar contraseña
+  recoverPassword(password: string, codigo: string): Observable<any> {
+    return this.http.patch(`${this.apiUrl}/recuperarPassword`, { nuevaPassword: password, codigo: codigo });
+  }
+
+  login2F(codigo: string): Observable<any> {
+    const tempData = sessionStorage.getItem('tempUserData');
+    const jsonData = JSON.parse(tempData!);
+    const usuario = jsonData.user;
+    return this.http.post(`${this.apiUrl}/validateTwoFactorToken`, { email: usuario.email, twoFactorCode: codigo }).pipe(
+        tap((response: any) => {
+            if (response?.data?.usuario && response.data.jwt) {
+                console.log("AQUI ESTAMOS");
+                console.log(response.data.usuario);
+              const usuario: User = response.data.usuario;
+              usuario.verificado = response.data.validated;
+              usuario.twoFactorEnabled = response.data.hasTwoFactorCode;
+
+              // Almacenando datos en los storages
+              this.userStorage.setUser(usuario);
+              // Mapear usuario.roles (UserRole[]) a un arreglo de Role[] antes de almacenarlo en el storage
+              this.roleStorage.setRoles(usuario.roles.map(userRole => userRole.rol));
+              //this.roleStorage.setRoles(usuario.roles);
+              console.log('Usuario almacenado en el storage:', this.userStorage.getUser());
+              console.log('Roles almacenados en el storage:', this.roleStorage.getRoles());
+
+              // Guardando JWT en localStorage
+              localStorage.setItem('jwt', response.data.jwt);
+              console.log('JWT almacenado en localStorage:', localStorage.getItem('jwt'));
+
+              sessionStorage.removeItem('tempUserData');
+            }
+        })
+    );
   }
 
   // Diálogo de confirmación
@@ -74,7 +111,7 @@ export class AuthService {
 
   // Almacenamiento temporal para autenticación de dos factores
   setTempUserData(userData: any, jwt: string): void {
-    sessionStorage.setItem('tempUserData', JSON.stringify({ userData, jwt }));
+    sessionStorage.setItem('tempUserData', JSON.stringify({ user: userData, token: jwt }));
     console.log('Datos temporales de 2FA almacenados en sessionStorage:', sessionStorage.getItem('tempUserData'));
   }
 

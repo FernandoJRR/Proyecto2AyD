@@ -409,6 +409,14 @@ public class Inserts implements ApplicationListener<ContextRefreshedEvent> {
                     } catch (Exception e) {
                         System.out.println(e);
                     }
+                } else if (permisoInsercion.getNombre().equals("USUARIO")) {
+                    Rol rolUsuario = this.rolService.getRol("USUARIO");
+                    try {
+                        this.rolService.agregarPermisoRol(rolUsuario, permisoInsercion);
+                    } catch (IllegalArgumentException e) {
+                    } catch (Exception e) {
+                        System.out.println(e);
+                    }
                 }
             }
 

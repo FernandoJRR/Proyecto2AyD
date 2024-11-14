@@ -7,6 +7,7 @@ import { UserVerifyComponent } from './components/user-verify/user-verify.compon
 import { LoginComponent } from './components/login/login.component';
 import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
 import { TwoFactorComponent } from './components/two-factor/two-factor.component';
+import { PasswordRecoveryComponent } from './components/password-recovery/password-recovery.component';
 
 const routes: Routes = [
   {
@@ -20,6 +21,7 @@ const routes: Routes = [
       { path: 'login', component: LoginComponent },
       { path: 'two-factor', component: TwoFactorComponent},
       { path: 'reset-password', component: ResetPasswordComponent },
+      { path: 'password-recovery', component: PasswordRecoveryComponent },
     ],
   },
 ];

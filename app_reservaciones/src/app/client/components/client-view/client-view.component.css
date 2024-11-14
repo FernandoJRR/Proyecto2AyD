@@ -1,12 +1,12 @@
 .sidenav-container {
     height: 100%;
   }
-  
+
   .sidenav {
     width: 250px;
     background-color: #1a202c;
   }
-  
+
   .menu-text {
     font-size: 24px;
     font-weight: bold;
@@ -15,41 +15,41 @@
     display: flex;
     align-items: center;
   }
-  
+
   .mat-icon {
     margin-right: 8px;
   }
-  
+
   /* Cambiar el color de los iconos a blanco */
   .mat-nav-list mat-icon {
     color: white;
     margin-right: 10px;
   }
-  
+
   /* Ajustar el fondo del sidebar a blanco */
   .sidenav {
     width: 250px;
     background-color: white;
     color: black;
   }
-  
+
   /* Cambiar el color de los enlaces en el sidebar a negro */
   .mat-nav-list a {
     color: black;
     display: flex;
     align-items: center;
   }
-  
+
   .spacer {
     flex: 1 1 auto;
   }
-  
+
   .close-btn {
     position: absolute;
     right: 10px;
     color: white;
   }
-  
+
   /* Asegúrate de que el contenido sea desplazable verticalmente */
   .mat-drawer-content {
     /* display: inline-block; */
@@ -57,40 +57,42 @@
     height: 100%; /* Ajusta la altura para ocupar toda la pantalla */
     overflow-y: auto; /* Permite el desplazamiento vertical */
   }
-  
+
   .mat-toolbar {
     height: 12%;
     justify-content: space-between;
     background-color: #1e88e5;
   }
-  
+
   .toolbar {
     height: 12%;
   }
-  
+
   .toolbar-title {
     color: white;
     font-size: 40px;
     font-weight: bold;
   }
-  
+
   .content-container {
-    flex-grow: 1; /* Asegura que el contenido ocupe el espacio disponible */
+    flex-grow: 1;
     padding: 2%;
+    margin-left: 5%;
+    margin-right: 5%;
   }
-  
+
   /* Cambia el color de fondo del botón activo */
   .active {
     background-color: #1e88e5;
     color: white;
   }
-  
+
   /* Alinear iconos con el texto */
   .nav-icon {
     vertical-align: middle;
     margin-right: 12px;
   }
-  
+
   /* Asegurarse de que los enlaces en el sidebar estén alineados correctamente */
   .mat-nav-list a {
     display: flex;
@@ -100,55 +102,54 @@
     font-size: 16px;
     text-decoration: none;
   }
-  
+
   .mat-toolbar button {
     color: white;
   }
-  
+
   @media screen and (max-width: 768px) {
     .mat-toolbar {
       padding: 0 8px;
       width: 120%;
     }
   }
-  
+
   @media (max-width: 600px) {
     .mat-toolbar {
       padding: 0 8px;
       width: 120%;
     }
-  
+
     .toolbar-title {
       font-size: 35px;
     }
-  
+
     .sidenav {
       width: 200px;
     }
-  
+
     .nav-text {
       font-size: 14px;
     }
   }
-  
+
   @media (max-width: 320px) {
     .mat-toolbar {
       padding: 0 5px;
       width: 140%
     }
-  
+
     .toolbar-title {
       font-size: 30px;
     }
-  
+
     .sidenav {
       width: 180px;
     }
-  
+
     .menu-text {
       font-size: 16px;
     }
-  
-    
+
+
   }
-  

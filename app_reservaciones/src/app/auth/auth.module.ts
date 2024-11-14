@@ -1,6 +1,10 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms'; // Agregar FormsModule
+import { FormsModule, ReactiveFormsModule } from '@angular/forms'; // Agregar FormsModule
+import { InputTextModule } from "primeng/inputtext";
+import { FloatLabelModule } from "primeng/floatlabel";
+import { PasswordModule } from "primeng/password";
+import { InputOtpModule } from "primeng/inputotp";
 
 import { AuthRoutingModule } from './auth-routing.module';
 import { MaterialModule } from '../material/material.module';  // Asegúrate de importar MaterialModule
@@ -12,6 +16,7 @@ import { ResetPasswordComponent } from './components/reset-password/reset-passwo
 import { DialogComponent } from '../utils/dialog/dialog.component';
 import { UserVerifyComponent } from './components/user-verify/user-verify.component';
 import { TwoFactorComponent } from './components/two-factor/two-factor.component';
+import { PasswordRecoveryComponent } from './components/password-recovery/password-recovery.component';
 
 @NgModule({
   declarations: [
@@ -25,12 +30,18 @@ import { TwoFactorComponent } from './components/two-factor/two-factor.component
     ResetPasswordComponent,
     UserVerifyComponent,
     TwoFactorComponent,
+    PasswordRecoveryComponent,
   ],
   imports: [
     CommonModule,
     FormsModule,
+    InputTextModule,
+    FloatLabelModule,
+    PasswordModule,
     AuthRoutingModule,
     MaterialModule,
+    ReactiveFormsModule,
+    InputOtpModule
   ]
 })
 export class AuthModule { }

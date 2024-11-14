@@ -1,1 +1,39 @@
-<p>two-factor works!</p>
+<div class="flex items-center justify-center min-h-screen bg-gray-100">
+  <div class="max-w-md bg-white p-8 rounded-lg shadow-md">
+    <h2 class="text-2xl font-bold mb-4 text-center">
+      Autenticacion en Dos Pasos
+    </h2>
+    <p class="text-center mb-6 text-gray-600">
+      Se ha enviado un codigo a tu correo, ingresalo para poder ingresar.
+    </p>
+
+    <form
+      class="flex items-center flex-col gap-3"
+      [formGroup]="codigoForm"
+      (ngSubmit)="onSubmit()"
+    >
+      <p-inputOtp
+        [ngClass]="{ 'ng-invalid ng-dirty': isFieldInvalid('codigo') }"
+        [(ngModel)]="codigo"
+        [length]="5"
+        [integerOnly]="true"
+        name="codigoOtp"
+        id="codigoInput"
+        required
+        formControlName="codigo"
+      />
+      <small *ngIf="isFieldInvalid('codigo')"
+        >El codigo es obligatorio.</small
+      >
+
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        class="w-full mb-4"
+      >
+        Login
+      </button>
+    </form>
+  </div>
+</div>

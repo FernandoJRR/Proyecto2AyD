@@ -22,6 +22,8 @@ export class AdminViewComponent {
 
   ) {}
 
+  itemsMenu = [{label: 'Home', icon: 'pi pi-home'}, {label: 'Negocios', icon: 'pi pi-calendar-clock'}, {label: 'Servicios', icon: 'pi pi-calendar-clock'}]
+
   toggleSidebar() {
     this.opened = !this.opened;
   }
@@ -31,7 +33,7 @@ export class AdminViewComponent {
     this.authService.logout(); // Borra el JWT
     this.userStorage.clearUser(); // Borra la información del usuario
     this.roleStorage.clearRoles(); // Borra la información de los roles
-    this.permissionsStorage.clearPermissions(); // PENDIENTE 
+    this.permissionsStorage.clearPermissions(); // PENDIENTE
     this.router.navigate(['/auth/login']); // Redirige al login
   }
 }

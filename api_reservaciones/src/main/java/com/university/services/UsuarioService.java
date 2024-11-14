@@ -154,6 +154,8 @@ public class UsuarioService extends com.university.services.Service {
         usuario.setPassword(usuarioEncontrado.getPassword());
         // usuario.setFacturas(usuarioEncontrado.getFacturas());
         usuario.setRoles(usuarioEncontrado.getRoles());
+        usuario.setHorariosAtencionUsuario(usuarioEncontrado.getHorariosAtencionUsuario());
+        usuario.setVerificado(usuarioEncontrado.isVerificado());
         // usuario.setPermisos(usuarioEncontrado.getPermisos());
         this.validar(usuario);
         Usuario usuarioUpdate = this.usuarioRepository.save(usuario);
@@ -297,7 +299,7 @@ public class UsuarioService extends com.university.services.Service {
             String jwt = jwtGenerator.generateToken(userDetails);
 
             // Devolver la respuesta con el usuario y el token
-            return new LoginDto(usuario, jwt);
+            return new LoginDto(usuario, jwt, usuario.isTwoFactorEnabled(), usuario.getVerificado());
 
         } catch (AuthenticationException ex) {
             throw new Exception(ex.getMessage());

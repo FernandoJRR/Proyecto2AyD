@@ -1,13 +1,14 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { GlobalService } from '../../../core/services/global.service';
 
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css'],
 })
-export class RegisterComponent {
+export class RegisterComponent implements OnInit {
   registerData = {
     nombres: '',
     apellidos: '',
@@ -21,7 +22,15 @@ export class RegisterComponent {
   hidePassword = true;
   hideConfirmPassword = true;
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private globalService: GlobalService, private authService: AuthService, private router: Router) {}
+
+  configData = { siteName: "Booking App", logoUrl: ""};
+
+  ngOnInit(): void {
+      this.globalService.getConfig().subscribe((result) => {
+        this.configData = { siteName: result.data.nombre, logoUrl: result.data.imagenString };
+      })
+  }
 
   onSubmit() {
     if (!this.allFieldsCompleted()) {

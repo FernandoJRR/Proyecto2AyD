@@ -1,6 +1,9 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'; // Agregar FormsModule
+import { MenubarModule } from "primeng/menubar";
+import { ButtonModule } from "primeng/button";
+import { BadgeModule } from "primeng/badge";
 
 import { AdminRoutingModule } from './admin-routing.module';
 import { MaterialModule } from '../material/material.module';
@@ -42,7 +45,7 @@ import { HelperCreateComponent } from './components/helper-create/helper-create.
     ServiceEditComponent,
 
     //------------------------------
-    
+
     //Roles
     RoleComponent,
     //RoleCreateComponent,
@@ -59,7 +62,10 @@ import { HelperCreateComponent } from './components/helper-create/helper-create.
     FormsModule,
     ReactiveFormsModule,
     AdminRoutingModule,
-    MaterialModule
+    MaterialModule,
+    MenubarModule,
+    ButtonModule,
+    BadgeModule
   ]
 })
 export class AdminModule { }

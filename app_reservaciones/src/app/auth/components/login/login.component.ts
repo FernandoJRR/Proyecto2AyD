@@ -1,22 +1,32 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { UserRole } from '../../../models/UserRole';
 import { User } from '../../../models/User';
+import { GlobalService } from '../../../core/services/global.service';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   loginData = {
     email: '',
     password: '',
   };
+
   hidePassword = true;
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private globalService: GlobalService, private authService: AuthService, private router: Router) {}
+
+  configData = { siteName: "Booking App", logoUrl: ""};
+
+  ngOnInit(): void {
+      this.globalService.getConfig().subscribe((result) => {
+        this.configData = { siteName: result.data.nombre, logoUrl: result.data.imagenString };
+      })
+  }
 
   onSubmit() {
     if (!this.loginData.email || !this.loginData.password) {
@@ -37,9 +47,11 @@ export class LoginComponent {
 
         if (response?.data?.usuario) {
           const usuario: User = response.data.usuario; // Aplica el tipo User
-          
+
           //Probar con validated la activacion tambien!
           usuario.verificado = response.data.validated; // Asegura que esté en `verificado`
+
+          usuario.twoFactorEnabled = response.data.hasTwoFactorCode;
 
           console.log('Usuario extraído de la respuesta de la API:', usuario);
 

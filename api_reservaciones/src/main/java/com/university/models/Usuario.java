@@ -315,6 +315,7 @@ public class Usuario extends Auditor {
      */
     public void keepOrphanRemoval(Usuario usuario) {
         this.roles = usuario.getRoles();
+        this.horariosAtencionUsuario = usuario.getHorariosAtencionUsuario();
         //this.permisos = usuario.getPermisos();
         //this.facturas = usuario.getFacturas();
     }

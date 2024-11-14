@@ -1,0 +1,110 @@
+<div class="flex gap-4">
+  <h3>Mi Perfil</h3>
+  <p-button
+    *ngIf="!editMode"
+    label="Editar"
+    rounded="true"
+    icon="pi pi-pencil"
+    (onClick)="editar()"
+  />
+  <p-buttonGroup>
+    <p-button
+      *ngIf="editMode"
+      label="Guardar"
+      rounded="true"
+      icon="pi pi-save"
+      severity="info"
+      (onClick)="guardar()"
+    />
+    <p-button
+      *ngIf="editMode"
+      label="Cancelar"
+      rounded="true"
+      icon="pi pi-times"
+      severity="danger"
+      (onClick)="cancelar()"
+    />
+  </p-buttonGroup>
+</div>
+<p-divider />
+<div class="container mx-auto">
+  <form
+      [formGroup]="profileForm"
+  >
+    <div class="columns-1 md:columns-2 sm:columns-2 gap-8">
+      <div class="flex flex-col gap-2 mb-4">
+        <label for="nombres">Nombres</label>
+        <input
+          pInputText
+          id="nombres"
+          [(ngModel)]="userData.nombres"
+          formControlName="nombres"
+        />
+      </div>
+      <div class="flex flex-col gap-2 mb-4">
+        <label for="apellidos">Apellidos</label>
+        <input
+          pInputText
+          id="apellidos"
+          [(ngModel)]="userData.apellidos"
+          formControlName="apellidos"
+        />
+      </div>
+      <div class="flex flex-col gap-2 mb-4">
+        <label for="email">Email</label>
+        <input
+          pInputText
+          id="email"
+          [(ngModel)]="userData.email"
+          formControlName="email"
+        />
+      </div>
+      <div class="flex flex-col gap-2 mb-4">
+        <label for="nit">NIT</label>
+        <input
+          pInputText
+          id="nit"
+          [(ngModel)]="userData.nit"
+          formControlName="nit"
+        />
+      </div>
+      <div class="flex flex-col gap-2 mb-4">
+        <label for="cui">CUI</label>
+        <input
+          pInputText
+          id="cui"
+          [(ngModel)]="userData.cui"
+          formControlName="cui"
+        />
+      </div>
+      <div class="flex flex-col gap-2 mb-4">
+        <label for="telefono">Telefono</label>
+        <input
+          pInputText
+          id="telefono"
+          [(ngModel)]="userData.telefono"
+          formControlName="telefono"
+        />
+      </div>
+    </div>
+    <div class="flex flex-col gap-2 mb-4">
+      <label>Verificacion en Dos Pasos</label>
+      <p-buttonGroup>
+        <p-button
+          [label]="userData.twoFactorEnabled ? 'Activado' : 'Desactivado'"
+          [disabled]="!editMode"
+          severity="contrast"
+          outlined="true"
+          rounded="true"
+        />
+        <p-button
+          [label]="userData.twoFactorEnabled ? 'Desactivar' : 'Activar'"
+          [disabled]="!editMode"
+          [severity]="userData.twoFactorEnabled ? 'danger' : 'success'"
+          (onClick)="activarTwoFactor()"
+          rounded="true"
+        />
+      </p-buttonGroup>
+    </div>
+  </form>
+</div>

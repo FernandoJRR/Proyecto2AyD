@@ -38,6 +38,7 @@ import { NuevaReservacionComponent } from './components/nueva-reservacion/nueva-
     ButtonModule,
     ButtonGroupModule,
     CheckboxModule,
+    SelectButtonModule,
     ReactiveFormsModule,
     FormsModule,
     DividerModule

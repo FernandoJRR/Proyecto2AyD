@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.university.models.Servicio;
+import com.university.models.UnidadRecurso;
+import com.university.models.Usuario;
 import com.university.models.request.CreateServicioDto;
 import com.university.services.ServicioService;
 
@@ -60,6 +62,54 @@ public class ServicioController {
     public ResponseEntity<?> getServicio(@PathVariable Long id) {
         try {
             Servicio data = servicioService.getServicio(id);
+            return new ApiBaseTransformer(HttpStatus.OK, "OK", data, null, null).sendResponse();
+        } catch (Exception ex) {
+            return new ApiBaseTransformer(HttpStatus.BAD_REQUEST, "Error", null, null, ex.getMessage()).sendResponse();
+        }
+    }
+
+    @Operation(summary = "Obtener servicio por ID del Negocio", description = "Obtiene la información de varios servicios con el ID del Negocio.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Servicios encontrados", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Servicio.class)) }),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+    })
+    @GetMapping("/servicio/public/negocio/{id}")
+    public ResponseEntity<?> getServiciosByNegocioId(@PathVariable Long id) {
+        try {
+            List<Servicio> data = servicioService.getServicioByNegocioId(id);
+            return new ApiBaseTransformer(HttpStatus.OK, "OK", data, null, null).sendResponse();
+        } catch (Exception ex) {
+            return new ApiBaseTransformer(HttpStatus.BAD_REQUEST, "Error", null, null, ex.getMessage()).sendResponse();
+        }
+    }
+
+    @Operation(summary = "Obtener encargados de un servicio por su ID", description = "Obtiene la información de los encargados de un servicio con el ID del Servicio.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Encargados encontrados", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Servicio.class)) }),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+    })
+    @GetMapping("/servicio/public/encargados/{id}")
+    public ResponseEntity<?> getEncargadosByServicioId(@PathVariable Long id) {
+        try {
+            List<Usuario> data = servicioService.getEncargadosByServicio(id);
+            return new ApiBaseTransformer(HttpStatus.OK, "OK", data, null, null).sendResponse();
+        } catch (Exception ex) {
+            return new ApiBaseTransformer(HttpStatus.BAD_REQUEST, "Error", null, null, ex.getMessage()).sendResponse();
+        }
+    }
+
+    @Operation(summary = "Obtener unidades de recurso de un servicio por su ID", description = "Obtiene la información de las unidades de recurso de un servicio con el ID del Servicio.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Unidades encontradas", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Servicio.class)) }),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+    })
+    @GetMapping("/servicio/public/unidadesRecurso/{id}")
+    public ResponseEntity<?> getUnidadesRecursoByServicio(@PathVariable Long id) {
+        try {
+            List<UnidadRecurso> data = servicioService.getUnidadesRecursoByServicio(id);
             return new ApiBaseTransformer(HttpStatus.OK, "OK", data, null, null).sendResponse();
         } catch (Exception ex) {
             return new ApiBaseTransformer(HttpStatus.BAD_REQUEST, "Error", null, null, ex.getMessage()).sendResponse();

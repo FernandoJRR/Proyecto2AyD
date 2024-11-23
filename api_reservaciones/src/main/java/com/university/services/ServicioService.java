@@ -6,10 +6,13 @@ import org.springframework.stereotype.Service;
 import com.university.models.DuracionServicio;
 import com.university.models.HorarioAtencionServicio;
 import com.university.models.Servicio;
+import com.university.models.UnidadRecurso;
+import com.university.models.Usuario;
 import com.university.models.request.CreateServicioDto;
 import com.university.repositories.DuracionServicioRepository;
 import com.university.repositories.HorarioAtencionServicioRepository;
 import com.university.repositories.ServicioRepository;
+import com.university.repositories.UsuarioRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +24,8 @@ public class ServicioService {
 
     @Autowired
     private ServicioRepository servicioRepository;
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
     @Autowired
     private DuracionServicioRepository duracionServicioRepository;
@@ -39,6 +44,21 @@ public class ServicioService {
             throw new Exception("Servicio no encontrado.");
         }
         return servicio;
+    }
+
+    public List<Servicio> getServicioByNegocioId(Long idNegocio) throws Exception {
+        List<Servicio> servicios = servicioRepository.findByNegocioId(idNegocio);
+        return servicios;
+    }
+
+    public List<Usuario> getEncargadosByServicio(Long idServicio) throws Exception {
+        List<Usuario> encargados = usuarioRepository.findUsuariosByServicioId(idServicio);
+        return encargados;
+    }
+
+    public List<UnidadRecurso> getUnidadesRecursoByServicio(Long idServicio) throws Exception {
+        List<UnidadRecurso> encargados = servicioRepository.findUnidadesRecursoByServicioId(idServicio);
+        return encargados;
     }
 
     @Transactional

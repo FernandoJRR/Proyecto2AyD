@@ -174,7 +174,7 @@ public class ReservacionService {
         // Obtener el servicio y calcular el monto a reembolsar
         Servicio servicio = reservacion.getServicio();
         Float porcentajeReembolso = servicio.getPorcentaje_reembolso();
-        Float montoReembolso = reservacion.getPago().getMonto() * (porcentajeReembolso / 100);
+        Float montoReembolso = reservacion.getPago().getMonto() - (reservacion.getPago().getMonto() * (porcentajeReembolso / 100));
 
         // Crear y guardar la factura
         Factura factura = new Factura();
@@ -232,6 +232,20 @@ public class ReservacionService {
         // Crear y guardar el pago
         Pago pago = new Pago(metodoPago, numero, monto);
         return pagoRepository.save(pago);
+    }
+
+    public Cancelacion getCancelacion(Long id) throws Exception {
+        if (id == null || id <= 0) {
+            throw new Exception("Id invalido.");
+        }
+
+        Optional<Cancelacion> cancelacionSearch = this.cancelacionRepository.findByReservacionId(id);
+
+        if (cancelacionSearch.isEmpty()) {
+            throw new Exception("Cancelacion no encontrada.");
+        }
+
+        return cancelacionSearch.get();
     }
 
     /**

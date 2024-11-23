@@ -1,1 +1,502 @@
-<p>nueva-reservacion works!</p>
+<div class="container">
+  <h3>Nueva Reservacion</h3>
+  <p-divider />
+  <div class="container mx-auto">
+    <form [formGroup]="nuevaReservacionForm">
+      <p-stepper [linear]="true">
+        <p-stepperPanel header="Seleccion de Negocio">
+          <ng-template
+            pTemplate="content"
+            let-nextCallback="nextCallback"
+            let-index="index"
+          >
+            <p-fieldset legend="Elige un negocio">
+              <div class="flex justify-center">
+                <p-listbox
+                  [options]="negocios"
+                  formControlName="negocio"
+                  optionLabel="nombre"
+                  [filter]="true"
+                  [listStyle]="{ 'max-height': '220px' }"
+                  id="negocio"
+                  (onChange)="negocioUpdate()"
+                />
+              </div>
+            </p-fieldset>
+            <div class="flex pt-4 justify-content-end gap-2">
+              <p-button
+                label="Next"
+                icon="pi pi-arrow-right"
+                iconPos="right"
+                (onClick)="nextCallback.emit()"
+                [disabled]="
+                  nuevaReservacionForm.get('negocio')!.invalid ||
+                  negocios.length === 0
+                "
+              />
+            </div>
+          </ng-template>
+        </p-stepperPanel>
+        <p-stepperPanel header="Seleccion de Servicio">
+          <ng-template
+            pTemplate="content"
+            let-prevCallback="prevCallback"
+            let-nextCallback="nextCallback"
+            let-index="index"
+          >
+            <p-fieldset legend="Elige un servicio">
+              <div class="flex justify-center">
+                <p-listbox
+                  [options]="servicios"
+                  formControlName="servicio"
+                  optionLabel="nombre"
+                  [filter]="true"
+                  [listStyle]="{ 'max-height': '220px' }"
+                  (onChange)="serviceChange()"
+                />
+              </div>
+            </p-fieldset>
+            <p-fieldset
+              legend="Elige un encargado"
+              *ngIf="
+                nuevaReservacionForm.get('servicio')!.value &&
+                !nuevaReservacionForm.get('servicio')!.value
+                  .asignacion_automatica
+              "
+            >
+              <div class="flex justify-center">
+                <p-listbox
+                  [options]="encargados"
+                  formControlName="encargado"
+                  optionLabel="nombres"
+                  [filter]="true"
+                  [listStyle]="{ 'max-height': '220px' }"
+                >
+                  <ng-template let-encargado pTemplate="item">
+                    <div class="flex align-items-center">
+                      <div>
+                        {{ encargado.nombres + " " + encargado.apellidos }}
+                      </div>
+                    </div>
+                  </ng-template>
+                </p-listbox>
+              </div>
+            </p-fieldset>
+            <p-fieldset
+              legend="Escoge un recurso"
+              *ngIf="
+                nuevaReservacionForm.get('servicio')!.value &&
+                nuevaReservacionForm.get('servicio')!.value.recurso
+              "
+            >
+              <div class="flex justify-center">
+                <p-listbox
+                  [options]="unidadesRecurso"
+                  formControlName="unidadRecurso"
+                  optionLabel="nombre"
+                  [listStyle]="{ 'max-height': '220px' }"
+                />
+              </div>
+            </p-fieldset>
+            <div class="flex pt-4 justify-content-between gap-2">
+              <p-button
+                label="Back"
+                icon="pi pi-arrow-left"
+                (onClick)="prevCallback.emit()"
+              />
+              <p-button
+                label="Next"
+                icon="pi pi-arrow-right"
+                iconPos="right"
+                (onClick)="nextCallback.emit()"
+                [disabled]="
+                  nuevaReservacionForm.get('servicio')!.invalid ||
+                  nuevaReservacionForm.get('encargado')!.invalid ||
+                  nuevaReservacionForm.get('unidadRecurso')!.invalid
+                "
+              />
+            </div>
+          </ng-template>
+        </p-stepperPanel>
+        <p-stepperPanel header="Fecha y Hora">
+          <ng-template
+            pTemplate="content"
+            let-nextCallback="nextCallback"
+            let-prevCallback="prevCallback"
+            let-index="index"
+          >
+            <div class="flex gap-2 text-sm md:text-4xl sm:text-lg">
+              <p-panel
+                header="Cita programada para"
+                [style]="{ width: '100%' }"
+              >
+                <p class="capitalize text-2xl">
+                  {{ this.nuevaReservacionForm.get('fecha')!.value.toLocaleDateString("es-ES", {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+              }) }}
+                </p>
+                <p-chip class="capitalize mr-2">
+                  <span> De </span>
+                  <span class="ml-2 font-medium">
+                    {{ this.nuevaReservacionForm.get("horaInicio")!.value }}:{{
+                      this.nuevaReservacionForm.get("minutoInicio")!.value < 10
+                        ? "0" +
+                          this.nuevaReservacionForm.get("minutoInicio")!.value
+                        : this.nuevaReservacionForm.get("minutoInicio")!.value
+                    }}
+                  </span>
+                </p-chip>
+                <p-chip class="capitalize">
+                  <span> Hasta </span>
+                  <span class="ml-2 font-medium">
+                    {{ this.nuevaReservacionForm.get("horaFin")!.value }}:{{
+                      this.nuevaReservacionForm.get("minutoFin")!.value < 10
+                        ? "0" +
+                          this.nuevaReservacionForm.get("minutoFin")!.value
+                        : this.nuevaReservacionForm.get("minutoFin")!.value
+                    }}
+                  </span>
+                </p-chip>
+              </p-panel>
+            </div>
+            <div class="columns-1 sm:columns-2">
+              <p-fieldset legend="Elige una fecha">
+                <p-buttonGroup>
+                  <div class="grid grid-cols-3 sm:grid-cols-3">
+                    <p-button
+                      class="justify-self-end"
+                      [rounded]="true"
+                      mwlCalendarPreviousView
+                      [view]="view"
+                      [(viewDate)]="viewDate"
+                      (viewDateChange)="viewDateChange.next(viewDate)"
+                      icon="pi pi-arrow-left"
+                    />
+                    <button class="max-w-24 md:max-w-full" disabled="true">
+                      <div class="flex justify-center capitalize text-xl">
+                        {{
+                          viewDate | calendarDate : view + "ViewTitle" : "es"
+                        }}
+                      </div>
+                    </button>
+                    <p-button
+                      [rounded]="true"
+                      mwlCalendarNextView
+                      [view]="view"
+                      [(viewDate)]="viewDate"
+                      (viewDateChange)="viewDateChange.next(viewDate)"
+                      icon="pi pi-arrow-right"
+                      iconPos="right"
+                    />
+                  </div>
+                </p-buttonGroup>
+                <p-divider />
+                <ng-template #customCellTemplate let-day="day">
+                  <div
+                    class="cal-cell-top"
+                    [ngClass]="{
+                      'selected-day':
+                        day.date ===
+                        this.nuevaReservacionForm.get('fecha')!.value,
+                      'disabled-day': !disponibilidadFechaServicio(
+                        day.date,
+                        nuevaReservacionForm.get('servicio')!.value
+                      )
+                    }"
+                  >
+                    <span class="cal-day-number">{{
+                      day.date | calendarDate : "monthViewDayNumber" : "es"
+                    }}</span>
+                  </div>
+                </ng-template>
+                <mwl-calendar-month-view
+                  [viewDate]="viewDate"
+                  [events]="events"
+                  (columnHeaderClicked)="clickedColumn = $event.isoDayNumber"
+                  (dayClicked)="selectDay($event.day.date)"
+                  locale="es"
+                  [cellTemplate]="customCellTemplate"
+                >
+                </mwl-calendar-month-view>
+              </p-fieldset>
+              <p-fieldset
+                legend="Elige una hora"
+                [style]="{ width: '100%', height: '730px' }"
+              >
+                <p>Duracion del servicio: {{ duracionString }}</p>
+                <p>Hora de Inicio</p>
+                <div class="flex gap-2">
+                  <p-inputNumber
+                    [min]="0"
+                    [max]="24"
+                    [style]="{ width: '4rem' }"
+                    [showButtons]="true"
+                    buttonLayout="vertical"
+                    spinnerMode="vertical"
+                    inputId="vertical"
+                    incrementButtonIcon="pi pi-plus"
+                    decrementButtonIcon="pi pi-minus"
+                    formControlName="horaInicio"
+                  />
+                  <p-inputNumber
+                    [min]="0"
+                    [max]="59"
+                    [style]="{ width: '4rem' }"
+                    [showButtons]="true"
+                    buttonLayout="vertical"
+                    spinnerMode="vertical"
+                    inputId="vertical"
+                    incrementButtonIcon="pi pi-plus"
+                    decrementButtonIcon="pi pi-minus"
+                    formControlName="minutoInicio"
+                  />
+                  <div>
+                    <p class="text-lg">Disponibilidad</p>
+                    {{
+                      this.horarioDia === null
+                        ? "No hay"
+                        : this.horarioDia.diaAtencion.nombre
+                    }}
+                    <p-chip class="capitalize mr-2">
+                      <span> De </span>
+                      <span class="ml-2 font-medium">
+                        {{
+                          this.horarioDia === null
+                            ? "No hay"
+                            : this.horarioDia.horaInicio
+                        }}
+                      </span>
+                    </p-chip>
+                    <p-chip class="capitalize">
+                      <span> Hasta </span>
+                      <span class="ml-2 font-medium">
+                        {{
+                          this.horarioDia === null
+                            ? "No hay"
+                            : this.horarioDia.horaFinal
+                        }}
+                      </span>
+                    </p-chip>
+                  </div>
+                </div>
+                <p-divider />
+                <!--
+                <p-scrollPanel [style]="{ width: '100%', height: '450px' }">
+                  <mwl-calendar-day-view
+                    [viewDate]="viewDateDay"
+                    [events]="events"
+                    [hourSegments]="6"
+                    [refresh]="refresh"
+                    (eventTimesChanged)="eventTimesChanged($event)"
+                    (beforeViewRender)="beforeDayViewRender($event)"
+                  >
+                  </mwl-calendar-day-view>
+                </p-scrollPanel>
+                -->
+              </p-fieldset>
+            </div>
+            <div class="flex pt-4 justify-content-between gap-2">
+              <p-button
+                label="Back"
+                icon="pi pi-arrow-left"
+                (onClick)="prevCallback.emit()"
+              />
+              <p-button
+                label="Next"
+                icon="pi pi-arrow-right"
+                iconPos="right"
+                (onClick)="nextCallback.emit()"
+                [disabled]="
+                  nuevaReservacionForm.get('negocio')!.invalid ||
+                  nuevaReservacionForm.get('fecha')!.invalid ||
+                  nuevaReservacionForm.get('horaInicio')!.invalid
+                "
+              />
+            </div>
+          </ng-template>
+        </p-stepperPanel>
+        <p-stepperPanel header="Metodo de Pago">
+          <ng-template
+            pTemplate="content"
+            let-prevCallback="prevCallback"
+            let-nextCallback="nextCallback"
+            let-index="index"
+          >
+            <p-fieldset legend="Elige un metodo de pago">
+              <div class="flex justify-center">
+                <p-listbox
+                  [options]="metodosPago"
+                  formControlName="metodoPago"
+                  optionLabel="nombre"
+                  [listStyle]="{ 'max-height': '220px' }"
+                />
+              </div>
+            </p-fieldset>
+            <p-fieldset
+              legend="Ingresa la informacion de pago"
+              *ngIf="nuevaReservacionForm.get('metodoPago')!.value"
+            >
+              <div class="flex flex-col gap-2">
+                <label for="numeroPago">{{
+                  nuevaReservacionForm.get("metodoPago")!.value.nombre ===
+                  "Transferencia"
+                    ? "Numero de Cuenta"
+                    : "Numero de Tarjeta"
+                }}</label>
+                <input
+                  type="number"
+                  pInputText
+                  id="numeroPago"
+                  aria-describedby="username-help"
+                  formControlName="numeroPago"
+                />
+                <small id="numeroPago-help">
+                  {{
+                    nuevaReservacionForm.get("metodoPago")!.value.nombre ===
+                    "Transferencia"
+                      ? "Ingresa el numero de cuenta desde el cual se hara la transferencia"
+                      : "Ingresa el numero de tarjeta desde la cual se realizara el pago"
+                  }}
+                </small>
+              </div>
+            </p-fieldset>
+            <div class="flex pt-4 justify-content-between gap-2">
+              <p-button
+                label="Back"
+                icon="pi pi-arrow-left"
+                (onClick)="prevCallback.emit()"
+              />
+              <p-button
+                label="Next"
+                icon="pi pi-arrow-right"
+                iconPos="right"
+                (onClick)="nextCallback.emit()"
+                [disabled]="
+                  nuevaReservacionForm.get('metodoPago')!.invalid ||
+                  nuevaReservacionForm.get('numeroPago')!.invalid
+                "
+              />
+            </div>
+          </ng-template>
+        </p-stepperPanel>
+        <p-stepperPanel header="Revision y Confirmacion">
+          <ng-template
+            pTemplate="content"
+            let-prevCallback="prevCallback"
+            let-index="index"
+          >
+            <p-fieldset legend="Detalles de la Reservacion">
+              <div class="flex gap-2">
+                <p>Correo Electronico</p>
+                <p class="text-2xl">{{ this.userEmail }}</p>
+              </div>
+              <p-divider />
+              <div class="flex gap-2">
+                <p>Negocio</p>
+                <p class="text-2xl">
+                  {{ this.nuevaReservacionForm.get("negocio")!.value.nombre }}
+                </p>
+              </div>
+              <div class="flex gap-2">
+                <p>Servicio</p>
+                <p class="text-2xl">
+                  {{ this.nuevaReservacionForm.get("servicio")!.value.nombre }}
+                </p>
+              </div>
+              <div class="flex gap-2">
+                <p>Encargado</p>
+                <p-chip>
+                  {{
+                    this.nuevaReservacionForm.get("servicio")!.value
+                      .asignacion_automatica
+                      ? "Asignado Automaticamente"
+                      : this.nuevaReservacionForm.get("encargado")!.value
+                          .nombres +
+                        " " +
+                        this.nuevaReservacionForm.get("encargado")!.value
+                          .apellidos
+                  }}
+                </p-chip>
+              </div>
+              <div class="flex gap-2">
+                <p>Recurso</p>
+                <p-chip>
+                  {{
+                    this.nuevaReservacionForm.get("servicio")!.value
+                      .tieneRecurso
+                      ? this.nuevaReservacionForm.get("unidadRecurso")!.value
+                          .nombre
+                      : "No aplica"
+                  }}
+                </p-chip>
+              </div>
+              <p-divider />
+              <p>Fecha</p>
+              <p class="capitalize text-2xl">
+                {{ this.nuevaReservacionForm.get('fecha')!.value.toLocaleDateString("es-ES", {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+              }) }}
+              </p>
+              <p-chip class="capitalize mr-2">
+                <span> De </span>
+                <span class="ml-2 font-medium">
+                  {{ this.nuevaReservacionForm.get("horaInicio")!.value }}:{{
+                    this.nuevaReservacionForm.get("minutoInicio")!.value < 10
+                      ? "0" +
+                        this.nuevaReservacionForm.get("minutoInicio")!.value
+                      : this.nuevaReservacionForm.get("minutoInicio")!.value
+                  }}
+                </span>
+              </p-chip>
+              <p-chip class="capitalize">
+                <span> Hasta </span>
+                <span class="ml-2 font-medium">
+                  {{ this.nuevaReservacionForm.get("horaFin")!.value }}:{{
+                    this.nuevaReservacionForm.get("minutoFin")!.value < 10
+                      ? "0" + this.nuevaReservacionForm.get("minutoFin")!.value
+                      : this.nuevaReservacionForm.get("minutoFin")!.value
+                  }}
+                </span>
+              </p-chip>
+              <p-divider />
+              <div class="flex gap-2">
+                <p>Metodo de Pago</p>
+                <p-chip>
+                  {{
+                    this.nuevaReservacionForm.get("metodoPago")!.value.nombre
+                  }}
+                </p-chip>
+              </div>
+              <p-divider />
+              <div class="flex gap-2">
+                <p>Total a Pagar</p>
+                <p class="text-2xl">
+                  Q.{{ this.nuevaReservacionForm.get("servicio")!.value.costo }}
+                </p>
+              </div>
+            </p-fieldset>
+            <div class="flex pt-4 justify-content-start gap-2">
+              <p-button
+                label="Back"
+                icon="pi pi-arrow-left"
+                (onClick)="prevCallback.emit()"
+              />
+              <p-button
+                label="Finalizar"
+                icon="pi pi-calendar-plus"
+                iconPos="right"
+                (onClick)="crearReservacion()"
+              />
+            </div>
+          </ng-template>
+        </p-stepperPanel>
+      </p-stepper>
+    </form>
+  </div>
+</div>

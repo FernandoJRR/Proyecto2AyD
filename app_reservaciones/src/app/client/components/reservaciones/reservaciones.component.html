@@ -1,0 +1,68 @@
+<h4 class="text-2xl">Mis Reservaciones</h4>
+<p-dataView #dv [value]="reservaciones">
+  <ng-template pTemplate="list" let-reservations>
+    <div class="grid grid-nogutter">
+      <div
+        class="col-12"
+        *ngFor="let item of reservations; let first = first"
+        class="col-12"
+      >
+        <p-divider *ngIf="!first" />
+        <div class="flex flex-col sm:flex-row sm:align-items-center p-4 gap-3">
+          <div
+            class="flex flex-col md:flex-row justify-content-between md:align-items-center flex-1 gap-4"
+          >
+            <div
+              class="flex flex-row md:flex-col justify-content-between align-items-start gap-2"
+            >
+              <div class="gap-2">
+                <p-tag class="mr-2">{{
+                  item.fecha
+                }}</p-tag>
+                <p-chip class="mr-2">De {{
+                  item.horaInicio.split(':').slice(0,2).join(':')
+                }}</p-chip>
+                <p-chip class="mr-2">Hasta {{
+                  item.horaFinal.split(':').slice(0,2).join(':')
+                }}</p-chip>
+                <p-tag
+                  [value]="item.estadoReservacion.nombre"
+                  [severity]="getSeverity(item)"
+                  [style.left.px]="4"
+                  [style.top.px]="4"
+                />
+                <div class="text-xl font-medium text-900 mt-2">
+                  {{ item.servicio.negocio.nombre }}
+                </div>
+                <div class="text-lg font-medium text-900 mt-2">
+                  {{ item.servicio.nombre }}
+                </div>
+              </div>
+            </div>
+            <div class="flex flex-col ml-auto md:items-end gap-5">
+              <span class="text-2xl font-semibold text-900">{{
+                "Q" + item.pago.monto
+              }}</span>
+              <div class="flex flex-row-reverse md:flex-row gap-2">
+                <p-button
+                  icon="pi pi-eye"
+                  class="flex-auto md:flex-initial white-space-nowrap"
+                  label="Detalles"
+                  [routerLink]="'/client/reservacion/'+item.id"
+                />
+                <p-button
+                  *ngIf="item.estadoReservacion.nombre === 'Programada'"
+                  severity="danger"
+                  icon="pi pi-calendar-minus"
+                  class="flex-auto md:flex-initial white-space-nowrap"
+                  label="Cancelar"
+                  [routerLink]="'/client/cancelar-reservacion/'+item.id"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+</p-dataView>

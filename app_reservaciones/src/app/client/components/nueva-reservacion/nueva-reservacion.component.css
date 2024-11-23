@@ -1,0 +1,14 @@
+.selected-day {
+    background-color: var(--primary-300);
+    color: white;
+  }
+
+  .disabled-day {
+    background-color: grey;
+    color: white;
+    pointer-events: none;
+  }
+
+  .disabled-segment {
+    background-color: grey !important;
+  }

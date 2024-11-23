@@ -1,0 +1,130 @@
+<div>
+  <div class="grid grid-cols-1 md:grid-cols-2">
+    <div>
+      <h4>Reservacion #{{ id }}</h4>
+      <div class="flex gap-2">
+        <p-tag
+          [ngStyle]="{
+            color: 'var(--highlight-text-color)'
+          }"
+        >
+          <div class="text-xl">
+            {{ reservacion?.fecha }}
+          </div>
+        </p-tag>
+        <p-tag [severity]="getSeverity()">
+          <div
+            class="grid grid-cols-1 md:grid-cols-2"
+            [ngClass]="{
+              'grid-cols-1 md:grid-cols-2':
+                reservacion?.estadoReservacion?.nombre === 'Cancelada'
+            }"
+          >
+            <div class="text-xl">
+              {{ reservacion?.estadoReservacion?.nombre }}
+            </div>
+            <div
+              class="text-xl"
+              *ngIf="reservacion?.estadoReservacion?.nombre === 'Cancelada'"
+            >
+              {{ cancelacion?.fechaCancelacion }}
+            </div>
+          </div>
+        </p-tag>
+      </div>
+    </div>
+
+    <div class="ml-auto flex gap-2 mt-2 md:mt-0">
+      <p-button severity="info" [routerLink]="comprobanteLink">
+        <i class="pi pi-download mr-2"></i>
+        <a [href]="comprobanteLink" target="_blank" rel="noopener noreferrer">
+          Descargar Comprobante
+        </a>
+      </p-button>
+
+      <p-button
+        *ngIf="reservacion?.estadoReservacion?.nombre !== 'Programada'"
+        severity="help"
+        [routerLink]="comprobanteLink"
+      >
+        <i class="pi pi-receipt mr-2"></i>
+        <a [href]="facturaLink" target="_blank" rel="noopener noreferrer">
+          Descargar Factura
+        </a>
+      </p-button>
+
+      <p-button
+        *ngIf="reservacion?.estadoReservacion?.nombre === 'Programada'"
+        icon="pi pi-calendar-minus"
+        severity="danger"
+        label="Cancelar"
+        [routerLink]="'/client/cancelar-reservacion/' + id"
+      />
+    </div>
+  </div>
+  <p-divider />
+  <div class="min-w-full">
+    <div class="flex gap-4 mb-2">
+      <div>
+        De
+        <p-chip>
+          {{ reservacion?.horaInicio?.split(":")?.slice(0, 2)?.join(":") }}
+        </p-chip>
+      </div>
+      <div>
+        Hasta
+        <p-chip>
+          {{ reservacion?.horaFinal?.split(":")?.slice(0, 2)?.join(":") }}
+        </p-chip>
+      </div>
+    </div>
+    <p-card header="Detalles del Servicio">
+      <div class="flex gap-3 items-center">
+        <h4>
+          {{ reservacion?.servicio?.negocio?.nombre }}
+        </h4>
+        <h4>-</h4>
+        <h5>
+          {{ reservacion?.servicio?.nombre }}
+        </h5>
+      </div>
+    </p-card>
+    <p-card header="Pago">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <p-fieldset legend="Metodo">
+          <h5>{{ reservacion?.pago?.metodoPago.nombre }}</h5>
+        </p-fieldset>
+        <p-fieldset legend="Costo">
+          <h5>Q {{ reservacion?.pago?.monto }}</h5>
+        </p-fieldset>
+      </div>
+    </p-card>
+    <p-card header="Encargado">
+      <p-fieldset legend="Nombre">
+        <h5>
+          {{ reservacion?.encargado?.nombres }}
+          {{ reservacion?.encargado?.apellidos }}
+        </h5>
+      </p-fieldset>
+    </p-card>
+    <p-card *ngIf="reservacion?.estadoReservacion?.nombre === 'Cancelada'" header="Detalles de la Cancelacion">
+        <div class="grid gap-x-4 grid-cols-1 md:grid-cols-2">
+      <p-fieldset legend="Fecha de Cancelacion">
+        <h5>
+          {{ cancelacion?.fechaCancelacion }}
+        </h5>
+      </p-fieldset>
+      <p-fieldset legend="Monto Reembolsado">
+        <h5>
+          Q {{ cancelacion?.montoReembolsado }}
+        </h5>
+      </p-fieldset>
+        </div>
+      <p-fieldset legend="Motivo de Cancelacion">
+        <h5>
+          {{ cancelacion?.motivoCancelacion }}
+        </h5>
+      </p-fieldset>
+    </p-card>
+  </div>
+</div>

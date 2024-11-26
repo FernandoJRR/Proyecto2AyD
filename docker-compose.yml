@@ -1,0 +1,11 @@
+version: '3.8'
+services:
+  tomcat:
+    image: tomcat:9-jdk17
+    container_name: tomcat_server
+    ports:
+      - "8080:8080" # Mapea el puerto 8080 del contenedor al host
+    volumes:
+      - ./deploy:/usr/local/tomcat/webapps/ # Monta el directorio local "deploy" al directorio "webapps" de Tomcat
+    environment:
+      - TZ=America/Guatemala # Configura la zona horaria si es necesario

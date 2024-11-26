@@ -18,5 +18,5 @@ export interface Service {
   porcentaje_reembolso?: number;
   horariosAtencionServicios: Schedule[];
   trabajadores_simultaneos?: number;
+  asignacion_automatica?: boolean;
 }
-

@@ -24,6 +24,11 @@ public class UnidadRecursoService {
         if (recursoUnidad.isEmpty()) {
             throw new IllegalArgumentException("El Recurso no existe");
         }
+
+        Optional<UnidadRecurso> searchUnidadRecurso = unidadRecursoRepository.findOneByNombre(unidadRecurso.getNombre());
+        if (searchUnidadRecurso.isPresent()) {
+            throw new IllegalArgumentException("La Unidad de Recurso ya existe");
+        }
         return this.unidadRecursoRepository.save(unidadRecurso);
     }
 

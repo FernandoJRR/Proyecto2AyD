@@ -20,7 +20,6 @@ export class ClientViewComponent implements OnInit {
     private userStorage: UserStorageService,
     private roleStorage: RoleStorageService,
     private permissionsStorage: PermissionStorageService //PEND: Cuando se restringa el accceso a modulos del SIDE-BAR segun los permisos
-
   ) {}
 
   configData = { siteName: "Booking App", logoUrl: ""};

@@ -76,7 +76,7 @@ export class LoginComponent implements OnInit {
           );
           if (isAdmin) {
             console.log('Redirigiendo a la ruta /admin');
-            this.router.navigate(['/admin']);
+            this.router.navigate(['/admin/dashboard']);
           } else {
             console.log('Redirigiendo a la ruta /client');
             this.router.navigate(['/client']);

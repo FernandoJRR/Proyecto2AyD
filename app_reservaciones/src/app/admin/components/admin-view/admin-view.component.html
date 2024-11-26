@@ -1,82 +1,13 @@
-<!--
-<mat-sidenav-container class="sidenav-container" fullscreen>
-  <mat-sidenav #sidenav mode="side" class="sidenav" [(opened)]="opened">
-    <mat-toolbar color="primary">
-      <span class="menu-text">Logo</span>
-      <button mat-icon-button (click)="toggleSidebar()" class="close-btn">
-        <mat-icon>arrow_back</mat-icon>
-      </button>
-    </mat-toolbar>
-
-    <mat-nav-list>
-      <a mat-list-item routerLink="/admin/overview" routerLinkActive="active">
-        <mat-icon class="nav-icon">dashboard</mat-icon>
-        <span class="nav-text">Overview</span>
-      </a>
-
-
-      <a mat-list-item routerLink="/admin/business" routerLinkActive="active">
-        <mat-icon class="nav-icon">inventory_2</mat-icon>
-        <span class="nav-text">Negocios</span>
-      </a>
-      <a mat-list-item routerLink="/admin/resources" routerLinkActive="active">
-        <mat-icon class="nav-icon">category</mat-icon>
-        <span class="nav-text">Recursos</span>
-      </a>
-      <a mat-list-item routerLink="/admin/permissions" routerLinkActive="active">
-        <mat-icon class="nav-icon">lock</mat-icon>
-        <span class="nav-text">Permisos</span>
-      </a>
-      <a mat-list-item routerLink="/admin/services" routerLinkActive="active">
-        <mat-icon class="nav-icon">design_services</mat-icon>
-        <span class="nav-text">Servicios</span>
-      </a>
-      <a mat-list-item routerLink="/admin/roles" routerLinkActive="active">
-        <mat-icon class="nav-icon">admin_panel_settings</mat-icon>
-        <span class="nav-text">Roles</span>
-      </a>
-      <a mat-list-item routerLink="/admin/users" routerLinkActive="active">
-        <mat-icon class="nav-icon">supervised_user_circle</mat-icon>
-        <span class="nav-text">Usuarios</span>
-      </a>
-
-
-    </mat-nav-list>
-  </mat-sidenav>
-
-  <mat-sidenav-content>
-    <mat-toolbar color="primary" class="toolbar">
-      <button mat-icon-button (click)="sidenav.toggle()">
-        <mat-icon>menu</mat-icon>
-      </button>
-      <span class="spacer"></span>
-      <span class="toolbar-title">Booking App</span>
-      <span class="spacer"></span>
-      -->
-      <!-- Perfil y Salir secciones -->
-      <!--
-      <button mat-button>
-        <mat-icon>account_circle</mat-icon>
-        Perfil
-      </button>
-      <button mat-button (click)="logout()">
-        <mat-icon>exit_to_app</mat-icon>
-        Salir
-      </button>
-    </mat-toolbar>
-
-    <div class="content-container">
-      <router-outlet></router-outlet>
-    </div>
-  </mat-sidenav-content>
-</mat-sidenav-container>
--->
-
 <div class="card">
   <p-menubar [model]="itemsMenu">
-    <ng-template pTemplate="start"> </ng-template>
+    <ng-template pTemplate="start">
+        <div class="flex items-center justify-center">
+            <p-avatar [image]="configData.logoUrl" class="mr-2"/>
+            <span>{{ configData.siteName }}</span>
+        </div>
+    </ng-template>
     <ng-template pTemplate="item" let-item let-root="root">
-      <a pRipple class="flex align-items-center p-menuitem-link">
+      <a pRipple class="flex align-items-center p-menuitem-link" [routerLink]="item.route">
         <span [class]="item.icon"></span>
         <span class="ml-2">{{ item.label }}</span>
         <p-badge
@@ -99,7 +30,7 @@
       </a>
     </ng-template>
     <ng-template pTemplate="end">
-      <p-button [text]="true" icon="pi pi-user" label="Ver Perfil" />
+      <p-button [text]="true" icon="pi pi-user" label="Ver Perfil" routerLink="/admin/profile" />
       <p-button
         [text]="true"
         icon="pi pi-sign-out"

@@ -2,10 +2,10 @@
   <div class="form-box">
     <h2>Editar Negocio</h2>
 
-    <form (ngSubmit)="onSubmit()" class="form-container">
+    <form (ngSubmit)="onSubmit()" class="flex flex-col">
       <!-- Nombre del Negocio -->
+        <label>Nombre del Negocio</label>
       <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Nombre del Negocio</mat-label>
         <input
           matInput
           [(ngModel)]="business.nombre"

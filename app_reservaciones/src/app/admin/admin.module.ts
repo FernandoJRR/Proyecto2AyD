@@ -4,6 +4,11 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms'; // Agregar Fo
 import { MenubarModule } from "primeng/menubar";
 import { ButtonModule } from "primeng/button";
 import { BadgeModule } from "primeng/badge";
+import { AvatarModule } from "primeng/avatar";
+import { CardModule } from "primeng/card";
+import { FieldsetModule } from "primeng/fieldset";
+import { ListboxModule } from "primeng/listbox";
+import { TableModule } from "primeng/table";
 
 import { AdminRoutingModule } from './admin-routing.module';
 import { MaterialModule } from '../material/material.module';
@@ -23,6 +28,13 @@ import { ServiceEditComponent } from './components/service-edit/service-edit.com
 import { ServiceComponent } from './components/service/service.component';
 import { RoleCreateComponent } from './components/role-create/role-create.component';
 import { HelperCreateComponent } from './components/helper-create/helper-create.component';
+import { ProfileComponent } from './components/profile/profile.component';
+import { ButtonGroupModule } from "primeng/buttongroup";
+import { DividerModule } from "primeng/divider";
+import { InputTextModule } from "primeng/inputtext";
+import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { ResourceUnitComponent } from './components/resource-unit/resource-unit.component';
+import { ResourceUnitsCreateComponent } from './components/resource-units-create/resource-units-create.component';
 
 @NgModule({
   declarations: [
@@ -54,6 +66,10 @@ import { HelperCreateComponent } from './components/helper-create/helper-create.
     UserComponent,
     RoleCreateComponent,
     HelperCreateComponent,
+    ProfileComponent,
+    DashboardComponent,
+    ResourceUnitComponent,
+    ResourceUnitsCreateComponent,
     //UserCreateComponent,
     //UserEditComponent,
   ],
@@ -65,7 +81,15 @@ import { HelperCreateComponent } from './components/helper-create/helper-create.
     MaterialModule,
     MenubarModule,
     ButtonModule,
-    BadgeModule
+    BadgeModule,
+    ButtonGroupModule,
+    DividerModule,
+    InputTextModule,
+    CardModule,
+    ListboxModule,
+    FieldsetModule,
+    TableModule,
+    AvatarModule
   ]
 })
 export class AdminModule { }

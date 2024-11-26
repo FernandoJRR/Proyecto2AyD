@@ -19,6 +19,16 @@
     />
   </div>
   <p-divider />
+      <p-tag
+        [ngStyle]="{
+          color: 'var(--indigo-100)'
+        }"
+      >
+        <div class="text-lg"
+        >
+        Cancelar hasta {{reservacion?.servicio?.dias_cancelacion}} día/s antes de tu cita para obtener un reembolso.
+        </div>
+      </p-tag>
   <form [formGroup]="cancelacionForm" class="max-w-80 grid gap-y-4">
     <div class="flex flex-col">
       <label>Fecha de Cancelacion</label>

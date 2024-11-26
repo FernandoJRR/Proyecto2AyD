@@ -74,10 +74,12 @@
   font-weight: bold;
 }
 
-.content-container {
-  flex-grow: 1; /* Asegura que el contenido ocupe el espacio disponible */
-  padding: 2%;
-}
+  .content-container {
+    flex-grow: 1;
+    padding: 2%;
+    margin-left: 5%;
+    margin-right: 5%;
+  }
 
 /* Cambia el color de fondo del botón activo */
 .active {
@@ -149,5 +151,5 @@
     font-size: 16px;
   }
 
-  
+
 }

@@ -9,6 +9,8 @@ import com.university.repositories.NegocioRepository;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 @Service
 public class NegocioService {
 
@@ -29,5 +31,20 @@ public class NegocioService {
 
     public List<Negocio> getNegocios() {
         return this.negocioRepository.findAll();
+    }
+
+    @Transactional
+    public Negocio updateNegocio(Negocio update) throws Exception {
+        // Busca el negocio por ID
+        Negocio negocio = this.negocioRepository.findById(update.getId())
+                .orElseThrow(() -> new Exception("Negocio no encontrado."));
+
+        // Actualiza los campos necesarios
+        if (update.getNombre() != null && !update.getNombre().isBlank()) {
+            negocio.setNombre(update.getNombre());
+        }
+
+        // Guarda y retorna el negocio actualizado
+        return this.negocioRepository.save(negocio);
     }
 }

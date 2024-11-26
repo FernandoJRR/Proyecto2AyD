@@ -16,10 +16,15 @@ import { ServiceCreateComponent } from './components/service-create/service-crea
 import { ServiceEditComponent } from './components/service-edit/service-edit.component';
 import { RoleCreateComponent } from './components/role-create/role-create.component';
 import { HelperCreateComponent } from './components/helper-create/helper-create.component';
+import { ProfileComponent } from './components/profile/profile.component';
+import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { ResourceUnitComponent } from './components/resource-unit/resource-unit.component';
+import { ResourceUnitsCreateComponent } from './components/resource-units-create/resource-units-create.component';
 
 const routes: Routes = [
   { path: '', component: AdminViewComponent, children: [
-    //{ path: 'overview', component: OverviewComponent },
+    { path: 'dashboard', component: DashboardComponent },
+    { path: 'profile', component: ProfileComponent },
     //Negocios
     { path: 'business', component: BusinessComponent },
     { path: 'business-create', component: BusinessCreateComponent },
@@ -28,15 +33,16 @@ const routes: Routes = [
     { path: 'resources', component: ResourceComponent },
     { path: 'resource-create', component: ResourceCreateComponent },
     { path: 'resource-edit/:id', component: ResourceEditComponent },
-    
-    //PEND. "UNIDAD DE RECURSO"
+    //Unidades de Recursos
+    { path: 'resource-units', component: ResourceUnitComponent },
+    { path: 'resource-units-create/:id', component: ResourceUnitsCreateComponent },
 
     //Permisos
     { path: 'permissions', component: PermissionComponent },
     //Services
     { path: 'services', component: ServiceComponent },
     { path: 'service-create', component: ServiceCreateComponent },
-    { path: 'service-edit', component: ServiceEditComponent },
+    { path: 'service-edit/:id', component: ServiceEditComponent },
     //Roles
     { path: 'roles', component: RoleComponent },
     { path: 'role-create', component: RoleCreateComponent },
@@ -45,7 +51,7 @@ const routes: Routes = [
     //{ path: 'admin-create', component: AdminCreateComponent },
     { path: 'helper-create', component: HelperCreateComponent },
     //{ path: 'user-create', component: UserCreateComponent },
-    
+
   ]}
 ];
 

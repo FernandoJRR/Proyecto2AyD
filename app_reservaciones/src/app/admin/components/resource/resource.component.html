@@ -1,17 +1,20 @@
+<h3 class="text-center mb-4">Gestión de Recursos</h3>
 <div class="content-container">
-  <h3 class="text-center mb-4">Gestión de Recursos</h3>
+  <div class="grid grid-cols-1 md:grid-cols-2 mb-4">
+      <form class="flex flex-col">
+        <label>Buscar Recurso</label>
+        <input pInputText (keyup)="applyFilter($event)" />
+      </form>
 
-  <div class="search-container">
-    <mat-form-field appearance="outline" class="mat-mdc-form-field">
-      <mat-label>Buscar</mat-label>
-      <mat-icon matPrefix>search</mat-icon>
-      <input matInput (keyup)="applyFilter($event)" placeholder="Buscar recurso" />
-    </mat-form-field>
-
-    <button mat-raised-button class="create-button" (click)="createResource()">+ Recurso</button>
+    <p-button
+      class="md:ml-auto mt-2 md:mt-0"
+      icon="pi pi-plus"
+      label="Recurso"
+      (onClick)="createResource()"
+    ></p-button>
   </div>
 
-  <div class="table-container">
+  <div class="">
     <table mat-table [dataSource]="dataSource" matSort>
       <!-- ID Column -->
       <ng-container matColumnDef="id">

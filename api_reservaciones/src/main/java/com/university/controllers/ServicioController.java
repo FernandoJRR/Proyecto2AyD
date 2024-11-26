@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -126,6 +127,22 @@ public class ServicioController {
     public ResponseEntity<?> crearServicio(@RequestBody CreateServicioDto crear) {
         try {
             Servicio respuesta = servicioService.createServicio(crear);
+            return new ApiBaseTransformer(HttpStatus.OK, "OK", respuesta, null, null).sendResponse();
+        } catch (Exception ex) {
+            return new ApiBaseTransformer(HttpStatus.BAD_REQUEST, "Error", null, null, ex.getMessage()).sendResponse();
+        }
+    }
+
+    @Operation(summary = "Actualziar servicio", description = "Actualiza un servicio en el sistema.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Rol creado exitosamente", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Servicio.class)) }),
+            @ApiResponse(responseCode = "400", description = "Solicitud incorrecta")
+    })
+    @PatchMapping("/servicio/private/actualizarServicio")
+    public ResponseEntity<?> actualizarServicio(@RequestBody Servicio update) {
+        try {
+            Servicio respuesta = servicioService.updateServicio(update.getId(), update);
             return new ApiBaseTransformer(HttpStatus.OK, "OK", respuesta, null, null).sendResponse();
         } catch (Exception ex) {
             return new ApiBaseTransformer(HttpStatus.BAD_REQUEST, "Error", null, null, ex.getMessage()).sendResponse();

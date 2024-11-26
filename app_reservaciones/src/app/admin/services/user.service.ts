@@ -34,4 +34,8 @@ export class UserService {
   deleteUser(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/private/eliminarUsuario/${id}`);
   }
+
+  updateUser(userData: any): Observable<any> {
+    return this.http.patch<any>(`${this.apiUrl}/private/all/updateUsuario`, userData);
+  }
 }

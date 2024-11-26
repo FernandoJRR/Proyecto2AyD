@@ -43,7 +43,7 @@ export class BusinessService {
   // Actualizar un negocio existente
   updateBusiness(business: Business): Observable<void> {
     console.log('Enviando request para actualizar negocio:', business); // Log para confirmar el objeto enviado
-    return this.http.put<void>(`${this.apiUrl}/private/${business.id}`, business);
+    return this.http.patch<void>(`${this.apiUrl}/private/actualizarNegocio`, business);
   }
 
   // Eliminar un negocio por ID (Endpoint pendiente, pero dejamos el método preparado)

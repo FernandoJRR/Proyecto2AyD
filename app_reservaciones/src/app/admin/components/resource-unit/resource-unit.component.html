@@ -1,0 +1,35 @@
+<h3 class="text-center mb-4">Gestión de Unidades de Recursos</h3>
+<div class="content-container">
+  <div class="flex flex-col justify-center">
+    <label class="mb-2">Recurso</label>
+    <p-listbox
+      filter="true"
+      [options]="recursos"
+      optionLabel="nombre"
+      [listStyle]="{ 'max-height': '220px' }"
+      [(ngModel)]="recursoActual"
+      (onChange)="fetchUnitsResource()"
+    />
+  </div>
+  <div class="mt-4">
+      <p-button icon="pi pi-plus" label="Unidad de Recurso"
+        (onClick)="crearUnidadRecurso()"
+      />
+      <p-table [columns]="columns" [value]="unidadesRecurso">
+        <ng-template pTemplate="header" let-columns>
+            <tr>
+                <th *ngFor="let col of columns">
+                    {{ col.header }}
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData let-columns="columns">
+            <tr>
+                <td *ngFor="let col of columns">
+                    {{ rowData[col.field] }}
+                </td>
+            </tr>
+        </ng-template>
+      </p-table>
+  </div>
+</div>

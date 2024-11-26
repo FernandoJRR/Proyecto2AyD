@@ -8,6 +8,7 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
+import { AuthService } from '../../../auth/services/auth.service';
 
 @Component({
   selector: 'app-cancelar-reservacion',
@@ -25,6 +26,7 @@ export class CancelarReservacionComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private reservacionService: ReservacionService,
+    private authService: AuthService,
     fb: FormBuilder
   ) {
     this.cancelacionForm = fb.group({
@@ -60,11 +62,11 @@ export class CancelarReservacionComponent implements OnInit {
   cancelar() {
     if (this.cancelacionForm.invalid) {
       if (this.cancelacionForm.get('fechaCancelacion')!.invalid) {
-        alert('Fecha de Cancelacion Invalida');
+        this.authService.openConfirmationDialog('Error', 'Fecha de Cancelacion Invalida', 'red')
         return;
       }
       if (this.cancelacionForm.get('motivo')!.invalid) {
-        alert('Motivo de Cancelacion Invalido');
+        this.authService.openConfirmationDialog('Error', 'Motivo de Cancelacion Invalido', 'red')
         return;
       }
     }
@@ -81,11 +83,11 @@ export class CancelarReservacionComponent implements OnInit {
 
     this.reservacionService.cancelarReservacion(payload).subscribe({
       next: (response) => {
-        alert(response);
+        this.authService.openConfirmationDialog('Cancelacion Exitosa', response, 'green')
         this.router.navigate(['/client/reservaciones']);
       },
       error: (error) => {
-        alert('Error al cancelar reservacion');
+        this.authService.openConfirmationDialog('Cancelacion Fallida', 'Error al cancelar reservacion', 'red')
         console.log('ERROR al cancelar reservacion');
         console.log(error);
       },

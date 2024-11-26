@@ -9,3 +9,4 @@ services:
       - ./deploy:/usr/local/tomcat/webapps/ # Monta el directorio local "deploy" al directorio "webapps" de Tomcat
     environment:
       - TZ=America/Guatemala # Configura la zona horaria si es necesario
+      - SPRING_PROFILES_ACTIVE=docker

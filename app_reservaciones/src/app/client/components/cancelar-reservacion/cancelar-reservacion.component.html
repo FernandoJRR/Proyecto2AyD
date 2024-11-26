@@ -1,0 +1,50 @@
+<div>
+  <div class="flex">
+    <div>
+      <h4>Cancelar Reservacion #{{ id }}</h4>
+      <p-tag
+        [ngStyle]="{
+          color: 'var(--highlight-text-color)'
+        }"
+      >
+        <div class="text-xl">
+          {{ reservacion?.fecha }}
+        </div>
+      </p-tag>
+    </div>
+    <p-button
+      class="ml-auto"
+      label="Ver Reservacion"
+      [routerLink]="'/client/reservacion/' + id"
+    />
+  </div>
+  <p-divider />
+      <p-tag
+        [ngStyle]="{
+          color: 'var(--indigo-100)'
+        }"
+      >
+        <div class="text-lg"
+        >
+        Cancelar hasta {{reservacion?.servicio?.dias_cancelacion}} día/s antes de tu cita para obtener un reembolso.
+        </div>
+      </p-tag>
+  <form [formGroup]="cancelacionForm" class="max-w-80 grid gap-y-4">
+    <div class="flex flex-col">
+      <label>Fecha de Cancelacion</label>
+      <p-calendar
+        formControlName="fechaCancelacion"
+        [maxDate]="fechaMin"
+      ></p-calendar>
+    </div>
+    <div class="flex flex-col">
+      <label>Motivo</label>
+      <input pInputText formControlName="motivo" />
+    </div>
+    <p-button
+      severity="danger"
+      label="Cancelar"
+      (onClick)="cancelar()"
+    ></p-button>
+  </form>
+</div>

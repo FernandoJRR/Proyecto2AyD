@@ -40,4 +40,11 @@ public interface UsuarioRepository extends CrudRepository<Usuario, Long> {
             "JOIN sr.servicio s " +
             "WHERE s.id = :servicioId")
     List<Usuario> findUsuariosConPermisosParaServicio(@Param("servicioId") Long servicioId);
+
+            @Query("SELECT DISTINCT ur.usuario FROM UsuarioRol ur " +
+            "JOIN ur.rol r " +
+            "JOIN r.servicios sr " +
+            "WHERE sr.servicio.id = :servicioId")
+    List<Usuario> findUsuariosByServicioId(@Param("servicioId") Long servicioId);
+
 }

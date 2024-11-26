@@ -22,9 +22,20 @@ export class ServiceService {
     );
   }
 
+  getService(id: number): Observable<Service> {
+    return this.http.get<{ data: Service }>(`${this.apiUrl}/servicio/public/${id}`).pipe(
+      map(response => response.data)
+    );
+  }
+
   createService(serviceData: ServiceCreationRequest): Observable<any> {
     console.log('Enviando datos de servicio para creación:', serviceData);
     return this.http.post(`${this.apiUrl}/servicio/private/crearServicio`, serviceData);
+  }
+
+  updateService(payload: any): Observable<Service> {
+    console.log('Enviando datos de servicio para creación:', payload);
+    return this.http.patch<Service>(`${this.apiUrl}/servicio/private/actualizarServicio`, payload);
   }
 
   // Eliminar servicio por ID

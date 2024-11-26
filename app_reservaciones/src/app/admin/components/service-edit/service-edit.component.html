@@ -1,1 +1,127 @@
-<p>service-edit works!</p>
+<div class="content-container">
+  <div class="form-box">
+    <h2>Editar Servicio</h2>
+
+    <form (ngSubmit)="onSubmit()" class="flex flex-col">
+      <!-- Nombre del Negocio -->
+      <label class="text-xl mb-2">Nombre del Servicio</label>
+      <mat-form-field appearance="outline" class="full-width">
+        <input
+          matInput
+          [(ngModel)]="service.nombre"
+          name="nombre"
+          required
+          #nombre="ngModel"
+          placeholder="Ingrese el nombre del servicio"
+        />
+        <mat-error *ngIf="nombre.invalid && nombre.touched">
+          El nombre del servicio es obligatorio.
+        </mat-error>
+      </mat-form-field>
+
+      <label class="text-xl mb-2">Costo del Servicio</label>
+      <mat-form-field appearance="outline" class="full-width">
+        <input
+          matInput
+          [(ngModel)]="service.costo"
+          name="costo"
+          required
+          #costo="ngModel"
+          placeholder="Ingrese el costo del servicio"
+        />
+        <mat-error *ngIf="nombre.invalid && nombre.touched">
+          El costo del servicio es obligatorio.
+        </mat-error>
+      </mat-form-field>
+
+      <label class="text-xl mb-2">Duracion del Servicio</label>
+      <div class="duration-container flex gap-4">
+        <!-- Campo para las horas -->
+        <label>Horas</label>
+        <mat-form-field appearance="outline" class="duration-field">
+          <input
+            matInput
+            [(ngModel)]="service.duracionServicio.horas"
+            name="horas"
+            required
+            #horas="ngModel"
+            placeholder="Horas"
+            type="number"
+            min="0"
+          />
+          <mat-error *ngIf="horas.invalid && horas.touched">
+            Las horas son obligatorias.
+          </mat-error>
+        </mat-form-field>
+
+        <!-- Campo para los minutos -->
+        <label>Minutos</label>
+        <mat-form-field appearance="outline" class="duration-field">
+          <input
+            matInput
+            [(ngModel)]="service.duracionServicio.minutos"
+            name="minutos"
+            required
+            #minutos="ngModel"
+            placeholder="Minutos"
+            type="number"
+            min="0"
+            max="59"
+          />
+          <mat-error *ngIf="minutos.invalid && minutos.touched">
+            Los minutos deben estar entre 0 y 59.
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="horarios-container flex flex-col gap-2">
+          <label class="text-xl mb-2">Horarios de Atencion</label>
+        <div *ngFor="let horario of service.horariosAtencionServicios; let i = index" class="horario-item flex gap-4">
+          <mat-form-field appearance="outline" class="duration-field">
+            <input
+              matInput
+              [(ngModel)]="horario.horaInicio"
+              name="horaInicio-{{ i }}"
+              required
+              placeholder="Hora Inicio"
+              type="time"
+            />
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="duration-field">
+            <input
+              matInput
+              [(ngModel)]="horario.horaFinal"
+              name="horaFinal-{{ i }}"
+              required
+              placeholder="Hora Final"
+              type="time"
+            />
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="duration-field">
+            <mat-select [(ngModel)]="horario.diaAtencion.nombre" name="diaAtencion-{{ i }}" required>
+              <mat-option *ngFor="let dia of diasSemana" [value]="dia">{{ dia }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <button mat-icon-button color="warn" (click)="removeHorario(i)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+        <button mat-raised-button color="primary" type="button" (click)="addHorario()">Agregar Horario</button>
+      </div>
+
+      <p-divider/>
+      <!-- Botones de Acción -->
+      <div class="button-container">
+        <button mat-raised-button color="primary" type="submit">Guardar</button>
+        <button
+          mat-stroked-button
+          color="warn"
+          type="button"
+          (click)="onCancel()"
+        >
+          Cancelar
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

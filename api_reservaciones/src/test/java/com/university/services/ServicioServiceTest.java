@@ -184,7 +184,7 @@ public class ServicioServiceTest {
     }
 
     @Test
-    void testUpdateServicio_NotFound() {
+    void testUpdateServicio_NotFound() throws Exception {
         Long idServicio = 1L;
         Servicio servicioActualizado = new Servicio();
         servicioActualizado.setId(idServicio);

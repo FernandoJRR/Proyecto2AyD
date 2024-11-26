@@ -350,6 +350,7 @@ public class Inserts implements ApplicationListener<ContextRefreshedEvent> {
             byte[] img = getClass().getResourceAsStream("/img/logo.png").readAllBytes();
 
             ConfiguracionGlobal configuracionGlobal = new ConfiguracionGlobal("Reservaciones GT", img);
+            configuracionGlobal.setMimeTypeImg("image/png");
             this.insertarConfiguracionGlobal(configuracionGlobal);
 
             // Seeder de usuarios del sistema
@@ -404,6 +405,14 @@ public class Inserts implements ApplicationListener<ContextRefreshedEvent> {
                     Rol rolAdmin = this.rolService.getRol("ADMIN");
                     try {
                         this.rolService.agregarPermisoRol(rolAdmin, permisoInsercion);
+                    } catch (IllegalArgumentException e) {
+                    } catch (Exception e) {
+                        System.out.println(e);
+                    }
+                } else if (permisoInsercion.getNombre().equals("USUARIO")) {
+                    Rol rolUsuario = this.rolService.getRol("USUARIO");
+                    try {
+                        this.rolService.agregarPermisoRol(rolUsuario, permisoInsercion);
                     } catch (IllegalArgumentException e) {
                     } catch (Exception e) {
                         System.out.println(e);

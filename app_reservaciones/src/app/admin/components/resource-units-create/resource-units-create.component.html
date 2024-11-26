@@ -1,0 +1,58 @@
+<div class="content-container">
+  <p-fieldset
+    [legend]="'Crear Nueva Unidad - ' + recurso?.nombre"
+    class="form-box"
+  >
+    <h5>Unidades Existentes</h5>
+    <p-table [columns]="columns" [value]="unidadesRecurso">
+      <ng-template pTemplate="header" let-columns>
+        <tr>
+          <th *ngFor="let col of columns">
+            {{ col.header }}
+          </th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-rowData let-columns="columns">
+        <tr>
+          <td *ngFor="let col of columns">
+            {{ rowData[col.field] }}
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+
+    <p-divider/>
+
+    <form (ngSubmit)="onSubmit()" class="flex flex-col mt-2">
+      <!-- Nombre de la Unidad -->
+      <label for="nombreUnidad">Nombre de la Unidad</label>
+      <mat-form-field appearance="outline" class="full-width">
+        <input
+          matInput
+          [(ngModel)]="resourceUnit.nombre"
+          name="nombre"
+          id="nombreUnidad"
+          required
+          #nombre="ngModel"
+          placeholder="Ingrese el nombre de la unidad"
+        />
+        <mat-error *ngIf="nombre.invalid && nombre.touched">
+          El nombre del negocio es obligatorio.
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Botones de Acción -->
+      <div class="button-container">
+        <button mat-raised-button color="primary" type="submit">Guardar</button>
+        <button
+          mat-stroked-button
+          color="warn"
+          type="button"
+          (click)="onCancel()"
+        >
+          Cancelar
+        </button>
+      </div>
+    </form>
+  </p-fieldset>
+</div>

@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
@@ -173,14 +174,33 @@ public class ReservacionService {
 
         // Obtener el servicio y calcular el monto a reembolsar
         Servicio servicio = reservacion.getServicio();
+
+         // Obtener la fecha de la reservación
+        LocalDate fechaReservacion = reservacion.getFecha();
+
+        // Calcular la diferencia de días entre la fecha de cancelación y la fecha de la reservación
+        long diasDiferencia = ChronoUnit.DAYS.between(fechaCancelacion, fechaReservacion);
+
+
         Float porcentajeReembolso = servicio.getPorcentaje_reembolso();
-        Float montoReembolso = reservacion.getPago().getMonto() * (porcentajeReembolso / 100);
+
+        Float montoReembolso = (float) 0;
+        Float montoCobrado = (float) 0;
+
+        if (diasDiferencia >= servicio.getDias_cancelacion()) {
+            //Si los dias de diferencia son mayores a los dias cancelacion, se le reembolsa lo indicado
+            montoReembolso = reservacion.getPago().getMonto() * (porcentajeReembolso / 100);
+            montoCobrado = reservacion.getPago().getMonto() - montoReembolso;
+        } else {
+            montoReembolso = (float) 0;
+            montoCobrado = reservacion.getPago().getMonto() - montoReembolso;
+        }
 
         // Crear y guardar la factura
         Factura factura = new Factura();
         factura.setUsuario(reservacion.getUsuario());
         factura.setReservacion(reservacion);
-        factura.setMonto(montoReembolso);
+        factura.setMonto(montoCobrado);
         facturaRepository.save(factura);
 
         // Crear y guardar el registro de cancelación
@@ -232,6 +252,20 @@ public class ReservacionService {
         // Crear y guardar el pago
         Pago pago = new Pago(metodoPago, numero, monto);
         return pagoRepository.save(pago);
+    }
+
+    public Cancelacion getCancelacion(Long id) throws Exception {
+        if (id == null || id <= 0) {
+            throw new Exception("Id invalido.");
+        }
+
+        Optional<Cancelacion> cancelacionSearch = this.cancelacionRepository.findByReservacionId(id);
+
+        if (cancelacionSearch.isEmpty()) {
+            throw new Exception("Cancelacion no encontrada.");
+        }
+
+        return cancelacionSearch.get();
     }
 
     /**

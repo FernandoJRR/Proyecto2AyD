@@ -53,7 +53,7 @@ public class MailService {
     private void enviarCorreoDeRecuperacion(String correo, String codigoActivacion) {
         try {
             Context context = new Context();//crear nuevo contexto
-            String url = String.format("http://localhost:%s/password_reset/form?c=%s",
+            String url = String.format("http://localhost:%s/reset-password/form?c=%s",
                     appProperties.getHostFront1(), codigoActivacion);
 
             context.setVariable("url", url);//adjuntar las variables

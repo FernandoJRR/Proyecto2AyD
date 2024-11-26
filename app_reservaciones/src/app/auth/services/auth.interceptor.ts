@@ -43,7 +43,7 @@ export class AuthInterceptor implements HttpInterceptor {
           this.dialog.open(DialogComponent, {
             data: {
               title: 'Error',
-              description: 'Ocurrió un error inesperado. Intenta de nuevo.',
+              description: error.error.error,
               backgroundColor: 'red',
             },
           });

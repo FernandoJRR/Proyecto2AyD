@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.university.models.Cancelacion;
 import com.university.models.EstadoReservacion;
 import com.university.models.Factura;
 import com.university.models.MetodoPago;
@@ -54,9 +55,9 @@ public class ReservacionController {
     @Autowired
     private FacturaService facturaService;
 
-    @Operation(summary = "Obtener todos los estados de reservacion", description = "Obtiene la información de todos los estados de reservacion.")
+    @Operation(summary = "Obtener todas las reservaciones de un cliente.", description = "Obtiene la información de todas las reservaciones de un cliente.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Estados encontrados", content = {
+            @ApiResponse(responseCode = "200", description = "Reservaciones encontradas", content = {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = EstadoReservacion.class)) }),
             @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
@@ -80,6 +81,22 @@ public class ReservacionController {
     public ResponseEntity<?> getEstadosReservacion() {
         try {
             List<EstadoReservacion> data = estadoReservacionService.getEstadosReservacion();
+            return new ApiBaseTransformer(HttpStatus.OK, "OK", data, null, null).sendResponse();
+        } catch (Exception ex) {
+            return new ApiBaseTransformer(HttpStatus.BAD_REQUEST, "Error", null, null, ex.getMessage()).sendResponse();
+        }
+    }
+
+    @Operation(summary = "Obtener una reservacion.", description = "Obtiene la información de una reservacion por su ID.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Reservacion encontrada", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Reservacion.class)) }),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+    })
+    @GetMapping("/reservacion/public/{id}")
+    public ResponseEntity<?> getReservacion(@PathVariable Long id) {
+        try {
+            Reservacion data = reservacionService.getReservacion(id);
             return new ApiBaseTransformer(HttpStatus.OK, "OK", data, null, null).sendResponse();
         } catch (Exception ex) {
             return new ApiBaseTransformer(HttpStatus.BAD_REQUEST, "Error", null, null, ex.getMessage()).sendResponse();
@@ -168,6 +185,22 @@ public class ReservacionController {
             return new ApiBaseTransformer(HttpStatus.OK, "Reservacion cancelada exitosamente y factura generada.", resultado, null, null).sendResponse();
         } catch (Exception ex) {
             return new ApiBaseTransformer(HttpStatus.INTERNAL_SERVER_ERROR, "Error interno del servidor", null, null, ex.getMessage()).sendResponse();
+        }
+    }
+
+    @Operation(summary = "Obtener una cancelacion", description = "Obtiene la información de una cancelacion.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Cancelacion encontrada", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = EstadoReservacion.class)) }),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+    })
+    @GetMapping("/reservacion/public/getCancelacion/{id}")
+    public ResponseEntity<?> getCancelacionByReservacion(@PathVariable Long id) {
+        try {
+            Cancelacion data = reservacionService.getCancelacion(id);
+            return new ApiBaseTransformer(HttpStatus.OK, "OK", data, null, null).sendResponse();
+        } catch (Exception ex) {
+            return new ApiBaseTransformer(HttpStatus.BAD_REQUEST, "Error", null, null, ex.getMessage()).sendResponse();
         }
     }
 

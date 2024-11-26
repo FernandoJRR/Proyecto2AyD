@@ -17,7 +17,7 @@ public interface UnidadRecursoRepository extends CrudRepository<UnidadRecurso, L
 
     List<UnidadRecurso> findByRecurso(Recurso recurso);
 
-    List<UnidadRecurso> findOneByNombre(String nombre);
+    Optional<UnidadRecurso> findOneByNombre(String nombre);
 
     Optional<UnidadRecurso> findByNombreAndRecurso_Nombre(String unidadRecursoNombre, String recursoNombre);
 }

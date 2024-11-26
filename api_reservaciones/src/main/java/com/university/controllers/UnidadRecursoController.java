@@ -12,6 +12,7 @@ import com.university.models.UnidadRecurso;
 import com.university.services.UnidadRecursoService;
 import com.university.transformers.ApiBaseTransformer;
 
+import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -74,8 +75,13 @@ public class UnidadRecursoController {
             @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
     @GetMapping("/unidad-recurso/private/recurso/{id}")
-    public List<UnidadRecurso> obtenerUnidadesPorRecurso(@PathVariable Long id) {
-        return unidadRecursoService.getUnidadRecursoByRecursoId(id);
+    public ResponseEntity<?> obtenerUnidadesPorRecurso(@PathVariable Long id) {
+        try {
+            List<UnidadRecurso> respuesta = unidadRecursoService.getUnidadRecursoByRecursoId(id);
+            return new ApiBaseTransformer(HttpStatus.OK, "OK", respuesta, null, null).sendResponse();
+        } catch (Exception ex) {
+            return new ApiBaseTransformer(HttpStatus.BAD_REQUEST, "Error", null, null, ex.getMessage()).sendResponse();
+        }
     }
 
     @Operation(summary = "Obtener todas las unidad de recurso", description = "Obtiene la información de una unidad de recurso con el ID proporcionado.")
@@ -85,7 +91,12 @@ public class UnidadRecursoController {
             @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
     @GetMapping("/unidad-recurso/private/getUnidadesRecurso")
-    public List<UnidadRecurso> obtenerTodasUnidadesPorRecurso() {
-        return unidadRecursoService.getUnidadRecurso();
+    public ResponseEntity<?> obtenerTodasUnidadesPorRecurso() {
+        try {
+             List<UnidadRecurso> respuesta = unidadRecursoService.getUnidadRecurso();
+            return new ApiBaseTransformer(HttpStatus.OK, "OK", respuesta, null, null).sendResponse();
+        } catch (Exception ex) {
+            return new ApiBaseTransformer(HttpStatus.BAD_REQUEST, "Error", null, null, ex.getMessage()).sendResponse();
+        }
     }
 }

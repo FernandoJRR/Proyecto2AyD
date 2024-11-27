@@ -15,7 +15,7 @@ export class ServiceEditComponent implements OnInit {
     id: 0,
     nombre: '',
     duracionServicio: {id: 0, minutos: 0, horas: 0},
-    horariosAtencionServicios: [{id: 0, horaInicio: '', horaFinal: '', diaAtencion: {id: 0, nombre: ''}}],
+    horariosAtencionServicios: [{id: 0, horaInicio: '', horaFinal: '', diaAtencion: {id: 0}}],
     asignacion_automatica: false,
     dias_cancelacion: 0,
     porcentaje_reembolso: 0,
@@ -28,7 +28,7 @@ export class ServiceEditComponent implements OnInit {
     private dialog: MatDialog
   ) {}
 
-  diasSemana = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+  diasSemana = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo'];
 
   ngOnInit(): void {
     const serviceId = this.route.snapshot.paramMap.get('id');
@@ -53,14 +53,14 @@ export class ServiceEditComponent implements OnInit {
 
   onSubmit(): void {
     if (!this.service.nombre) {
-      this.openDialog('Campo vacío', 'El nombre del negocio no puede estar vacío.', 'red');
+      this.openDialog('Campo vacío', 'El nombre del servicio no puede estar vacío.', 'red');
       return;
     }
 
     this.serviceService.updateService(this.service).subscribe({
       next: () => {
         this.openDialog('Actualización exitosa', 'Negocio actualizado con éxito.', 'green');
-        this.router.navigate(['/admin/business']);
+        this.router.navigate(['/admin/services']);
       },
       error: () => {
         this.openDialog('Error', 'Error al actualizar el negocio.', 'red');

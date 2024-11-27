@@ -20,6 +20,10 @@ import { ProfileComponent } from './components/profile/profile.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { ResourceUnitComponent } from './components/resource-unit/resource-unit.component';
 import { ResourceUnitsCreateComponent } from './components/resource-units-create/resource-units-create.component';
+import { UserEditComponent } from './components/user-edit/user-edit.component';
+import { ReservacionesComponent } from './components/reservaciones/reservaciones.component';
+import { ReservacionComponent } from './components/reservacion/reservacion.component';
+import { ConfigComponent } from './components/config/config.component';
 
 const routes: Routes = [
   { path: '', component: AdminViewComponent, children: [
@@ -29,10 +33,18 @@ const routes: Routes = [
     { path: 'business', component: BusinessComponent },
     { path: 'business-create', component: BusinessCreateComponent },
     { path: 'business-edit/:id', component: BusinessEditComponent },
+
+    //Configuracion
+    { path: 'config', component: ConfigComponent },
+
     //Recursos
     { path: 'resources', component: ResourceComponent },
     { path: 'resource-create', component: ResourceCreateComponent },
     { path: 'resource-edit/:id', component: ResourceEditComponent },
+
+    //Reservaciones
+    { path: 'reservaciones', component: ReservacionesComponent },
+    { path: 'reservacion/:id', component: ReservacionComponent },
     //Unidades de Recursos
     { path: 'resource-units', component: ResourceUnitComponent },
     { path: 'resource-units-create/:id', component: ResourceUnitsCreateComponent },
@@ -48,6 +60,7 @@ const routes: Routes = [
     { path: 'role-create', component: RoleCreateComponent },
     //Usuarios
     { path: 'users', component: UserComponent },
+    { path: 'user-edit/:id', component: UserEditComponent },
     //{ path: 'admin-create', component: AdminCreateComponent },
     { path: 'helper-create', component: HelperCreateComponent },
     //{ path: 'user-create', component: UserCreateComponent },

@@ -71,6 +71,22 @@ public class ReservacionController {
         }
     }
 
+    @Operation(summary = "Obtener todas las reservaciones", description = "Obtiene la información de todos los metodos de pago.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Reservaciones encontrados", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Reservacion.class)) }),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+    })
+    @GetMapping("/reservacion/public/reservaciones")
+    public ResponseEntity<?> getAllReservaciones() {
+        try {
+            List<Reservacion> data = reservacionService.getAllReservaciones();
+            return new ApiBaseTransformer(HttpStatus.OK, "OK", data, null, null).sendResponse();
+        } catch (Exception ex) {
+            return new ApiBaseTransformer(HttpStatus.BAD_REQUEST, "Error", null, null, ex.getMessage()).sendResponse();
+        }
+    }
+
     @Operation(summary = "Obtener todos los estados de reservacion", description = "Obtiene la información de todos los estados de reservacion.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Estados encontrados", content = {

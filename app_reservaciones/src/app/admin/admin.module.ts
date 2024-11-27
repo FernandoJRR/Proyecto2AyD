@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { importProvidersFrom, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'; // Agregar FormsModule
 import { MenubarModule } from "primeng/menubar";
@@ -9,6 +9,12 @@ import { CardModule } from "primeng/card";
 import { FieldsetModule } from "primeng/fieldset";
 import { ListboxModule } from "primeng/listbox";
 import { TableModule } from "primeng/table";
+import { DataViewModule } from "primeng/dataview";
+import { TagModule } from "primeng/tag";
+import { ChipModule } from "primeng/chip";
+import { FileUploadModule } from "primeng/fileupload";
+import { DropdownModule } from "primeng/dropdown";
+import { InputNumberModule } from "primeng/inputnumber";
 
 import { AdminRoutingModule } from './admin-routing.module';
 import { MaterialModule } from '../material/material.module';
@@ -35,6 +41,10 @@ import { InputTextModule } from "primeng/inputtext";
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { ResourceUnitComponent } from './components/resource-unit/resource-unit.component';
 import { ResourceUnitsCreateComponent } from './components/resource-units-create/resource-units-create.component';
+import { UserEditComponent } from './components/user-edit/user-edit.component';
+import { ReservacionesComponent } from './components/reservaciones/reservaciones.component';
+import { ReservacionComponent } from './components/reservacion/reservacion.component';
+import { ConfigComponent } from './components/config/config.component';
 
 @NgModule({
   declarations: [
@@ -70,6 +80,10 @@ import { ResourceUnitsCreateComponent } from './components/resource-units-create
     DashboardComponent,
     ResourceUnitComponent,
     ResourceUnitsCreateComponent,
+    UserEditComponent,
+    ReservacionesComponent,
+    ReservacionComponent,
+    ConfigComponent,
     //UserCreateComponent,
     //UserEditComponent,
   ],
@@ -89,6 +103,12 @@ import { ResourceUnitsCreateComponent } from './components/resource-units-create
     ListboxModule,
     FieldsetModule,
     TableModule,
+    DataViewModule,
+    TagModule,
+    ChipModule,
+    FileUploadModule,
+    DropdownModule,
+    InputNumberModule,
     AvatarModule
   ]
 })

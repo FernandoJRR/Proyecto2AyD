@@ -166,6 +166,81 @@ public class UsuarioService extends com.university.services.Service {
         return usuarioUpdate;
     }
 
+    @Transactional
+    public Usuario updateUsuarioExt(Usuario usuario) throws Exception {
+        if (usuario.getId() == null || usuario.getId() <= 0) {
+            throw new Exception("Id inválido.");
+        }
+
+        Optional<Usuario> busquedaUsuario = usuarioRepository.findById(usuario.getId());
+        if (busquedaUsuario.isEmpty()) {
+            throw new Exception("No hemos encontrado el usuario.");
+        }
+        Usuario usuarioEncontrado = busquedaUsuario.get();
+
+        // Verificar si el usuario ha sido eliminado
+        if (usuarioEncontrado.getDeletedAt() != null) {
+            throw new Exception("Usuario ya ha sido eliminado.");
+        }
+
+        // Verificar si otro usuario tiene el mismo email
+        if (usuarioRepository.existsUsuarioByEmailAndIdNot(usuario.getEmail(), usuario.getId())) {
+            throw new Exception(String.format("No se editó el usuario %s, "
+                    + "debido a que ya existe otro usuario con el mismo email.", usuario.getEmail()));
+        }
+
+        // Evitar el cambio de contraseña
+        usuarioEncontrado.setPassword(usuarioEncontrado.getPassword());
+        usuarioEncontrado.setRoles(usuarioEncontrado.getRoles());
+
+        // Validar y actualizar los horarios de atención del usuario
+        if (usuario.getHorariosAtencionUsuario() != null) {
+            List<HorarioAtencionUsuario> nuevosHorarios = usuario.getHorariosAtencionUsuario();
+            List<HorarioAtencionUsuario> horariosActuales = usuarioEncontrado.getHorariosAtencionUsuario();
+
+            // Crear una lista auxiliar para manejar las actualizaciones
+            List<HorarioAtencionUsuario> horariosActualizados = new ArrayList<>();
+
+            for (HorarioAtencionUsuario nuevoHorario : nuevosHorarios) {
+                if (nuevoHorario.getId() == null) {
+                    // Es un nuevo horario
+                    nuevoHorario.setUsuario(usuarioEncontrado); // Asignar la relación con el usuario encontrado
+                    horariosActualizados.add(nuevoHorario);
+                } else {
+                    // Actualizar horario existente
+                    HorarioAtencionUsuario horarioExistente = horariosActuales.stream()
+                            .filter(h -> h.getId().equals(nuevoHorario.getId()))
+                            .findFirst()
+                            .orElseThrow(() -> new Exception("Horario no encontrado con ID: " + nuevoHorario.getId()));
+
+                    horarioExistente.setHoraInicio(nuevoHorario.getHoraInicio());
+                    horarioExistente.setHoraFinal(nuevoHorario.getHoraFinal());
+                    horarioExistente.setDiaAtencion(nuevoHorario.getDiaAtencion());
+                    horariosActualizados.add(horarioExistente);
+                }
+            }
+
+            // Reemplazar la colección con los horarios actualizados
+            horariosActuales.clear();
+            horariosActuales.addAll(horariosActualizados);
+        }
+
+        // Actualizar otros campos del usuario si es necesario
+        usuarioEncontrado.setNombres(usuario.getNombres());
+        usuarioEncontrado.setApellidos(usuario.getApellidos());
+        usuarioEncontrado.setEmail(usuario.getEmail());
+        usuarioEncontrado.setTelefono(usuario.getTelefono());
+
+        // Guardar y retornar el usuario actualizado
+        Usuario usuarioActualizado = usuarioRepository.save(usuarioEncontrado);
+
+        if (usuarioActualizado == null || usuarioActualizado.getId() <= 0) {
+            throw new Exception("No pudimos actualizar el usuario, inténtalo más tarde.");
+        }
+
+        return usuarioActualizado;
+    }
+
     public String enviarMailDeRecuperacion(String correo) throws Exception {
         if (correo.isBlank()) {// si el correo esta en blanco entonces lanzmaos error
             throw new Exception("Correo vacio.");

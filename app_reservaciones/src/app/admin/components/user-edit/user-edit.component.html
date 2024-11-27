@@ -1,0 +1,194 @@
+<div class="content-container">
+  <div class="form-box">
+    <h2>Editar Usuario</h2>
+
+    <form (ngSubmit)="onSubmit()" class="flex flex-col">
+      <!-- Nombre del Negocio -->
+      <label class="text-xl mb-2">Nombres</label>
+      <mat-form-field appearance="outline" class="full-width">
+        <input
+          matInput
+          [(ngModel)]="user.nombres"
+          name="nombres"
+          required
+          #nombres="ngModel"
+          placeholder="Ingrese los nombres del usuario"
+        />
+        <mat-error *ngIf="nombres.invalid && nombres.touched">
+          Los nombres del usuario es obligatorio.
+        </mat-error>
+      </mat-form-field>
+
+      <label class="text-xl mb-2">Apellidos</label>
+      <mat-form-field appearance="outline" class="full-width">
+        <input
+          matInput
+          [(ngModel)]="user.apellidos"
+          name="apellidos"
+          required
+          #apellidos="ngModel"
+          placeholder="Ingrese los apellidos del usuario"
+        />
+        <mat-error *ngIf="apellidos.invalid && apellidos.touched">
+          Los apellidos del usuario es obligatorio.
+        </mat-error>
+      </mat-form-field>
+
+      <label class="text-xl mb-2">Email</label>
+      <mat-form-field appearance="outline" class="full-width">
+        <input
+          matInput
+          [(ngModel)]="user.email"
+          name="email"
+          required
+          #email="ngModel"
+          placeholder="Ingrese el email del usuario"
+        />
+        <mat-error *ngIf="email.invalid && email.touched">
+          El email del usuario es obligatorio.
+        </mat-error>
+      </mat-form-field>
+
+      <label class="text-xl mb-2">NIT</label>
+      <mat-form-field appearance="outline" class="full-width">
+        <input
+          matInput
+          [(ngModel)]="user.nit"
+          name="nit"
+          required
+          #nit="ngModel"
+          placeholder="Ingrese el nit del usuario"
+        />
+        <mat-error *ngIf="nit.invalid && nit.touched">
+          El nit del usuario es obligatorio.
+        </mat-error>
+      </mat-form-field>
+
+      <label class="text-xl mb-2">CUI</label>
+      <mat-form-field appearance="outline" class="full-width">
+        <input
+          matInput
+          [(ngModel)]="user.cui"
+          name="cui"
+          required
+          #cui="ngModel"
+          placeholder="Ingrese el cui del usuario"
+        />
+        <mat-error *ngIf="cui.invalid && cui.touched">
+          El cui del usuario es obligatorio.
+        </mat-error>
+      </mat-form-field>
+
+      <div class="horarios-container flex flex-col gap-2">
+        <label class="text-xl mb-2">Horarios de Atencion</label>
+        <div
+          *ngFor="let horario of user.horariosAtencionUsuario; let i = index"
+          class="horario-item flex gap-4"
+        >
+          <mat-form-field appearance="outline" class="duration-field">
+            <input
+              matInput
+              [(ngModel)]="horario.horaInicio"
+              name="horaInicio-{{ i }}"
+              required
+              placeholder="Hora Inicio"
+              type="time"
+            />
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="duration-field">
+            <input
+              matInput
+              [(ngModel)]="horario.horaFinal"
+              name="horaFinal-{{ i }}"
+              required
+              placeholder="Hora Final"
+              type="time"
+            />
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="duration-field">
+            <mat-select
+              [(ngModel)]="horario.diaAtencion.id"
+              name="diaAtencion-{{ i }}"
+              required
+            >
+              <mat-option
+                *ngFor="let dia of diasSemana; let index = index"
+                [value]="index + 1"
+              >
+                {{ dia }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <button
+            mat-icon-button
+            color="warn"
+            type="button"
+            (click)="removeHorario(i)"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+        <button
+          mat-raised-button
+          color="primary"
+          type="button"
+          (click)="addHorario()"
+        >
+          Agregar Horario
+        </button>
+      </div>
+
+      <!--
+      <p-divider />
+      <div class="horarios-container flex flex-col gap-2">
+        <label class="text-xl mb-2">Roles</label>
+        <div
+          *ngFor="let rol of user.roles; let i = index"
+          class="horario-item flex gap-4"
+        >
+          <mat-form-field appearance="outline" class="duration-field">
+            <mat-select
+            [value]="rol.rol.nombre" required>
+              @for (rol of roles; track $index) {
+              <mat-option
+                      *ngIf="rol.nombre !== 'USUARIO'"
+               [value]="rol.nombre">{{ rol.nombre }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <button
+            mat-icon-button
+            color="warn"
+            type="button"
+            (click)="removeRol(i)"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+        <button
+          mat-raised-button
+          color="primary"
+          type="button"
+          (click)="addRol()"
+        >
+          Agregar Rol
+        </button>
+      </div>
+      -->
+
+      <p-divider />
+      <!-- Botones de Acción -->
+      <div class="button-container">
+        <button mat-raised-button color="primary" type="submit">Guardar</button>
+        <button
+          mat-stroked-button
+          color="warn"
+          type="button"
+          (click)="onCancel()"
+        >
+          Cancelar
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

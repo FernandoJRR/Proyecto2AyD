@@ -7,14 +7,18 @@ import { environment } from "../../../environment/environment";
     providedIn: 'root'
 })
 
-export class GlobalService {
+export class ReporteService {
     apiUrl = environment.API_BASE_URL
     constructor(
         private http: HttpClient,
     ) {}
 
-  getConfig(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/global_config/public/getConfig`);
+  getConteoReport(tipoTiempo: string, cantidad: number, estado: string | null): Observable<any> {
+      if (estado) {
+        return this.http.get(`${this.apiUrl}/reporte/public/contarReservaciones?tipoTiempo=${tipoTiempo}&cantidad=${cantidad}&estado=${estado}`);
+      }
+
+        return this.http.get(`${this.apiUrl}/reporte/public/contarReservaciones?tipoTiempo=${tipoTiempo}&cantidad=${cantidad}`);
   }
 
   updateConfig(payload: any): Observable<any> {

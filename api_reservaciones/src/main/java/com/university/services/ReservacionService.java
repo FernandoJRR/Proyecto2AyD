@@ -71,6 +71,10 @@ public class ReservacionService {
         return reservacionRepository.findByUsuario(new Usuario(id_cliente));
     }
 
+    public List<Reservacion> getAllReservaciones() throws Exception {
+        return reservacionRepository.findAll();
+    }
+
     /**
      * Método para crear una reservación
      */

@@ -45,6 +45,12 @@ export class ReservacionService {
     );
   }
 
+  getAllReservacion(): Observable<Array<Reservation>> {
+    return this.http.get<{data: Array<Reservation>}>(`${this.apiUrl}/reservacion/public/reservaciones`).pipe(
+        map(response => response.data)
+    );
+  }
+
   getCancelacion(idReservacion: number): Observable<Cancelation> {
     return this.http.get<{data: Cancelation}>(`${this.apiUrl}/reservacion/public/getCancelacion/${idReservacion}`).pipe(
         map(response => response.data)
@@ -53,6 +59,12 @@ export class ReservacionService {
 
   getReservacionesByCliente(idCliente: number): Observable<Array<Reservation>> {
     return this.http.get<{data: Array<Reservation>}>(`${this.apiUrl}/reservacion/public/getReservacionesByCliente/${idCliente}`).pipe(
+        map(response => response.data)
+    );
+  }
+
+  completarReservacion(idReservacion: number): Observable<any> {
+    return this.http.post<{data: any}>(`${this.apiUrl}/reservacion/private/completarReservacion?idReservacion=${idReservacion}`, {}).pipe(
         map(response => response.data)
     );
   }

@@ -1,0 +1,55 @@
+<div class="content-container">
+  <div class="form-box">
+    <h2>Editar Sitio</h2>
+
+    <form (ngSubmit)="onSubmitNombre()" class="flex flex-col">
+      <!-- Nombre del Negocio -->
+      <label>Nombre del Negocio</label>
+      <mat-form-field appearance="outline" class="full-width">
+        <input
+          matInput
+          [(ngModel)]="config.nombre"
+          name="nombre"
+          required
+          #nombre="ngModel"
+          placeholder="Ingrese el nombre del sitio"
+        />
+        <mat-error *ngIf="nombre.invalid && nombre.touched">
+          El nombre del sitio es obligatorio.
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Botones de Acción -->
+      <div class="button-container">
+        <button mat-raised-button color="primary" type="submit">Guardar</button>
+      </div>
+    </form>
+
+    <form (ngSubmit)="onSubmitImagen()" class="flex flex-col">
+      <!-- Campo para subir la imagen -->
+      <label>Imagen del Sitio</label>
+      <input
+        type="file"
+        (change)="onFileSelected($event)"
+        name="imagen"
+        required
+        #imagenInput
+        class="file-input"
+        accept="image/png, image/jpg, image/jpeg"
+      />
+      <small *ngIf="!selectedFile"> La imagen del sitio es obligatoria. </small>
+
+      <!-- Botones de Acción -->
+      <div class="button-container">
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit"
+          [disabled]="!selectedFile"
+        >
+          Actualizar Imagen
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

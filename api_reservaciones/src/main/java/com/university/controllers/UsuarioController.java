@@ -285,6 +285,26 @@ public class UsuarioController {
         }
     }
 
+    @Operation(summary = "Actualizar usuario", description = "Actualiza la información del usuario basado en los datos proporcionados.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Usuario actualizado exitosamente", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Usuario.class)) }),
+            @ApiResponse(responseCode = "400", description = "ID con formato inválido")
+    })
+    @PatchMapping("/usuario/private/updateUsuario")
+    public ResponseEntity<?> actualizarUsuarioExt(@RequestBody Usuario updates) {
+        try {
+            Usuario confirmacion = usuarioService.updateUsuarioExt(updates);
+            return new ApiBaseTransformer(HttpStatus.OK, "OK", confirmacion, null, null).sendResponse();
+        } catch (NumberFormatException ex) {
+            return new ApiBaseTransformer(HttpStatus.BAD_REQUEST,
+                    "Id con formato invalido",
+                    null, null, ex.getMessage()).sendResponse();
+        } catch (Exception ex) {
+            return new ApiBaseTransformer(HttpStatus.BAD_REQUEST, "Error", null, null, ex.getMessage()).sendResponse();
+        }
+    }
+
     @Operation(summary = "Actualiza los horarios de un usuario.", description = "Actualiza los horarios de un usuario en base a su id y los id "
             + "de los horarios enviados (todo aquel horario que no se mande se eliminara de la "
             + "lista de horarios del rol).")

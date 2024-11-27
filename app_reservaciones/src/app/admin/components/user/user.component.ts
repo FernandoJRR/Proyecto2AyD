@@ -59,6 +59,7 @@ export class UserComponent implements OnInit {
           nit: user.nit,
           cui: user.cui,
           telefono: user.telefono,
+          roles: user.roles
         }));
         this.dataSource.data = users;
         this.dataSource.paginator = this.paginator;
@@ -73,7 +74,7 @@ export class UserComponent implements OnInit {
         );
       },
     });
-  }  
+  }
 
   applyFilter(event: Event): void {
     const filterValue = (event.target as HTMLInputElement).value;
@@ -96,7 +97,7 @@ export class UserComponent implements OnInit {
   }
 
   editarUsuario(usuario: User): void {
-    console.log('Redirigiendo a edición del usuario con ID:', usuario.id);
+    this.router.navigate([`/admin/user-edit/${usuario.id}`]);
   }
 
   eliminarUsuario(id: number): void {

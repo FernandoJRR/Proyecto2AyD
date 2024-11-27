@@ -3,12 +3,14 @@ package com.university.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.university.models.DiaAtencion;
 import com.university.models.DuracionServicio;
 import com.university.models.HorarioAtencionServicio;
 import com.university.models.Servicio;
 import com.university.models.UnidadRecurso;
 import com.university.models.Usuario;
 import com.university.models.request.CreateServicioDto;
+import com.university.repositories.DiaAtencionRepository;
 import com.university.repositories.DuracionServicioRepository;
 import com.university.repositories.HorarioAtencionServicioRepository;
 import com.university.repositories.ServicioRepository;
@@ -16,6 +18,7 @@ import com.university.repositories.UsuarioRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.transaction.Transactional;
 
@@ -26,6 +29,8 @@ public class ServicioService {
     private ServicioRepository servicioRepository;
     @Autowired
     private UsuarioRepository usuarioRepository;
+    @Autowired
+    private DiaAtencionRepository diaAtencionRepository;
 
     @Autowired
     private DuracionServicioRepository duracionServicioRepository;
@@ -112,14 +117,6 @@ public class ServicioService {
             servicioExistente.setNombre(servicioActualizado.getNombre());
         }
 
-        // Validar y actualizar tipoServicio
-        if (servicioActualizado.getTipoServicio() != null) {
-            servicioExistente.setTipoServicio(servicioActualizado.getTipoServicio());
-        }
-
-        // Validar y actualizar recurso (puede ser nulo)
-        servicioExistente.setRecurso(servicioActualizado.getRecurso());
-
         // Validar y actualizar negocio
         if (servicioActualizado.getNegocio() != null) {
             servicioExistente.setNegocio(servicioActualizado.getNegocio());
@@ -173,22 +170,37 @@ public class ServicioService {
             servicioExistente.setDuracionServicio(duracionExistente);
         }
 
-        // Validar y actualizar horarios de atención
-        if (servicioActualizado.getHorariosAtencionServicios() != null) {
-            // Eliminar horarios existentes y crear nuevos
-            horarioAtencionServicioRepository.deleteAll(servicioExistente.getHorariosAtencionServicios());
-            List<HorarioAtencionServicio> nuevosHorarios = new ArrayList<>();
-            for (HorarioAtencionServicio horario : servicioActualizado.getHorariosAtencionServicios()) {
-                HorarioAtencionServicio nuevoHorario = new HorarioAtencionServicio(
-                        horario.getHoraInicio(),
-                        horario.getHoraFinal(),
-                        horario.getDiaAtencion()
-                );
+          // Validar y actualizar horarios de atención
+    if (servicioActualizado.getHorariosAtencionServicios() != null) {
+        List<HorarioAtencionServicio> nuevosHorarios = servicioActualizado.getHorariosAtencionServicios();
+        List<HorarioAtencionServicio> horariosActuales = servicioExistente.getHorariosAtencionServicios();
+
+        // Crear una lista auxiliar para manejar las actualizaciones
+        List<HorarioAtencionServicio> horariosActualizados = new ArrayList<>();
+
+        for (HorarioAtencionServicio nuevoHorario : nuevosHorarios) {
+            if (nuevoHorario.getId() == null) {
+                // Es un nuevo horario
                 nuevoHorario.setServicio(servicioExistente);
-                nuevosHorarios.add(horarioAtencionServicioRepository.save(nuevoHorario));
+                horariosActualizados.add(nuevoHorario);
+            } else {
+                // Actualizar horario existente
+                HorarioAtencionServicio horarioExistente = horariosActuales.stream()
+                        .filter(h -> h.getId().equals(nuevoHorario.getId()))
+                        .findFirst()
+                        .orElseThrow(() -> new Exception("Horario no encontrado con ID: " + nuevoHorario.getId()));
+
+                horarioExistente.setHoraInicio(nuevoHorario.getHoraInicio());
+                horarioExistente.setHoraFinal(nuevoHorario.getHoraFinal());
+                horarioExistente.setDiaAtencion(nuevoHorario.getDiaAtencion());
+                horariosActualizados.add(horarioExistente);
             }
-            servicioExistente.setHorariosAtencionServicios(nuevosHorarios);
         }
+
+        // Reemplazar la colección con los horarios actualizados
+        horariosActuales.clear();
+        horariosActuales.addAll(horariosActualizados);
+    }
 
         // Guardar y retornar el servicio actualizado
         return servicioRepository.save(servicioExistente);

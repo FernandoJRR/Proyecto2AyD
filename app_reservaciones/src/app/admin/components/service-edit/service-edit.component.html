@@ -98,11 +98,17 @@
             />
           </mat-form-field>
           <mat-form-field appearance="outline" class="duration-field">
-            <mat-select [(ngModel)]="horario.diaAtencion.nombre" name="diaAtencion-{{ i }}" required>
-              <mat-option *ngFor="let dia of diasSemana" [value]="dia">{{ dia }}</mat-option>
+            <mat-select
+              [(ngModel)]="horario.diaAtencion.id"
+              name="diaAtencion-{{ i }}"
+              required
+            >
+              <mat-option *ngFor="let dia of diasSemana; let index = index" [value]="index + 1">
+                {{ dia }}
+              </mat-option>
             </mat-select>
           </mat-form-field>
-          <button mat-icon-button color="warn" (click)="removeHorario(i)">
+          <button mat-icon-button color="warn" type="button" (click)="removeHorario(i)">
             <mat-icon>delete</mat-icon>
           </button>
         </div>
